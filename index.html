@@ -20,7 +20,8 @@
     color: var(--fg);
     font-family: 'Courier Prime', 'Courier New', monospace;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     padding-left: max(0px, env(safe-area-inset-left, 0px));
     padding-right: max(0px, env(safe-area-inset-right, 0px));
   }
@@ -125,7 +126,7 @@
   /* ── LANDING ── */
   #landing {
     position: relative; z-index: 10;
-    min-height: 100vh; display: flex; flex-direction: column;
+    display: flex; flex-direction: column;
     opacity: 0; pointer-events: none;
     transition: opacity 1.2s ease; overflow-y: auto; overflow-x: hidden;
   }
@@ -167,7 +168,7 @@
   /* Hero nameplate */
   .hero-band {
     text-align: center;
-    padding: 72px max(40px, env(safe-area-inset-left, 16px)) 56px;
+    padding: 40px max(40px, env(safe-area-inset-left, 16px)) 32px;
     border-bottom: 1px solid var(--fg-low);
     position: relative;
     overflow: hidden;
@@ -220,7 +221,7 @@
       0 4px 20px rgba(0,0,0,0.9),
       0 8px 40px rgba(0,0,0,0.7);
     opacity: 0; animation: up 1s ease 0.3s forwards;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     position: relative; z-index: 1;
   }
   h1 em {
@@ -258,7 +259,7 @@
 
   /* Case files grid */
   .cases-band {
-    padding: 48px max(40px, env(safe-area-inset-left, 16px)) 56px;
+    padding: 28px max(40px, env(safe-area-inset-left, 16px)) 32px;
     opacity: 0; animation: up 0.8s ease 1s forwards;
   }
   .cases-label {
@@ -428,10 +429,20 @@
   }
 
   @media (max-width: 600px) {
-    .hero-band { padding: 48px 20px 40px; }
-    .cases-band { padding: 36px 20px 48px; }
-    .top-bar, .foot { padding-left: 20px; padding-right: 20px; }
+    .hero-band { padding: 20px 16px 16px; }
+    .cases-band { padding: 16px 16px 20px; }
+    .top-bar, .foot { padding-left: 16px; padding-right: 16px; }
     #thief-wrap { right: 5vw; width: 80px; }
+    h1 { font-size: 52px; margin-bottom: 12px; }
+    .eyebrow { margin-bottom: 16px; }
+    .tagline { font-size: 13px; line-height: 1.7; }
+    .rule { margin-bottom: 16px; }
+    .cases-grid { grid-template-columns: 1fr; gap: 10px; }
+    .cases-label { margin-bottom: 14px; }
+    .case-card-band { height: 52px; }
+    .case-card-body { padding: 14px 16px 14px; gap: 7px; }
+    .case-title-text { font-size: 20px; }
+    .case-brief-text { -webkit-line-clamp: 2; }
   }
 </style>
 
