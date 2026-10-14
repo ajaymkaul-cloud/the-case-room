@@ -1,5 +1,5 @@
 <meta name="claude:viewport-fit-sides" content="cover">
-<title>The Case Room — Case 002</title>
+<title>The Case Room</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
 
 <style>
@@ -11,12 +11,10 @@
     --gold: #c8a45a;
     --gold-dim: #6a5228;
     --red: #7a1a1a;
-    --red-bright: #c0392b;
+    --green: #2a5c3a;
+    --green-bright: #4a9c6a;
     --card-bg: #110f0a;
     --card-border: #2a2418;
-    --cork: #3d2e1e;
-    --cork-mid: #4a3828;
-    --string: #c8a45a;
     color-scheme: dark;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +28,7 @@
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
 
-  /* ── TOP BAR ── */
+  /* TOP BAR */
   .top-bar {
     padding: 18px max(40px, 16px);
     display: grid;
@@ -38,11 +36,11 @@
     align-items: center;
     border-bottom: 1px solid var(--fg-low);
     position: sticky;
-    top: 0;
+    top: env(safe-area-inset-top, 0px);
     background: var(--bg);
     z-index: 50;
   }
-  .bar-left { display: flex; align-items: center; gap: 20px; }
+  .bar-left  { display: flex; align-items: center; gap: 20px; }
   .bar-center {
     text-align: center;
     font-family: 'Playfair Display', serif;
@@ -56,8 +54,10 @@
   .bar-logo {
     font-family: 'Playfair Display', serif;
     font-weight: 900; font-style: italic;
-    font-size: 18px; color: var(--fg);
-    text-decoration: none; letter-spacing: -0.01em;
+    font-size: 18px;
+    color: var(--fg);
+    text-decoration: none;
+    letter-spacing: -0.01em;
   }
   .bar-logo em { color: var(--gold); font-style: italic; }
   .bar-label { font-size: 11px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
@@ -67,7 +67,7 @@
     padding: 3px 10px; transform: rotate(2deg); display: inline-block; opacity: 0.8;
   }
 
-  /* ── CASE HEADER ── */
+  /* CASE HEADER */
   .case-header {
     padding: 44px max(40px, 16px) 32px;
     border-bottom: 1px solid var(--fg-low);
@@ -85,824 +85,403 @@
     font-family: 'Playfair Display', serif;
     font-weight: 900; font-style: italic;
     font-size: clamp(32px, 6vw, 56px);
-    line-height: 1; color: var(--fg);
-    margin-bottom: 0; text-wrap: balance;
+    line-height: 1;
+    color: var(--fg);
+    margin-bottom: 18px;
+    text-wrap: balance;
   }
   .case-title-rule {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 14px 0 18px;
+    display: flex; align-items: center; gap: 12px; margin: 14px 0 18px;
   }
-  .case-title-rule::before,
-  .case-title-rule::after {
-    content: '';
-    flex: 1;
-    height: 1px;
+  .case-title-rule::before, .case-title-rule::after {
+    content: ''; flex: 1; height: 1px;
     background: linear-gradient(to right, transparent, var(--gold-dim));
   }
-  .case-title-rule::after {
-    background: linear-gradient(to left, transparent, var(--gold-dim));
-  }
+  .case-title-rule::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
   .case-title-rule span {
-    font-size: 9px;
-    letter-spacing: 0.35em;
-    color: var(--gold);
-    text-transform: uppercase;
-    opacity: 0.7;
+    font-size: 9px; letter-spacing: 0.35em; color: var(--gold);
+    text-transform: uppercase; opacity: 0.7;
   }
   .case-setting {
-    font-size: 16px; color: var(--fg-mid);
-    letter-spacing: 0.05em; margin-bottom: 20px;
-    font-family: 'Courier Prime', monospace;
+    font-size: 15px; color: var(--fg-mid); line-height: 1.8;
+    max-width: 560px; font-style: italic;
   }
-  .case-brief {
-    font-size: 15px; line-height: 1.75;
-    color: var(--fg); max-width: 560px;
-  }
-  /* DOSSIER PANEL */
+
+  /* DOSSIER */
   .case-dossier {
     border: 1px solid var(--fg-low);
     padding: 20px 22px;
-    min-width: 200px;
-    max-width: 240px;
+    min-width: 200px; max-width: 240px;
     position: relative;
     background: rgba(17,14,10,0.6);
   }
   .case-dossier::before {
-    content: '';
-    position: absolute;
-    inset: 4px;
-    border: 1px solid var(--gold-dim);
-    opacity: 0.3;
-    pointer-events: none;
+    content: ''; position: absolute; inset: 4px;
+    border: 1px solid var(--gold-dim); opacity: 0.3; pointer-events: none;
   }
   .dossier-label {
-    font-size: 8px;
-    letter-spacing: 0.45em;
-    color: var(--fg-mid);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    opacity: 0.6;
+    font-size: 8px; letter-spacing: 0.45em; color: var(--fg-mid);
+    text-transform: uppercase; margin-bottom: 14px; opacity: 0.6;
   }
-  .dossier-row {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin-bottom: 12px;
-  }
+  .dossier-row { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
   .dossier-row:last-child { margin-bottom: 0; }
   .dossier-key {
-    font-size: 8px;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-    opacity: 0.6;
+    font-size: 8px; letter-spacing: 0.3em; color: var(--gold);
+    text-transform: uppercase; opacity: 0.6;
   }
-  .dossier-val {
-    font-size: 11px;
-    color: var(--fg);
-    letter-spacing: 0.04em;
-    line-height: 1.4;
-  }
-  .dossier-divider {
-    height: 1px;
-    background: var(--fg-low);
-    margin: 10px 0;
-  }
+  .dossier-val { font-size: 11px; color: var(--fg); letter-spacing: 0.04em; line-height: 1.4; }
+  .dossier-divider { height: 1px; background: var(--fg-low); margin: 10px 0; }
   .dossier-stamp {
-    margin-top: 14px;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    color: var(--red);
-    text-transform: uppercase;
-    border: 1px solid var(--red);
-    display: inline-block;
-    padding: 4px 10px;
-    transform: rotate(-3deg);
-    opacity: 0.75;
-  }
-  @media (max-width: 700px) {
-    .case-header { grid-template-columns: 1fr; }
-    .case-dossier { max-width: 100%; display: flex; flex-wrap: wrap; gap: 16px; }
-    .case-dossier::before { display: none; }
-    .dossier-label { width: 100%; }
-    .dossier-stamp { margin-top: 0; }
+    margin-top: 14px; font-size: 13px; letter-spacing: 0.2em; color: var(--red);
+    text-transform: uppercase; border: 1px solid var(--red);
+    display: inline-block; padding: 4px 10px; transform: rotate(-3deg); opacity: 0.75;
   }
 
-  /* ── MAIN LAYOUT ── */
-  .main {
+  /* CASE RULES */
+  .case-rules {
+    padding: 20px max(40px, 16px);
+    border-bottom: 1px solid var(--fg-low);
+    background: rgba(17,14,10,0.4);
+  }
+  .rules-label {
+    font-size: 9px; letter-spacing: 0.45em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 12px; opacity: 0.7;
+  }
+  .rules-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 6px 32px;
+  }
+  .rule-item {
+    font-size: 12px; color: var(--fg-mid); line-height: 1.6;
+    padding-left: 14px; position: relative;
+  }
+  .rule-item::before {
+    content: '-'; position: absolute; left: 0; color: var(--gold-dim);
+  }
+
+  /* LAYOUT */
+  .puzzle-layout {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 1fr;
     gap: 0;
-    align-items: start;
-    max-width: 1200px;
   }
-  @media (max-width: 840px) {
-    .main { grid-template-columns: 1fr; }
-  }
-
-  /* ── EVIDENCE COLUMN ── */
-  .evidence-col {
-    padding: 40px max(40px, 16px);
+  .puzzle-left {
     border-right: 1px solid var(--fg-low);
+    padding: 32px max(40px, 16px) 48px;
   }
+  .puzzle-right { padding: 32px max(40px, 16px) 48px; }
+
+  /* SECTION LABELS */
   .section-label {
-    font-size: 11px; letter-spacing: 0.32em; color: var(--gold);
+    font-size: 11px; letter-spacing: 0.35em; color: var(--gold);
     text-transform: uppercase; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
   }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--fg-low); }
 
-  /* Evidence items */
-  .evidence-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
-  .evidence-item {
+  /* EXHIBIT CARDS */
+  .exhibit-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 36px; }
+  .exhibit {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .exhibit:hover  { border-color: var(--gold-dim); background: #161209; }
+  .exhibit.open   { border-color: var(--gold-dim); background: #161209; }
+  .exhibit-header {
+    display: flex; align-items: center; gap: 14px;
     padding: 14px 18px;
-    position: relative;
   }
-  .evidence-item::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px; background: var(--gold-dim);
+  .exhibit-tag {
+    font-size: 10px; letter-spacing: 0.3em; color: var(--gold);
+    text-transform: uppercase; flex-shrink: 0;
+    border: 1px solid var(--gold-dim); padding: 2px 8px;
   }
-  .evidence-text { font-size: 13px; line-height: 1.7; color: var(--fg); }
-  .evidence-tag {
-    font-size: 10px; letter-spacing: 0.22em; color: var(--fg-mid);
-    text-transform: uppercase; margin-bottom: 6px;
+  .exhibit-name { font-size: 15px; font-weight: 700; color: var(--fg); flex: 1; min-width: 0; }
+  .exhibit-arrow {
+    font-size: 11px; color: var(--fg-mid); transition: transform 0.3s; flex-shrink: 0;
   }
+  .exhibit.open .exhibit-arrow { transform: rotate(180deg); }
+  .exhibit-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease;
+    border-top: 0px solid var(--fg-low);
+  }
+  .exhibit.open .exhibit-body {
+    max-height: 900px;
+    border-top: 1px solid var(--fg-low);
+  }
+  .exhibit-content {
+    padding: 16px 18px;
+    font-size: 14px; color: var(--fg-mid); line-height: 1.75;
+    white-space: pre-line;
+  }
+  .exhibit-content strong { color: var(--fg); }
 
-  /* ── PINBOARD ── */
-  .pinboard-section { margin-top: 48px; }
-  .pinboard-instructions {
-    font-size: 12px; color: var(--fg-mid); line-height: 1.7;
-    margin-bottom: 20px; letter-spacing: 0.04em;
-    max-width: 520px;
-  }
-  .pinboard-instructions strong { color: var(--gold); }
-
-  .pinboard-outer {
-    position: relative;
-    background: var(--cork);
-    border: 3px solid #2a1f14;
-    box-shadow:
-      inset 0 0 60px rgba(0,0,0,0.45),
-      inset 0 0 20px rgba(0,0,0,0.25),
-      0 8px 32px rgba(0,0,0,0.7),
-      0 2px 8px rgba(0,0,0,0.5);
-    padding: 28px 24px 32px;
-    overflow: hidden;
-  }
-  /* Layered cork texture */
-  .pinboard-outer::before {
-    content: '';
-    position: absolute; inset: 0; z-index: 0; pointer-events: none;
-    background-image:
-      /* Fine horizontal grain */
-      repeating-linear-gradient(
-        2deg,
-        transparent, transparent 2px,
-        rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 3px
-      ),
-      /* Medium diagonal grain */
-      repeating-linear-gradient(
-        47deg,
-        transparent, transparent 6px,
-        rgba(255,255,255,0.025) 6px, rgba(255,255,255,0.025) 7px
-      ),
-      /* Coarse texture */
-      repeating-linear-gradient(
-        -33deg,
-        transparent, transparent 12px,
-        rgba(0,0,0,0.04) 12px, rgba(0,0,0,0.04) 13px
-      ),
-      /* Edge vignette */
-      radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.35) 100%);
-  }
-  /* Inset shadow overlay */
-  .pinboard-outer::after {
-    content: '';
-    position: absolute; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 18%, transparent 82%, rgba(0,0,0,0.2) 100%),
-      linear-gradient(to right, rgba(0,0,0,0.15) 0%, transparent 12%, transparent 88%, rgba(0,0,0,0.15) 100%);
-  }
-
-  /* SVG string layer */
-  #string-svg {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 1;
-    overflow: visible;
-  }
-
-  /* Cards grid */
-  .cards-grid {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    z-index: 2;
-  }
-
-  .pin-card {
-    background: #f4edd8;
-    background-image:
-      linear-gradient(160deg, rgba(255,255,240,0.4) 0%, transparent 40%),
-      linear-gradient(to bottom, transparent 70%, rgba(180,160,120,0.15) 100%);
-    color: #1a1410;
-    width: 140px;
-    padding: 10px 12px 14px;
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    box-shadow:
-      2px 3px 8px rgba(0,0,0,0.5),
-      4px 6px 16px rgba(0,0,0,0.3),
-      0 1px 0 rgba(255,255,255,0.15) inset;
-    transition: transform 0.12s, box-shadow 0.12s;
-    font-family: 'Courier Prime', monospace;
-  }
-  /* Aged top edge */
-  .pin-card::after {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, rgba(180,150,90,0.25), transparent);
-    pointer-events: none;
-  }
-  .pin-card::before {
-    /* Push pin */
-    content: '';
-    position: absolute;
-    top: -9px; left: 50%;
-    transform: translateX(-50%);
-    width: 14px; height: 14px;
-    background:
-      radial-gradient(circle at 35% 30%, #ffe898, #c8900a 40%, #7a4a08 80%);
-    border-radius: 50%;
-    box-shadow:
-      0 2px 5px rgba(0,0,0,0.6),
-      0 0 0 1px rgba(0,0,0,0.25),
-      inset 0 1px 1px rgba(255,255,200,0.5);
-    z-index: 3;
-  }
-  .pin-card.selected {
-    outline: 2px solid var(--red-bright);
-    transform: scale(1.05) rotate(-1deg);
-    box-shadow:
-      3px 5px 16px rgba(0,0,0,0.65),
-      0 0 0 2px var(--red-bright),
-      0 0 20px rgba(192,57,43,0.3);
-  }
-  .pin-card.connected {
-    outline: 2px solid var(--gold);
-    box-shadow:
-      2px 3px 8px rgba(0,0,0,0.5),
-      0 0 12px rgba(200,164,90,0.25);
-  }
-  .pin-card.selected.connected {
-    outline: 2px solid var(--red-bright);
-  }
-
-  .pin-card-role {
-    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: #7a6040; margin-bottom: 5px;
-  }
-  .pin-card-name {
-    font-size: 13px; font-weight: 700; line-height: 1.2;
-    color: #1a1410; margin-bottom: 6px;
-  }
-  .pin-card-detail {
-    font-size: 10px; line-height: 1.5; color: #4a3820;
-  }
-
-  /* Connection list */
-  .connections-list {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    position: relative;
-    z-index: 2;
-  }
-  .connection-tag {
-    font-size: 10px; letter-spacing: 0.14em;
-    color: var(--gold); border: 1px solid var(--gold-dim);
-    padding: 3px 10px; display: flex; align-items: center; gap: 6px;
-    background: rgba(200,164,90,0.08);
-  }
-  .connection-tag .remove-conn {
-    cursor: pointer; color: var(--fg-mid); font-size: 12px; line-height: 1;
-  }
-  .connection-tag .remove-conn:hover { color: var(--red-bright); }
-  .conn-hint {
-    font-size: 11px; color: var(--fg-mid); letter-spacing: 0.1em;
-    font-style: italic;
-    position: relative; z-index: 2;
-    margin-top: 12px;
-  }
-  .conn-hint.active { color: var(--gold); }
-
-  /* ── SIDEBAR ── */
-  .solve-col {
-    padding: 40px 28px;
-  }
-
-  .suspect-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
-  .suspect-mini {
-    background: var(--card-bg);
+  /* STATEMENTS */
+  .statement-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+  .statement {
+    padding: 14px 18px;
     border: 1px solid var(--card-border);
-    padding: 12px 14px;
-    cursor: default;
-  }
-  .suspect-name { font-size: 13px; font-weight: 700; color: var(--fg); margin-bottom: 3px; }
-  .suspect-role { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-mid); }
-
-  /* Tries */
-  .tries-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-  .tries-label { font-size: 11px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
-  .tries-pips { display: flex; gap: 6px; }
-  .pip { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); transition: background 0.3s; }
-  .pip.used { background: var(--red); }
-  .pip.gone { background: var(--fg-low); }
-
-  /* Accusation form */
-  .accuse-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-  .accuse-row { display: flex; flex-direction: column; gap: 5px; }
-  .accuse-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg-mid); }
-  .accuse-select {
     background: var(--card-bg);
+  }
+  .statement-name {
+    font-size: 10px; color: var(--gold); letter-spacing: 0.18em;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .statement-role {
+    font-size: 10px; color: var(--fg-low); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .statement-text {
+    font-size: 14px; color: var(--fg-mid); line-height: 1.75; font-style: italic;
+  }
+  .statement-text::before { content: '\201C'; color: var(--gold-dim); }
+  .statement-text::after  { content: '\201D'; color: var(--gold-dim); }
+  .statement-note {
+    margin-top: 8px; font-size: 11px; color: var(--fg-low);
+    letter-spacing: 0.1em; font-style: normal;
+  }
+
+  /* NOTEBOOK */
+  .notebook { margin-bottom: 36px; }
+  .notebook-hint {
+    font-size: 12px; color: var(--fg-mid); line-height: 1.6;
+    margin-bottom: 16px; border-left: 2px solid var(--gold-dim); padding-left: 12px;
+  }
+  .nb-row {
+    display: flex; align-items: stretch; gap: 0;
     border: 1px solid var(--card-border);
-    color: var(--fg);
-    font-family: 'Courier Prime', monospace;
-    font-size: 13px;
-    padding: 9px 12px;
-    width: 100%;
-    appearance: none;
+    background: var(--card-bg);
+    margin-bottom: 8px;
     cursor: pointer;
-    outline: none;
     transition: border-color 0.2s;
   }
-  .accuse-select:focus { border-color: var(--gold-dim); }
-  .accuse-select option { background: #1a1610; }
-
-  .accuse-btn {
-    margin-top: 4px;
-    padding: 13px;
-    background: transparent;
-    border: 1px solid var(--gold-dim);
-    color: var(--gold);
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    width: 100%;
+  .nb-row:hover { border-color: var(--gold-dim); }
+  .nb-row.linked { border-color: var(--gold-dim); background: #161209; }
+  .nb-exhibit-tag {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--gold);
+    text-transform: uppercase; padding: 12px 14px;
+    border-right: 1px solid var(--card-border);
+    display: flex; align-items: center; flex-shrink: 0;
+    min-width: 80px; justify-content: center;
+    transition: border-color 0.2s;
   }
-  .accuse-btn:hover:not(:disabled) { background: var(--gold); color: var(--bg); }
-  .accuse-btn:disabled { opacity: 0.35; cursor: default; }
+  .nb-row.linked .nb-exhibit-tag { border-color: var(--gold-dim); }
+  .nb-center {
+    flex: 1; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .nb-exhibit-name { font-size: 13px; color: var(--fg); font-weight: 700; }
+  .nb-relation-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nb-relation-btn {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 3px 10px; border: 1px solid var(--fg-low);
+    background: transparent; color: var(--fg-mid);
+    cursor: pointer; transition: all 0.15s; font-family: 'Courier Prime', monospace;
+  }
+  .nb-relation-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
+  .nb-relation-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,0.08); }
+  .nb-suspect-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nb-suspect-btn {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 3px 10px; border: 1px solid var(--fg-low);
+    background: transparent; color: var(--fg-mid);
+    cursor: pointer; transition: all 0.15s; font-family: 'Courier Prime', monospace;
+  }
+  .nb-suspect-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
+  .nb-suspect-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,0.08); }
+  .nb-remove {
+    padding: 0 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--fg-low); cursor: pointer;
+    transition: color 0.2s; border-left: 1px solid var(--card-border); flex-shrink: 0;
+    background: none; border-top: none; border-right: none; border-bottom: none;
+    font-family: inherit;
+  }
+  .nb-remove:hover { color: var(--red); }
+  .nb-row:not(.linked) .nb-remove { opacity: 0.3; pointer-events: none; }
 
-  /* Verdict */
+  /* ACCUSATION FORM */
+  .accuse-form { display: flex; flex-direction: column; gap: 16px; }
+  .accuse-row  { display: flex; flex-direction: column; gap: 7px; }
+  .accuse-label {
+    font-size: 11px; letter-spacing: 0.35em; color: var(--gold); text-transform: uppercase;
+  }
+  .accuse-sublabel {
+    font-size: 11px; color: var(--fg-mid); letter-spacing: 0.04em; margin-top: -4px;
+  }
+  .accuse-select {
+    appearance: none;
+    background: var(--card-bg); border: 1px solid var(--gold-dim);
+    color: var(--fg); font-family: 'Courier Prime', monospace;
+    font-size: 15px; padding: 12px 18px; cursor: pointer;
+    outline: none; width: 100%; transition: border-color 0.2s;
+  }
+  .accuse-select:focus { border-color: var(--gold); }
+  .accuse-select.error { border-color: var(--red); }
+  .exhibit-checkboxes { display: flex; flex-direction: column; gap: 8px; }
+  .exhibit-checkbox {
+    display: flex; align-items: flex-start; gap: 12px; cursor: pointer;
+    padding: 10px 14px;
+    border: 1px solid var(--card-border); background: var(--card-bg);
+    transition: border-color 0.2s;
+  }
+  .exhibit-checkbox:hover { border-color: var(--gold-dim); }
+  .exhibit-checkbox input[type="checkbox"] { display: none; }
+  .checkbox-box {
+    width: 16px; height: 16px; border: 1px solid var(--gold-dim);
+    flex-shrink: 0; margin-top: 1px; position: relative;
+    background: transparent; transition: background 0.15s, border-color 0.15s;
+  }
+  .exhibit-checkbox.checked .checkbox-box {
+    background: var(--gold); border-color: var(--gold);
+  }
+  .exhibit-checkbox.checked .checkbox-box::after {
+    content: ''; position: absolute; left: 4px; top: 1px;
+    width: 5px; height: 9px; border: 2px solid var(--bg);
+    border-top: none; border-left: none; transform: rotate(45deg);
+  }
+  .exhibit-checkbox.checked { border-color: var(--gold-dim); }
+  .checkbox-label { font-size: 13px; color: var(--fg-mid); line-height: 1.5; }
+  .checkbox-label strong { color: var(--fg); display: block; margin-bottom: 2px; }
+  .accuse-note {
+    font-size: 12px; color: var(--fg-mid); font-style: italic; line-height: 1.6;
+    border-left: 2px solid var(--gold-dim); padding-left: 10px;
+  }
+  .accuse-btn {
+    margin-top: 8px; padding: 16px;
+    border: 1px solid var(--gold-dim); background: transparent;
+    color: var(--gold); font-family: 'Courier Prime', monospace;
+    font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase;
+    cursor: pointer; position: relative; overflow: hidden; transition: color 0.3s;
+  }
+  .accuse-btn::before {
+    content: ''; position: absolute; inset: 0; background: var(--gold);
+    transform: translateX(-101%); transition: transform 0.3s ease; z-index: 0;
+  }
+  .accuse-btn:hover { color: var(--bg); border-color: var(--gold); }
+  .accuse-btn:hover::before { transform: translateX(0); }
+  .accuse-btn span { position: relative; z-index: 1; }
+  .accuse-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .accuse-btn:disabled::before { display: none; }
+  .accuse-btn:disabled:hover { color: var(--gold); }
+
+  /* VERDICT */
   #verdict {
-    display: none;
-    border: 1px solid var(--card-border);
-    padding: 18px;
-    background: var(--card-bg);
-    margin-top: 4px;
+    display: none; margin-top: 24px; padding: 24px;
+    border: 1px solid var(--card-border); background: var(--card-bg);
   }
   #verdict.correct { border-color: var(--gold); }
   #verdict.wrong   { border-color: var(--red); }
-  #verdict.cold    { border-color: var(--fg-low); }
   .verdict-headline {
-    font-family: 'Playfair Display', serif;
-    font-style: italic; font-weight: 700;
-    font-size: 16px; margin-bottom: 8px;
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 22px; margin-bottom: 12px;
   }
   #verdict.correct .verdict-headline { color: var(--gold); }
   #verdict.wrong   .verdict-headline { color: var(--red); }
-  #verdict.cold    .verdict-headline { color: var(--fg-mid); }
-  .verdict-body { font-size: 12px; line-height: 1.7; color: var(--fg-mid); }
+  .verdict-body { font-size: 14px; color: var(--fg-mid); line-height: 1.8; }
+  .verdict-reveal {
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--fg-low);
+    display: none;
+  }
+  .verdict-reveal.show { display: block; }
+  .reveal-btn {
+    background: none; border: 1px solid var(--fg-low);
+    color: var(--fg-mid); font-family: 'Courier Prime', monospace;
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    padding: 8px 18px; cursor: pointer; transition: all 0.2s;
+  }
+  .reveal-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
+  .reveal-text { margin-top: 14px; font-size: 14px; color: var(--fg-mid); line-height: 1.8; display: none; }
+  .reveal-text.show { display: block; }
 
-  /* Share */
-  .share-block { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--fg-low); }
+  /* SHARE */
+  .share-block {
+    display: none; margin-top: 20px; padding-top: 20px;
+    border-top: 1px solid var(--fg-low);
+  }
   .share-block.visible { display: block; }
   .stamp-card {
     background: var(--bg); border: 1px solid var(--fg-low);
-    padding: 14px 16px;
-    font-family: 'Courier Prime', monospace; font-size: 11px;
-    letter-spacing: 0.07em; color: var(--fg-mid);
-    line-height: 1.9; white-space: pre; margin-bottom: 10px;
-    user-select: all;
+    padding: 16px 18px; font-size: 12px; letter-spacing: 0.08em;
+    color: var(--fg-mid); line-height: 1.9;
+    overflow-wrap: break-word; word-break: break-all;
+    margin-bottom: 12px; user-select: all;
   }
   .share-btn {
-    padding: 9px 18px; border: 1px solid var(--gold-dim); background: transparent;
-    color: var(--gold); font-family: 'Courier Prime', monospace;
+    padding: 10px 20px; border: 1px solid var(--gold-dim);
+    background: transparent; color: var(--gold);
+    font-family: 'Courier Prime', monospace;
     font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
     cursor: pointer; transition: background 0.2s, color 0.2s;
   }
   .share-btn:hover { background: var(--gold); color: var(--bg); }
   .share-confirm {
     font-size: 11px; color: var(--gold); letter-spacing: 0.15em;
-    margin-left: 10px; opacity: 0; transition: opacity 0.3s;
+    margin-left: 12px; opacity: 0; transition: opacity 0.3s;
   }
   .share-confirm.show { opacity: 1; }
 
-  /* Divider */
-  .section-divider {
-    height: 1px; background: var(--fg-low);
-    margin: 28px 0;
+  /* FOOTER */
+  .foot {
+    padding: 20px max(40px, 16px);
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--fg-low); flex-wrap: wrap; gap: 10px; margin-top: 40px;
   }
+  .foot-text { font-size: 11px; letter-spacing: 0.22em; color: var(--fg-low); text-transform: uppercase; }
+  .foot-num  { font-size: 11px; letter-spacing: 0.18em; color: var(--gold-dim); text-transform: uppercase; }
 
-  @media (max-width: 600px) {
-    .pin-card { width: calc(50% - 8px); }
-    .evidence-col { padding: 28px max(16px, env(safe-area-inset-left, 0px)); }
-    .solve-col { padding: 28px 16px; border-top: 1px solid var(--fg-low); }
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .puzzle-layout { grid-template-columns: 1fr; }
+    .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); }
+    .case-header, .puzzle-left, .puzzle-right, .case-rules { padding-left: 16px; padding-right: 16px; }
+    .top-bar { padding-left: 16px; padding-right: 16px; }
+    .bar-center { display: none; }
+    .bar-right  { display: none; }
+    .bar-logo   { font-size: 15px; }
+    .bar-label  { font-size: 10px; }
+    .case-title { font-size: clamp(28px, 7vw, 40px); }
+    .case-setting { font-size: 15px; line-height: 1.7; }
+    .case-header { grid-template-columns: 1fr; }
+    .case-dossier { max-width: 100%; display: flex; flex-wrap: wrap; gap: 16px; }
+    .case-dossier::before { display: none; }
+    .dossier-stamp { margin-top: 0; }
+    .exhibit-name  { font-size: 15px; }
+    .exhibit-content { font-size: 15px; line-height: 1.75; }
+    .statement-text { font-size: 15px; line-height: 1.75; }
+    .accuse-select { font-size: 16px; padding: 14px 16px; }
+    .accuse-btn    { font-size: 15px; padding: 18px; }
+    .verdict-body  { font-size: 15px; line-height: 1.8; }
+    .verdict-headline { font-size: 20px; }
+    .nb-exhibit-tag { min-width: 64px; font-size: 9px; }
+    .nb-exhibit-name { font-size: 12px; }
+    .rules-grid { grid-template-columns: 1fr; }
   }
 </style>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- DATA -->
-<script>
-const CASE = {
-  number: '002',
-  title: 'The Last Shot',
-  setting: 'Film City, Mumbai — 14 October',
-  brief: `The final shot of "Raat Ka Darwaza" was scheduled for 6 AM. At 5:47 AM, the lead actor Veer Kapoor was found unconscious in his trailer — someone had tampered with his energy drink. The scene required only Veer. No Veer, no film. The production insurance would pay out in full only if principal photography was sabotaged, not cancelled.\n\nThe crew had been on the lot since 4 AM. Four people had access to the trailer.`,
-
-  suspects: [
-    {
-      id: 'priya',
-      name: 'Priya Sinha',
-      role: 'Director',
-      detail: 'Two flops back to back.\nThis film was her last chance.'
-    },
-    {
-      id: 'ronit',
-      name: 'Ronit Malhotra',
-      role: 'Co-Producer',
-      detail: 'Stands to collect\ninsurance payout.'
-    },
-    {
-      id: 'tara',
-      name: 'Tara Iyer',
-      role: 'Lead Actress',
-      detail: 'Was replaced mid-shoot.\nVeer pushed for it.'
-    },
-    {
-      id: 'danish',
-      name: 'Danish Khan',
-      role: 'Assistant Director',
-      detail: 'Veer blocked his\npromotion for years.'
-    }
-  ],
-
-  methods: [
-    'Slipped a sedative into the energy drink',
-    'Swapped the drink with a drugged one',
-    'Added drops to the drink from a vial'
-  ],
-
-  locations: [
-    "Veer's trailer",
-    'The catering bay',
-    'The props storage room'
-  ],
-
-  answer: {
-    who: 'Ronit Malhotra',
-    how: 'Swapped the drink with a drugged one',
-    where: 'The catering bay'
-  },
-
-  solution: `Ronit Malhotra, the co-producer, had quietly loaded the film's production insurance with a sabotage clause three weeks before the final shoot. He intercepted the sealed energy drink crate at the catering bay early morning, swapped one bottle with a sedative-laced substitute, and had it sent to Veer's trailer as the regular morning order. The delay would trigger a full payout — far more than the film could ever earn. The catering log showed his keycard access at 4:22 AM. The others had motive. Only Ronit had the money to walk away.`
-};
-
-// Populate dropdowns
-function buildDropdowns() {
-  const whoSel   = document.getElementById('acc-who');
-  const howSel   = document.getElementById('acc-how');
-  const whereSel = document.getElementById('acc-where');
-
-  CASE.suspects.forEach(s => {
-    const o = document.createElement('option');
-    o.value = s.name; o.textContent = s.name;
-    whoSel.appendChild(o);
-  });
-  CASE.methods.forEach(m => {
-    const o = document.createElement('option');
-    o.value = m; o.textContent = m;
-    howSel.appendChild(o);
-  });
-  CASE.locations.forEach(l => {
-    const o = document.createElement('option');
-    o.value = l; o.textContent = l;
-    whereSel.appendChild(o);
-  });
-}
-
-// ── PINBOARD STATE ──
-let selectedCard = null;
-let connections  = []; // [{from, to}]
-const cardEls    = {}; // id -> DOM element
-
-function getCardCenter(id) {
-  const el = cardEls[id];
-  if (!el) return null;
-  const board = document.getElementById('pinboard-outer');
-  const br = board.getBoundingClientRect();
-  const er = el.getBoundingClientRect();
-  return {
-    x: er.left - br.left + er.width / 2,
-    y: er.top  - br.top  + er.height / 2
-  };
-}
-
-function connectionKey(a, b) {
-  return [a, b].sort().join('::');
-}
-
-function hasConnection(a, b) {
-  const key = connectionKey(a, b);
-  return connections.some(c => connectionKey(c.from, c.to) === key);
-}
-
-function removeConnection(a, b) {
-  const key = connectionKey(a, b);
-  connections = connections.filter(c => connectionKey(c.from, c.to) !== key);
-  renderStrings();
-  renderConnectionTags();
-  updateCardStates();
-}
-
-function addConnection(a, b) {
-  if (!hasConnection(a, b) && a !== b) {
-    connections.push({ from: a, to: b });
-    renderStrings();
-    renderConnectionTags();
-    updateCardStates();
-  }
-}
-
-function updateCardStates() {
-  CASE.suspects.forEach(s => {
-    const el = cardEls[s.id];
-    if (!el) return;
-    const isConnected = connections.some(c => c.from === s.id || c.to === s.id);
-    el.classList.toggle('connected', isConnected);
-    el.classList.toggle('selected', selectedCard === s.id);
-  });
-}
-
-// Quadratic bezier control point (droop down)
-function bezierPath(x1, y1, x2, y2) {
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2 + Math.min(40, Math.abs(x2 - x1) * 0.18 + 18);
-  return `M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`;
-}
-
-function renderStrings() {
-  const svg = document.getElementById('string-svg');
-  svg.innerHTML = '';
-
-  // Add glow filter definition
-  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  defs.innerHTML = `
-    <filter id="string-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-  `;
-  svg.appendChild(defs);
-
-  // Update board height to fit cards
-  const outer = document.getElementById('pinboard-outer');
-  outer.style.minHeight = '';
-
-  connections.forEach(conn => {
-    const a = getCardCenter(conn.from);
-    const b = getCardCenter(conn.to);
-    if (!a || !b) return;
-
-    // Shadow/glow path (thicker, blurred behind)
-    const glow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    glow.setAttribute('d', bezierPath(a.x, a.y, b.x, b.y));
-    glow.setAttribute('stroke', 'rgba(200,164,90,0.3)');
-    glow.setAttribute('stroke-width', '4');
-    glow.setAttribute('fill', 'none');
-    glow.setAttribute('filter', 'url(#string-glow)');
-    svg.appendChild(glow);
-
-    // Main string
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', bezierPath(a.x, a.y, b.x, b.y));
-    path.setAttribute('stroke', '#c8a45a');
-    path.setAttribute('stroke-width', '1.5');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('opacity', '0.85');
-    path.style.filter = 'drop-shadow(0 1px 3px rgba(0,0,0,0.7))';
-    svg.appendChild(path);
-  });
-}
-
-function getNameById(id) {
-  const s = CASE.suspects.find(x => x.id === id);
-  return s ? s.name.split(' ')[0] : id;
-}
-
-function renderConnectionTags() {
-  const list = document.getElementById('connections-list');
-  const hint = document.getElementById('conn-hint');
-  list.innerHTML = '';
-
-  if (connections.length === 0) {
-    hint.textContent = 'No connections yet.';
-    hint.classList.remove('active');
-    return;
-  }
-
-  hint.textContent = '';
-
-  connections.forEach(conn => {
-    const tag = document.createElement('div');
-    tag.className = 'connection-tag';
-    tag.innerHTML = `${getNameById(conn.from)} ↔ ${getNameById(conn.to)}<span class="remove-conn" title="Remove">×</span>`;
-    tag.querySelector('.remove-conn').addEventListener('click', () => {
-      removeConnection(conn.from, conn.to);
-    });
-    list.appendChild(tag);
-  });
-}
-
-function onCardClick(id) {
-  if (caseOver) return;
-
-  if (selectedCard === null) {
-    // First tap — select
-    selectedCard = id;
-    document.getElementById('conn-hint').textContent = `${getNameById(id)} selected — tap another card to connect.`;
-    document.getElementById('conn-hint').classList.add('active');
-    updateCardStates();
-  } else if (selectedCard === id) {
-    // Tap same card — deselect
-    selectedCard = null;
-    document.getElementById('conn-hint').textContent = connections.length === 0 ? 'No connections yet.' : '';
-    document.getElementById('conn-hint').classList.remove('active');
-    updateCardStates();
-  } else {
-    // Second tap — connect or disconnect
-    if (hasConnection(selectedCard, id)) {
-      removeConnection(selectedCard, id);
-    } else {
-      addConnection(selectedCard, id);
-    }
-    selectedCard = null;
-    document.getElementById('conn-hint').textContent = '';
-    document.getElementById('conn-hint').classList.remove('active');
-    updateCardStates();
-  }
-}
-
-// Rebuild strings on window resize
-window.addEventListener('resize', () => {
-  if (connections.length > 0) renderStrings();
-});
-
-// ── ACCUSATION ──
-const MAX_TRIES = 2;
-let triesUsed = 0;
-let caseOver  = false;
-
-function lockForm() {
-  document.getElementById('acc-who').disabled   = true;
-  document.getElementById('acc-how').disabled   = true;
-  document.getElementById('acc-where').disabled = true;
-  const btn = document.getElementById('accuse-btn');
-  btn.disabled = true;
-}
-
-function showStamp(solved) {
-  const block = document.getElementById('share-block');
-  const card  = document.getElementById('stamp-card');
-  const dots  = solved ? (triesUsed === 1 ? '🟨 ✅' : '🟥 ✅') : '🟥 🟥';
-  const status = solved
-    ? `Solved in ${triesUsed} of ${MAX_TRIES} attempt${triesUsed > 1 ? 's' : ''}`
-    : 'Case went cold';
-  card.textContent =
-    `THE CASE ROOM · CASE 002\nThe Last Shot\n\n${dots}\n\n${status}\nthecaseroom.in`;
-  block.classList.add('visible');
-}
-
-function copyStamp() {
-  const text = document.getElementById('stamp-card').textContent;
-  const confirm = document.getElementById('share-confirm');
-  navigator.clipboard.writeText(text).then(() => {
-    confirm.classList.add('show');
-    setTimeout(() => confirm.classList.remove('show'), 2000);
-  }).catch(() => {
-    const el = document.getElementById('stamp-card');
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-  });
-}
-
-function makeAccusation() {
-  if (caseOver) return;
-  const who   = document.getElementById('acc-who').value;
-  const how   = document.getElementById('acc-how').value;
-  const where = document.getElementById('acc-where').value;
-  if (!who || !how || !where) {
-    const btn = document.getElementById('accuse-btn');
-    btn.style.borderColor = 'var(--red)';
-    setTimeout(() => btn.style.borderColor = '', 600);
-    return;
-  }
-
-  triesUsed++;
-  const pips     = [document.getElementById('pip-1'), document.getElementById('pip-2')];
-  const verdict  = document.getElementById('verdict');
-  const headline = document.getElementById('verdict-headline');
-  const body     = document.getElementById('verdict-body');
-  verdict.style.display = 'block';
-
-  const correct = who === CASE.answer.who && how === CASE.answer.how && where === CASE.answer.where;
-
-  if (correct) {
-    caseOver = true;
-    pips.forEach((p, i) => { p.className = 'pip' + (i < triesUsed - 1 ? ' used' : ''); });
-    lockForm();
-    verdict.className = 'correct';
-    headline.textContent = 'Case closed.';
-    body.textContent = CASE.solution;
-    showStamp(true);
-  } else if (triesUsed >= MAX_TRIES) {
-    caseOver = true;
-    pips.forEach(p => { p.className = 'pip used'; });
-    lockForm();
-    verdict.className = 'cold';
-    headline.textContent = 'The case goes cold.';
-    body.textContent = 'Both attempts exhausted. ' + CASE.solution;
-    showStamp(false);
-  } else {
-    pips[triesUsed - 1].classList.add('used');
-    verdict.className = 'wrong';
-    headline.textContent = 'Not quite.';
-    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining.';
-  }
-  verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-// ── INIT ──
-document.addEventListener('DOMContentLoaded', () => {
-  buildDropdowns();
-
-  // Build suspect cards dynamically
-  const grid = document.getElementById('cards-grid');
-  CASE.suspects.forEach((s, i) => {
-    const card = document.createElement('div');
-    card.className = 'pin-card';
-    // Slight random tilt for realism
-    const tilts = [-2, 1.5, -1, 2.5];
-    card.style.transform = `rotate(${tilts[i % tilts.length]}deg)`;
-    card.innerHTML = `
-      <div class="pin-card-role">${s.role}</div>
-      <div class="pin-card-name">${s.name}</div>
-      <div class="pin-card-detail">${s.detail}</div>
-    `;
-    card.addEventListener('click', () => onCardClick(s.id));
-    cardEls[s.id] = card;
-    grid.appendChild(card);
-  });
-
-  renderConnectionTags();
-});
-</script>
-
-<!-- ══════════════════════════════════════════ -->
-<!-- HTML -->
-
+<!-- TOP BAR -->
 <div class="top-bar">
   <div class="bar-left">
-    <a class="bar-logo" href="./index.html"><em>The</em> Case Room</a>
+    <a class="bar-logo" href="./index.html">The Case<em>Room</em></a>
     <span class="bar-label">Case No. 002</span>
   </div>
   <div class="bar-center">The Last Shot</div>
   <div class="bar-right">
-    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Mumbai · Film City</span>
-    <span class="bar-stamp">Open</span>
+    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Mumbai &middot; Film Set</span>
+    <span class="bar-stamp" id="case-stamp">Open</span>
   </div>
 </div>
 
+<!-- CASE HEADER -->
 <div class="case-header">
   <div class="case-header-text">
-    <div class="case-number">Case No. 002</div>
+    <div class="case-number">Case 002 &middot; Open Investigation</div>
     <h1 class="case-title">The Last Shot</h1>
-    <div class="case-title-rule"><span>Mumbai · Film City · 2026</span></div>
-    <div class="case-setting" id="case-setting-el"></div>
-    <p class="case-brief" id="case-brief-el"></p>
+    <div class="case-title-rule"><span>Mumbai &middot; Film Set &middot; 2026</span></div>
+    <p class="case-setting">
+      5:47 AM, Film City, Mumbai. Lead actor Veer Kapoor is found unconscious in his trailer minutes before the final shot of <em>Raat Ka Darwaza</em>. He survives but the shoot is suspended. Investigators determine his morning energy drink contained a sedative. The bottle came through the production's catering service. Someone on the crew switched it before it reached him.
+    </p>
   </div>
   <div class="case-dossier">
     <div class="dossier-label">Case File</div>
@@ -912,141 +491,579 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="dossier-row">
       <span class="dossier-key">Location</span>
-      <span class="dossier-val">Film City<br>Mumbai</span>
+      <span class="dossier-val">Film City<br>Goregaon, Mumbai</span>
     </div>
     <div class="dossier-divider"></div>
     <div class="dossier-row">
       <span class="dossier-key">Incident</span>
-      <span class="dossier-val">Death on set</span>
+      <span class="dossier-val">Deliberate incapacitation</span>
     </div>
     <div class="dossier-row">
       <span class="dossier-key">Window</span>
-      <span class="dossier-val">Between shots</span>
+      <span class="dossier-val">04:38 &ndash; 05:30 hrs</span>
     </div>
     <div class="dossier-row">
       <span class="dossier-key">Persons of interest</span>
       <span class="dossier-val">4 suspects</span>
     </div>
-    <div class="dossier-stamp">Open</div>
+    <div class="dossier-stamp" id="case-stamp-2">Open</div>
   </div>
+</div>
+
+<!-- CASE RULES -->
+<div class="case-rules">
+  <div class="rules-label">Case Rules</div>
+  <div class="rules-grid">
+    <div class="rule-item">This is a fictional case.</div>
+    <div class="rule-item">Records described as verified are reliable for this puzzle.</div>
+    <div class="rule-item">Suspect statements may be inaccurate.</div>
+    <div class="rule-item">There was one perpetrator. No accomplice.</div>
+    <div class="rule-item">All evidence needed to identify the culprit is present.</div>
+    <div class="rule-item">No specialist forensic or medical knowledge is required.</div>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="puzzle-layout">
+  <!-- LEFT: EXHIBITS + STATEMENTS -->
+  <div class="puzzle-left">
+    <div class="section-label">Exhibits</div>
+    <div class="exhibit-list" id="exhibit-list"></div>
+
+    <div class="section-label">Suspect Statements</div>
+    <div class="statement-list" id="statement-list"></div>
+  </div>
+
+  <!-- RIGHT: NOTEBOOK + ACCUSATION -->
+  <div class="puzzle-right">
+    <div class="section-label">Your Notebook</div>
+    <div class="notebook">
+      <div class="notebook-hint">Open an exhibit, then tag it. Link it to a suspect if it implicates one.</div>
+      <div id="notebook-rows"></div>
+    </div>
+
+    <div class="section-label">Accusation</div>
+    <div class="accuse-form">
+      <div class="accuse-row">
+        <div class="accuse-label">Who substituted the drink?</div>
+        <select class="accuse-select" id="sel-suspect">
+          <option value="">-- Select a suspect --</option>
+          <option value="priya">Priya Sinha</option>
+          <option value="ronit">Ronit Malhotra</option>
+          <option value="tara">Tara Iyer</option>
+          <option value="danish">Danish Khan</option>
+        </select>
+      </div>
+
+      <div class="accuse-row">
+        <div class="accuse-label">Select two exhibits</div>
+        <div class="accuse-sublabel">Choose the two that directly establish your accusation.</div>
+        <div class="exhibit-checkboxes" id="exhibit-checkboxes"></div>
+      </div>
+
+      <div class="accuse-note" id="accuse-note">Select two exhibits that directly support your accusation.</div>
+
+      <button class="accuse-btn" id="accuse-btn" onclick="submitAccusation()">
+        <span>File Accusation</span>
+      </button>
+
+      <!-- VERDICT -->
+      <div id="verdict">
+        <div class="verdict-headline" id="verdict-headline"></div>
+        <div class="verdict-body" id="verdict-body"></div>
+        <div class="verdict-reveal" id="verdict-reveal">
+          <button class="reveal-btn" id="reveal-btn" onclick="revealSolution()">Reveal Full Solution</button>
+          <div class="reveal-text" id="reveal-text"></div>
+        </div>
+      </div>
+
+      <!-- SHARE -->
+      <div class="share-block" id="share-block">
+        <div class="stamp-card" id="stamp-card"></div>
+        <div style="display:flex;align-items:center;">
+          <button class="share-btn" onclick="copyStamp()">Copy Result</button>
+          <span class="share-confirm" id="share-confirm">Copied</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="foot">
+  <span class="foot-text">The Case Room &middot; A Pixel &amp; Ink Product</span>
+  <span class="foot-num">Case 002 &middot; thecaseroom.pixelandink.in</span>
 </div>
 
 <script>
-  document.getElementById('case-setting-el').textContent = CASE.setting;
-  // Render brief with newlines
-  document.getElementById('case-brief-el').innerHTML = CASE.brief.replace(/\n/g, '<br>');
+// âââ DATA âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+const EXHIBITS = [
+  {
+    id: 'A',
+    name: 'Catering Preparation Record',
+    content: `Verified preparation record.
+
+At 4:38 AM, catering assistant Leela Shah selected Veer's usual blue-label energy drink from the approved stock.
+
+She marked its cap with a yellow dot and photographed the bottle. The photographed bottle has a visible diagonal crease across its front label.
+
+Leela handed it directly to Danish Khan.
+
+A supervisor later finds that same marked, creased bottle â unopened â in the catering returns tray.`
+  },
+  {
+    id: 'B',
+    name: 'Packing-Counter Camera Recording',
+    content: `Verified, continuous recording from 4:39 to 4:43 AM.
+
+Danish places the yellow-marked, creased bottle into the actor-delivery bag. He leaves the bag open on the packing counter and walks into the adjacent supply room.
+
+Ronit remains at the counter. No other person enters the counter area.
+
+At 4:41 AM, Ronit removes the marked bottle, puts it into the returns tray and places another bottle into the bag. He then seals the bag with security seal S-184.
+
+Danish returns at 4:43 AM and takes the sealed bag to the catering runner.
+
+The camera shows these actions clearly. It does not show the contents of the replacement bottle.`
+  },
+  {
+    id: 'C',
+    name: 'Delivery Chain and Recovered Bottle',
+    content: `Verified delivery records and trailer-entry recording.
+
+Danish hands the bag to runner Ajay at 4:44 AM. Both record seal S-184.
+
+Ajay delivers the bag to Veer's trailer at 5:30 AM. Seal S-184 is intact on arrival.
+
+Veer opens the bag, removes the blue-label bottle and drinks from it. No other person touches the bottle between delivery and consumption.
+
+The recovered bottle:
+- Has no yellow dot.
+- Has no diagonal label crease.
+- Contains the sedative identified in the investigation.
+
+For this fictional case, the investigation confirms the drink caused Veer's collapse.`
+  },
+  {
+    id: 'D',
+    name: "Other Suspects' Movements",
+    content: `Verified records.
+
+Priya leaves the catering counter at 4:35 AM and is continuously visible in the technical-rehearsal recording from 4:37 to 4:48 AM.
+
+Tara enters the lot at 4:50 AM and goes to wardrobe. She arrives after the bag was sealed and handed to the runner.
+
+Danish is visible in the adjacent supply-room recording from 4:40 to 4:43 AM. He does not return to the packing counter during Ronit's substitution.
+
+Ronit is the only person at the packing counter during the substitution window.`
+  },
+  {
+    id: 'E',
+    name: "Veer's Message to Ronit",
+    content: `Authenticated message sent at 10:18 PM the previous evening.
+
+Veer to Ronit:
+"We finish the shot tomorrow. Then I'm taking the duplicate vendor invoices to the studio. I want the originals and your explanation before noon."
+
+Ronit replies:
+"Let's discuss this privately before you involve anyone else."
+
+This exhibit establishes a possible motive to prevent Veer from proceeding with the meeting. It does not independently establish guilt.`
+  },
+  {
+    id: 'F',
+    name: 'Bag Handover Record',
+    content: `Verified catering locker and handover records.
+
+Priya collects the empty actor-delivery bag at 4:30 AM.
+Priya hands it to Ronit at 4:35 AM.
+The bag contains no drinks at either point.
+
+Danish first places Veer's original drink inside at 4:39 AM.
+
+This record explains why Priya initially appears connected to the bag. She handled it before the drink was packed. She had no contact with the drink itself.`
+  }
+];
+
+const SUSPECTS = [
+  { id: 'priya',  name: 'Priya Sinha',    role: 'Director',            bg: 'The film\'s release is important to her career.' },
+  { id: 'ronit',  name: 'Ronit Malhotra', role: 'Co-producer',         bg: 'Veer intends to raise questions about production spending.' },
+  { id: 'tara',   name: 'Tara Iyer',      role: 'Actor',               bg: 'Veer supported replacing her earlier in the shoot.' },
+  { id: 'danish', name: 'Danish Khan',    role: 'Assistant Director',  bg: 'Veer opposed his promotion.' }
+];
+
+const STATEMENTS = [
+  {
+    id: 'priya',
+    name: 'Priya Sinha',
+    role: 'Director',
+    text: 'I collected the empty actor-delivery bag from the catering locker. I passed it to Ronit when I left for the technical rehearsal.',
+    note: 'Statement not verified.'
+  },
+  {
+    id: 'ronit',
+    name: 'Ronit Malhotra',
+    role: 'Co-producer',
+    text: 'Priya handed me the bag. I put it on the secondary shelf and left. Danish packed Veer\'s drink. I never handled it.',
+    note: 'Statement not verified.'
+  },
+  {
+    id: 'tara',
+    name: 'Tara Iyer',
+    role: 'Actor',
+    text: 'I arrived for a costume pickup. I argued with Veer yesterday, but I did not go near catering this morning.',
+    note: 'Statement not verified.'
+  },
+  {
+    id: 'danish',
+    name: 'Danish Khan',
+    role: 'Assistant Director',
+    text: 'I put Veer\'s normal drink in the delivery bag. When I returned, the bag was already sealed. I handed it to the runner without opening it.',
+    note: 'Statement not verified.'
+  }
+];
+
+const RELATIONS = ['Establishes access', 'Establishes motive', 'Supports accusation', 'Contradicts', 'Eliminates'];
+
+const ANSWER = { suspect: 'ronit' };
+const DECISIVE_EXHIBITS = ['B', 'C'];
+
+const FEEDBACK = {
+  correct: {
+    headline: 'Case closed.',
+    body: 'Ronit Malhotra substituted the contaminated drink. The packing-counter recording establishes the act. The delivery chain and recovered bottle confirm nothing changed afterward.'
+  },
+  wrong_exhibits: {
+    headline: 'Suspect identified. Evidence incomplete.',
+    body: 'You have identified the responsible suspect, but your selected exhibits do not establish both the substitution and the delivery chain. Which exhibit shows the act, and which proves the bottle reached Veer unchanged?'
+  },
+  wrong_suspect_priya: {
+    headline: 'Theory unsupported.',
+    body: 'Priya handled the empty bag before the drink was packed. She was in a continuous technical-rehearsal recording from 4:37 AM. The packing-counter camera does not place her at the substitution.'
+  },
+  wrong_suspect_tara: {
+    headline: 'Theory unsupported.',
+    body: 'Tara arrived at the lot at 4:50 AM. The bag was sealed and handed to the runner by 4:44 AM. She could not have reached the drink.'
+  },
+  wrong_suspect_danish: {
+    headline: 'Theory unsupported.',
+    body: 'Danish placed the original marked bottle in the bag and is visible in the supply-room recording from 4:40 to 4:43 AM. The camera shows who made the substitution while he was away.'
+  }
+};
+
+const SOLUTION_REVEAL = `Ronit Malhotra substituted the contaminated drink.
+
+The packing-counter recording shows Danish placing Veer's marked original bottle in the bag at 4:39 AM. While Danish is in the supply room, Ronit removes that bottle, replaces it with another and seals the bag with seal S-184.
+
+The delivery records confirm the same seal is intact when the bag reaches Veer's trailer at 5:30 AM. The recovered bottle has no yellow dot and no diagonal label crease. The investigation confirms it contains the sedative.
+
+Ronit's statement â "I never handled it" â is directly contradicted by the recording.
+
+Priya handled the empty bag before the drink was packed and was in a rehearsal recording throughout the substitution window. Tara arrived after the bag was already sealed. Danish packed the original and later carried the already sealed bag.
+
+Veer's message to Ronit supplies a possible motive. The accusation rests on the substitution and delivery evidence, not the motive alone.`;
+
+// âââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+let nbState   = {};  // { exId: { relation, suspect } }
+let caseOver  = false;
+
+const STORAGE_KEY = 'cr002';
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ nbState, caseOver }));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data.nbState)  nbState  = data.nbState;
+    if (data.caseOver) caseOver = data.caseOver;
+  } catch(e) {}
+}
+
+// âââ RENDER EXHIBITS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+function renderExhibits() {
+  const el = document.getElementById('exhibit-list');
+  el.innerHTML = '';
+  EXHIBITS.forEach(ex => {
+    const div = document.createElement('div');
+    div.className = 'exhibit';
+    div.id = 'exhibit-' + ex.id;
+    div.innerHTML = `
+      <div class="exhibit-header" onclick="toggleExhibit('${ex.id}')">
+        <span class="exhibit-tag">Exh. ${ex.id}</span>
+        <span class="exhibit-name">${ex.name}</span>
+        <span class="exhibit-arrow">&#9660;</span>
+      </div>
+      <div class="exhibit-body">
+        <div class="exhibit-content">${ex.content}</div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+function toggleExhibit(id) {
+  const el = document.getElementById('exhibit-' + id);
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.exhibit').forEach(e => e.classList.remove('open'));
+  if (!wasOpen) {
+    el.classList.add('open');
+    addToNotebook(id);
+  }
+}
+
+// âââ RENDER STATEMENTS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+function renderStatements() {
+  const el = document.getElementById('statement-list');
+  el.innerHTML = STATEMENTS.map(s => `
+    <div class="statement">
+      <div class="statement-name">${s.name}</div>
+      <div class="statement-role">${s.role}</div>
+      <div class="statement-text">${s.text}</div>
+      <div class="statement-note">${s.note}</div>
+    </div>`).join('');
+}
+
+// âââ NOTEBOOK âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+function addToNotebook(exId) {
+  if (!nbState[exId]) nbState[exId] = {};
+  saveState();
+  renderNotebook();
+}
+
+function renderNotebook() {
+  const el = document.getElementById('notebook-rows');
+  const openIds = Object.keys(nbState);
+  if (openIds.length === 0) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--fg-low);padding:8px 0;">No exhibits reviewed yet.</div>';
+    return;
+  }
+  el.innerHTML = '';
+  openIds.forEach(exId => {
+    const ex    = EXHIBITS.find(e => e.id === exId);
+    if (!ex) return;
+    const state = nbState[exId] || {};
+    const isLinked = state.relation || state.suspect;
+
+    const relButtons = RELATIONS.map(r =>
+      `<button class="nb-relation-btn${state.relation === r ? ' active' : ''}" onclick="nbSetRelation('${exId}','${r}');event.stopPropagation()">${r}</button>`
+    ).join('');
+
+    const suspButtons = SUSPECTS.map(s =>
+      `<button class="nb-suspect-btn${state.suspect === s.id ? ' active' : ''}" onclick="nbSetSuspect('${exId}','${s.id}');event.stopPropagation()">${s.name.split(' ')[0]}</button>`
+    ).join('');
+
+    const row = document.createElement('div');
+    row.className = 'nb-row' + (isLinked ? ' linked' : '');
+
+    row.innerHTML = `
+      <div class="nb-exhibit-tag">Exh. ${ex.id}</div>
+      <div class="nb-center">
+        <div class="nb-exhibit-name">${ex.name}</div>
+        <div class="nb-relation-wrap">${relButtons}</div>
+        <div class="nb-suspect-wrap">${suspButtons}</div>
+      </div>
+      <button class="nb-remove" onclick="nbClear('${exId}');event.stopPropagation()" aria-label="Clear">&#10005;</button>`;
+
+    el.appendChild(row);
+  });
+}
+
+function nbSetRelation(exId, rel) {
+  if (caseOver) return;
+  if (!nbState[exId]) nbState[exId] = {};
+  nbState[exId].relation = nbState[exId].relation === rel ? null : rel;
+  saveState();
+  renderNotebook();
+}
+
+function nbSetSuspect(exId, suspId) {
+  if (caseOver) return;
+  if (!nbState[exId]) nbState[exId] = {};
+  nbState[exId].suspect = nbState[exId].suspect === suspId ? null : suspId;
+  saveState();
+  renderNotebook();
+}
+
+function nbClear(exId) {
+  if (caseOver) return;
+  nbState[exId] = {};
+  saveState();
+  renderNotebook();
+}
+
+// âââ EXHIBIT CHECKBOXES âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+function renderExhibitCheckboxes() {
+  const el = document.getElementById('exhibit-checkboxes');
+  el.innerHTML = EXHIBITS.map(ex => `
+    <label class="exhibit-checkbox" id="chk-${ex.id}" onclick="toggleCheck('${ex.id}')">
+      <input type="checkbox" data-id="${ex.id}">
+      <div class="checkbox-box"></div>
+      <div class="checkbox-label">
+        <strong>Exhibit ${ex.id}</strong>${ex.name}
+      </div>
+    </label>`).join('');
+}
+
+let checkedExhibits = new Set();
+
+function toggleCheck(id) {
+  if (caseOver) return;
+  const lbl = document.getElementById('chk-' + id);
+  if (checkedExhibits.has(id)) {
+    checkedExhibits.delete(id);
+    lbl.classList.remove('checked');
+  } else {
+    if (checkedExhibits.size >= 2) {
+      const first = [...checkedExhibits][0];
+      checkedExhibits.delete(first);
+      document.getElementById('chk-' + first).classList.remove('checked');
+    }
+    checkedExhibits.add(id);
+    lbl.classList.add('checked');
+  }
+  updateNote();
+}
+
+function updateNote() {
+  const note = document.getElementById('accuse-note');
+  const n = checkedExhibits.size;
+  if (n === 0)      note.textContent = 'Select two exhibits that directly support your accusation.';
+  else if (n === 1) note.textContent = 'Select one more exhibit.';
+  else              note.textContent = `Exhibits ${[...checkedExhibits].join(' and ')} selected.`;
+}
+
+// âââ ACCUSATION âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+function submitAccusation() {
+  if (caseOver) return;
+
+  const suspect = document.getElementById('sel-suspect').value;
+  const exArr   = [...checkedExhibits];
+
+  let valid = true;
+  if (!suspect) { document.getElementById('sel-suspect').classList.add('error'); valid = false; }
+  if (exArr.length < 2) { updateNote(); valid = false; }
+  if (!valid) return;
+
+  document.getElementById('sel-suspect').classList.remove('error');
+
+  const vEl      = document.getElementById('verdict');
+  const headline = document.getElementById('verdict-headline');
+  const body     = document.getElementById('verdict-body');
+  const revealEl = document.getElementById('verdict-reveal');
+
+  vEl.style.display = 'block';
+  vEl.className = '';
+
+  const correctSuspect = suspect === ANSWER.suspect;
+  const exhibitsOk     = DECISIVE_EXHIBITS.every(e => exArr.includes(e));
+
+  if (correctSuspect && exhibitsOk) {
+    vEl.classList.add('correct');
+    headline.textContent = FEEDBACK.correct.headline;
+    body.textContent     = FEEDBACK.correct.body;
+    caseOver = true;
+    lockForm();
+    showShare(true);
+    revealEl.classList.add('show');
+  } else if (correctSuspect && !exhibitsOk) {
+    vEl.classList.add('wrong');
+    headline.textContent = FEEDBACK.wrong_exhibits.headline;
+    body.textContent     = FEEDBACK.wrong_exhibits.body;
+  } else {
+    vEl.classList.add('wrong');
+    const key = 'wrong_suspect_' + suspect;
+    const fb  = FEEDBACK[key] || { headline: 'Theory unsupported.', body: 'The evidence does not uniquely establish this suspect. Review the exhibits.' };
+    headline.textContent = fb.headline;
+    body.textContent     = fb.body;
+  }
+
+  vEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  saveState();
+}
+
+function revealSolution() {
+  const revText = document.getElementById('reveal-text');
+  const revBtn  = document.getElementById('reveal-btn');
+  revText.textContent = SOLUTION_REVEAL;
+  revText.classList.add('show');
+  revBtn.style.display = 'none';
+}
+
+function lockForm() {
+  document.getElementById('sel-suspect').disabled = true;
+  document.querySelectorAll('.exhibit-checkbox').forEach(el => el.style.pointerEvents = 'none');
+  document.getElementById('accuse-btn').disabled = true;
+  document.getElementById('case-stamp').textContent  = 'Closed';
+  document.getElementById('case-stamp').style.borderColor = 'var(--green-bright)';
+  document.getElementById('case-stamp').style.color        = 'var(--green-bright)';
+  document.getElementById('case-stamp-2').textContent  = 'Closed';
+  document.getElementById('case-stamp-2').style.borderColor = 'var(--green-bright)';
+  document.getElementById('case-stamp-2').style.color        = 'var(--green-bright)';
+}
+
+function showShare(solved) {
+  const block = document.getElementById('share-block');
+  block.classList.add('visible');
+  const stamp = document.getElementById('stamp-card');
+  const date  = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  stamp.textContent =
+`THE CASE ROOM
+Case 002 - The Last Shot
+${date}
+
+${solved ? 'SOLVED' : 'UNSOLVED'}
+
+thecaseroom.pixelandink.in`;
+}
+
+function copyStamp() {
+  const text = document.getElementById('stamp-card').textContent;
+  const conf = document.getElementById('share-confirm');
+  const copy = () => {
+    conf.classList.add('show');
+    setTimeout(() => conf.classList.remove('show'), 2000);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(copy).catch(() => { selectStamp(); copy(); });
+  } else {
+    selectStamp();
+    copy();
+  }
+}
+
+function selectStamp() {
+  const el    = document.getElementById('stamp-card');
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+// âââ INIT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+loadState();
+renderExhibits();
+renderStatements();
+renderNotebook();
+renderExhibitCheckboxes();
+updateNote();
+
+if (caseOver) {
+  lockForm();
+  showShare(true);
+  document.getElementById('verdict-reveal').classList.add('show');
+}
 </script>
-
-<div class="main">
-
-  <!-- LEFT: EVIDENCE + PINBOARD -->
-  <div class="evidence-col">
-
-    <div class="section-label">Field Evidence</div>
-    <div class="evidence-list">
-      <div class="evidence-item">
-        <div class="evidence-tag">Exhibit A — Catering Log</div>
-        <div class="evidence-text">Keycard access to the catering bay was recorded at 4:22 AM. The regular crew shift starts at 5:00 AM. Only the producer and director held all-hours access.</div>
-      </div>
-      <div class="evidence-item">
-        <div class="evidence-tag">Exhibit B — Insurance Policy</div>
-        <div class="evidence-text">A sabotage clause was added to the production policy 21 days before the final shoot. The clause pays 3× the production cost if principal photography is interrupted by criminal interference.</div>
-      </div>
-      <div class="evidence-item">
-        <div class="evidence-tag">Exhibit C — Veer's Trailer Log</div>
-        <div class="evidence-text">The energy drink was delivered to the trailer at 5:30 AM by the regular catering runner. It was the only sealed item in the trailer. The runner states he collected it from the secondary supply shelf — not the main stock.</div>
-      </div>
-      <div class="evidence-item">
-        <div class="evidence-tag">Exhibit D — Text Messages (Recovered)</div>
-        <div class="evidence-text">"He ruined everything. This film, this crew, my name. If it ends tomorrow, so be it." — Sent at 11 PM, the night before. Sender's phone placed at Film City.</div>
-      </div>
-      <div class="evidence-item">
-        <div class="evidence-tag">Exhibit E — Witness Statement</div>
-        <div class="evidence-text">A junior light assistant reports hearing someone in the catering bay around 4:20 AM. "Didn't think much of it. Thought it was just early prep. They were moving crates." He did not see a face.</div>
-      </div>
-    </div>
-
-    <!-- PINBOARD -->
-    <div class="pinboard-section">
-      <div class="section-label">Suspect Connections</div>
-      <p class="pinboard-instructions">
-        <strong>Tap a card</strong> to select it. <strong>Tap a second card</strong> to draw a string between them. Tap the same two again to remove the connection. Use this to map what you know.
-      </p>
-
-      <div class="pinboard-outer" id="pinboard-outer">
-        <svg id="string-svg"></svg>
-        <div class="cards-grid" id="cards-grid"></div>
-        <div class="connections-list" id="connections-list"></div>
-        <div class="conn-hint" id="conn-hint">No connections yet.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- RIGHT: SOLVE -->
-  <div class="solve-col">
-
-    <div class="section-label">The Suspects</div>
-    <div class="suspect-cards" id="suspect-sidebar"></div>
-
-    <script>
-      // Build sidebar suspect list
-      document.addEventListener('DOMContentLoaded', () => {
-        const sb = document.getElementById('suspect-sidebar');
-        CASE.suspects.forEach(s => {
-          const div = document.createElement('div');
-          div.className = 'suspect-mini';
-          div.innerHTML = `<div class="suspect-name">${s.name}</div><div class="suspect-role">${s.role}</div>`;
-          sb.appendChild(div);
-        });
-      });
-    </script>
-
-    <div class="section-divider"></div>
-
-    <div class="section-label">Make Your Accusation</div>
-
-    <div class="tries-row">
-      <span class="tries-label">Attempts</span>
-      <div class="tries-pips" id="tries-pips">
-        <div class="pip" id="pip-1"></div>
-        <div class="pip" id="pip-2"></div>
-      </div>
-    </div>
-
-    <div class="accuse-form">
-      <div class="accuse-row">
-        <div class="accuse-label">Who?</div>
-        <select class="accuse-select" id="acc-who">
-          <option value="">— Select suspect —</option>
-        </select>
-      </div>
-      <div class="accuse-row">
-        <div class="accuse-label">How?</div>
-        <select class="accuse-select" id="acc-how">
-          <option value="">— Select method —</option>
-        </select>
-      </div>
-      <div class="accuse-row">
-        <div class="accuse-label">Where?</div>
-        <select class="accuse-select" id="acc-where">
-          <option value="">— Select location —</option>
-        </select>
-      </div>
-      <button class="accuse-btn" id="accuse-btn" onclick="makeAccusation()">
-        Make Your Accusation
-      </button>
-    </div>
-
-    <div id="verdict">
-      <div class="verdict-headline" id="verdict-headline"></div>
-      <div class="verdict-body" id="verdict-body"></div>
-      <div class="share-block" id="share-block">
-        <div class="stamp-card" id="stamp-card"></div>
-        <button class="share-btn" onclick="copyStamp()">Copy Result</button>
-        <span class="share-confirm" id="share-confirm">Copied</span>
-      </div>
-    </div>
-
-  </div>
-</div>
