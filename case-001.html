@@ -253,7 +253,7 @@
     max-height: 0; overflow: hidden;
     transition: max-height 0.35s ease;
   }
-  .card.open .card-detail { max-height: 100px; }
+  .card.open .card-detail { max-height: 600px; }
 
   /* CLUES */
   .clue-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
@@ -314,9 +314,18 @@
   }
   .elim-grid td.cell:hover { background: #1a1610; }
   .elim-grid td.cell[data-state="0"]::after { content: ''; }
-  .elim-grid td.cell[data-state="1"]::after { content: '✕'; color: var(--red); }
-  .elim-grid td.cell[data-state="2"]::after { content: '✓'; color: var(--gold); }
-  .grid-hint { font-size: 11px; color: var(--fg-low); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+  .elim-grid td.cell[data-state="1"]::after { content: 'â'; color: var(--red); }
+  .elim-grid td.cell[data-state="2"]::after { content: 'â'; color: var(--gold); }
+  .rules-hint {
+  font-size: 0.78rem;
+  color: var(--fg-mid);
+  font-family: 'Courier Prime', monospace;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 0.6rem;
+}
+.grid-hint { font-size: 11px; color: var(--fg-low); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
 
   /* ACCUSATION FORM */
   .accuse-form { display: flex; flex-direction: column; gap: 16px; }
@@ -456,16 +465,48 @@
   @media (max-width: 700px) {
     .puzzle-layout { grid-template-columns: 1fr; }
     .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); }
-    .case-header, .puzzle-left, .puzzle-right { padding-left: 20px; padding-right: 20px; }
-    .top-bar { padding-left: 20px; padding-right: 20px; }
-    .card-name  { font-size: 16px; }
-    .card-role  { font-size: 13px; }
-    .card-detail { font-size: 14px; }
-    .clue       { font-size: 15px; }
-    .statement-text { font-size: 15px; }
-    .accuse-select  { font-size: 16px; padding: 14px 18px; }
-    .accuse-btn     { font-size: 14px; padding: 18px; }
-    .verdict-body   { font-size: 15px; }
+    .case-header, .puzzle-left, .puzzle-right { padding-left: 16px; padding-right: 16px; }
+
+    /* Top bar: hide center title and right metadata, show just logo + case num */
+    .top-bar { padding-left: 16px; padding-right: 16px; }
+    .bar-center { display: none; }
+    .bar-right  { display: none; }
+    .bar-logo   { font-size: 15px; }
+    .bar-label  { font-size: 10px; }
+
+    /* Case header typography */
+    .case-title { font-size: clamp(28px, 7vw, 40px); }
+    .case-eyebrow { font-size: 11px; letter-spacing: 0.28em; }
+    .case-setting { font-size: 15px; line-height: 1.7; }
+
+    /* Evidence cards */
+    .card-name   { font-size: 16px; }
+    .card-role   { font-size: 13px; }
+    .card-detail { font-size: 15px; line-height: 1.7; }
+    .card-icon   { font-size: 24px; }
+
+    /* Clues and statements */
+    .clue           { font-size: 15px; line-height: 1.7; }
+    .statement-text { font-size: 15px; line-height: 1.7; }
+    .statement-name { font-size: 12px; }
+
+    /* Elimination grid: scroll horizontally */
+    .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .elim-grid { font-size: 11px; }
+    .elim-grid th, .elim-grid td { padding: 8px 6px; }
+
+    /* Accusation form */
+    .accuse-label  { font-size: 13px; }
+    .accuse-select { font-size: 16px; padding: 14px 16px; }
+    .accuse-btn    { font-size: 15px; padding: 18px; }
+    .tries-label   { font-size: 12px; }
+
+    /* Verdict */
+    .verdict-body  { font-size: 15px; line-height: 1.8; }
+    .verdict-headline { font-size: 22px; }
+
+    /* Section labels */
+    .section-label { font-size: 11px; letter-spacing: 0.28em; }
   }
 </style>
 
@@ -477,7 +518,7 @@
   </div>
   <div class="bar-center">The Missing Envelope</div>
   <div class="bar-right">
-    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Bengaluru · Law Firm</span>
+    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Bengaluru Â· Law Firm</span>
     <span class="bar-stamp" id="case-stamp">Open</span>
   </div>
 </div>
@@ -485,9 +526,9 @@
 <!-- CASE HEADER -->
 <div class="case-header">
   <div class="case-header-text">
-    <div class="case-number" id="case-number">Case 001 · Open Investigation</div>
+    <div class="case-number" id="case-number">Case 001 Â· Open Investigation</div>
     <h1 class="case-title" id="case-title">The Missing Envelope</h1>
-    <div class="case-title-rule"><span>Bengaluru · Law Firm · 2026</span></div>
+    <div class="case-title-rule"><span>Bengaluru Â· Law Firm Â· 2026</span></div>
     <p class="case-setting" id="case-setting"></p>
   </div>
   <div class="case-dossier">
@@ -506,8 +547,8 @@
       <span class="dossier-val">Theft of legal document</span>
     </div>
     <div class="dossier-row">
-      <span class="dossier-key">Window</span>
-      <span class="dossier-val">19:00 – 21:00 hrs</span>
+      <span class="dossier-key">VTindow</span>
+      <span class="dossier-val">19:00 - 21:00 hrs</span>
     </div>
     <div class="dossier-row">
       <span class="dossier-key">Persons of interest</span>
@@ -552,311 +593,161 @@
   <div class="puzzle-right">
 
     <div class="section-label">Elimination Grid</div>
-    <p class="grid-hint">Click a cell to cross off · Click again to confirm · Click once more to clear</p>
-    <div class="grid-wrap">
-      <table class="elim-grid" id="elim-grid"></table>
-    </div>
+    <p class="grid-hint">Click a cell to cross o0­ÈÛXÚÈYØZ[ÈÛÛ\H0­ÈÛXÚÈÛÙH[ÜHÈÛX\Ü]Û\ÜÏHÜY]Ü\XHÛ\ÜÏH[[KYÜYYH[[KYÜYÝXOÙ]]Û\ÜÏHÙXÝ[Û[X[XZÙH[Ý\XØÝ\Ø][ÛÙ]]Û\ÜÏHY\Ë\ÝÈÜ[Û\ÜÏHY\Ë[X[][\ÏÜÜ[]Û\ÜÏHY\Ë\\ÈYHY\Ë\\È]Û\ÜÏH\YH\LHÙ]]Û\ÜÏH\YH\LÙ]Ù]Ù]Û\ÜÏH[\ËZ[YH[\ËZ[Ü]Û\ÜÏHXØÝ\ÙKYÜH]Û\ÜÏHXØÝ\ÙK\ÝÈ]Û\ÜÏHXØÝ\ÙK[X[ÚÏÏÙ]Ù[XÝÛ\ÜÏHXØÝ\ÙK\Ù[XÝYHXØË]ÚÈÜ[Û[YOH¸ %Ù[XÝÝ\ÜXÝ8 %ÛÜ[ÛÜÙ[XÝÙ]]Û\ÜÏHXØÝ\ÙK\ÝÈ]Û\ÜÏHXØÝ\ÙK[X[ÝÏÏÙ]Ù[XÝÛ\ÜÏHXØÝ\ÙK\Ù[XÝYHXØËZÝÈÜ[Û[YOH¸ %Ù[XÝY]Ù8 %ÛÜ[ÛÜÙ[XÝÙ]]Û\ÜÏHXØÝ\ÙK\ÝÈ]Û\ÜÏHXØÝ\ÙK[X[Ú\OÏÙ]Ù[XÝÛ\ÜÏHXØÝ\ÙK\Ù[XÝYHXØË]Ú\HÜ[Û[YOH¸ %Ù[XÝØØ][Û8 %ÛÜ[ÛÜÙ[XÝÙ]]ÛÛ\ÜÏHXØÝ\ÙKXYHXØÝ\ÙKXÛÛXÚÏHXZÙPXØÝ\Ø][Û
+HÜ[XZÙH[Ý\XØÝ\Ø][ÛÜÜ[Ø]ÛÙ]]YH\XÝ]Û\ÜÏH\XÝZXY[HYH\XÝZXY[HÙ]]Û\ÜÏH\XÝXÙHYH\XÝXÙHÙ]]Û\ÜÏHÚ\KXØÚÈYHÚ\KXØÚÈ]Û\ÜÏHÝ[\XØ\YHÝ[\XØ\Ù]]ÛÛ\ÜÏHÚ\KXÛÛXÚÏHÛÜTÝ[\
 
-    <div class="section-label">Make Your Accusation</div>
-    <div class="tries-row">
-      <span class="tries-label">Attempts</span>
-      <div class="tries-pips" id="tries-pips">
-        <div class="pip" id="pip-1"></div>
-        <div class="pip" id="pip-2"></div>
-      </div>
-    </div>
-    <div class="accuse-form">
-      <div class="accuse-row">
-        <div class="accuse-label">Who?</div>
-        <select class="accuse-select" id="acc-who">
-          <option value="">— Select suspect —</option>
-        </select>
-      </div>
-      <div class="accuse-row">
-        <div class="accuse-label">How?</div>
-        <select class="accuse-select" id="acc-how">
-          <option value="">— Select method —</option>
-        </select>
-      </div>
-      <div class="accuse-row">
-        <div class="accuse-label">Where?</div>
-        <select class="accuse-select" id="acc-where">
-          <option value="">— Select location —</option>
-        </select>
-      </div>
-      <button class="accuse-btn" id="accuse-btn" onclick="makeAccusation()">
-        <span>Make Your Accusation</span>
-      </button>
-    </div>
+HÛÜH\Ý[Ø]ÛÜ[Û\ÜÏHÚ\KXÛÛ\HYHÚ\KXÛÛ\HÛÜYYÜÜ[Ù]Ù]Ù]Ù]]Û\ÜÏHÛÝÜ[Û\ÜÏHÛÝ]^HØ\ÙHÛÛH0­È^[	[\È[È0­ÈÜÜ[Ü[Û\ÜÏHÛÝ[[HYHÛÝ[[HHÈÏÏÏÜÜ[Ù]ØÜ\ËÈ8¥ 8¥ ÐQÐTÑHUH8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ ÛÛÝÐTÑHHÂYH]HHZ\ÜÚ[È[[ÜH]HLLLMÙ\Y\È^[	[È0­È[\ÝYØ][ÛÙ\Y\ÈÙ][ÈY\YX[Ý\ÙK[Ø[\KHÙX[Y[[ÜHÛÛZ[[ÈHÚYÛYXÜ]Z\Ú][ÛÛÛXÝ[\ÚYÛHH\\×LNHÙXÙHÛÛY][YH]ÙY[
+È[HKYH[ÜHÙ\H[HZ[[Ë^XÝHÛHÙZ\Ý][Y[È\È[ÙK[ÝÙ\ÈÚÈY[HÛÛÙÝÈÝØ\YÚ]HZÙHÚ\HH\\×LNHÙXÙHKÝ\ÜXÝÈÂÈYY[H[YHY[HÛÛÙÛHÛÜÜ]H]ÞY\]Z[\ÈÙ^XØ\XØÙ\ÜÈÈ]\HÛÜØ\È[ÛH[H\\×LNHÙXÙH]ÙY[
+Î[K\YÈØ\ÈÙX\ÚY]XÙ\[ÛLM]ÛÛZ[YH[È[[ÜHÙHØ[YHÚ^H\ÈHZ\ÜÚ[ÈÛKXÛÛLMYLKÈYX\Ý\È[YHX\Ý\È^ÛHZ[[ÈX[YÙ\]Z[ÛÈX\Ý\Ù^\ËØ\ÈÙÙÙY[ÈHÜÝ[YÛÜÙXÝ\]H\Z[[ÛH
+ÎÌHÛØ\ËÙXÝ\]HÛÝYÙHÚÝÜÈ[HÛHÛÙÜ\XÙH]H\[È\ÈØÚY[YÝ[ËXÛÛYÙYLHKÈY^XH[YH^XHZ\ÛHYØ[[\]Z[ÛÜÙY]HÈ[HÝ]ÛÚ[ÈØÝ[Y[ËYÙHXÛÜÈÚÝÈÚHYÙYÝ]]
+ÎMHK[Z[]\ÈYÜHH\H[\KXÛÛYÙYØØBKY]ÙÈÂÈYYY[YHYYÛHH\ÚÈ]Z[ZÙ[\XÝHÚ]È\XÙ[Y[H[\HÜÝÛÝ[]HY[\ÚXHÈ[[ÛH[\[ÈHÛÛKXÛÛLÌKÈYZÙH[YHÝØ\YÚ]HZÙH]Z[H\XØH[[ÜHY[]ÈXÙKHYÛÝ[ÛHH\ØÛÝ\YÚ[ÛÛY[ÛHÜ[Y]LMÚXÚ\[YH^[Ü[ËXÛÛYÙYØÍKÈY[\H[YHZÙ[\[ÈH[\H]Z[H
+HH\H[\HÛX\Y[ÛÜÈÜLZ[]\Ë[[ÛHÝ[[HZ[[ÈYYY[ØÙ\YXØÙ\ÜËXÛÛYÙYXNBKØØ][ÛÈÂÈY\\È[YHH\\×LNHÙXÙH]Z[\ÛÜÙ^XØ\XØÙ\ÜÈÛKH[[ÜHØ\ÈÛÛ\YYÛH\ÚÈ]
+ÎÌH[Z\ÜÚ[ÈH^[Ü[ËXÛÛYØ×Y
+×YLKÈYXZ[ÛÛH[YHHXZ[ÛÛH]Z[ÜÝ[ÛÜÜ[XØÙ\ÜËÝ]ÛÚ[ÈÜÝÛÛXÝY]HK^XH[YØÝ[Y[È\HYÜHX][ËXÛÛYÙYÙXÈKÈYÛÙÜ[YHHÛÙÜ\XÙH]Z[XØÙ\ÜÚXHXHÝZ\Ù[ÛK\ÙHZ[[ÈX[YÙ\LN\ÈYÚHÝ[ËXÛÛYØ×YWYLBKÛY\ÈÂ^XHZ\LN\ÈYÙHXÛÜÚÝÜÈÚHYHZ[[È]
+ÎMHHLM[Z[]\ÈYÜHH\H[\HÛÝ[Y]
+HKY[HÛÛÙØ\È[ÛH[H\\×LNHÙXÙH]ÙY[
+Î[KH[È[[ÜHX]Ú[ÈHÝÛ[ÛWLN\È[Y[Ú[ÛÈØ\ÈÝ[[\YÈ]XÙ\[ÛX\Ý\È^Ø\È]HÜÝ[YÛÜÙXÝ\]H\Z[[ÛH
+ÎÌH[[H\H[\KÙXÝ\]HÛÝYÙH[XÙ\È[HÛHÛÙÜ]KH\XÙ[Y[[[ÜHØ\ÈHÛÛ[Ú[ÈZÙHLMÝH[ÈYXÙHÙ\\ÙXÚ[È]\]Z\YXØÙ\ÜÈÈ\HÝ][Û\KÚXÚ\ÈÙ\[H\\×LNHÙXÙHÝ\HØX[]KÝ][Y[ÈÂÈÝ\ÜXÝY[HÛÛÙ^HØ\È]Y]Ú[ÈØÝ[Y[È[H\\×LNHÙXÙKH]\ÝXÚYH[[ÜHÛH\ÚËKÈÝ\ÜXÝX\Ý\È^^HØ\È]HÙXÝ\]H\Z[[[][[È[[H[\KY\H[XÛX\HY^HÛÙÜÚXÚËØ[YH\È]\HYÚKÈÝ\ÜXÝ^XHZ\^H[YHÝ]ÛÚ[ÈØÝ[Y[È[HXZ[ÛÛH[YYÜHZYÚHYLN]ÛÈXÚÈ\ÝZ\ËBK[\ÈÛHÝ\ÜXÝÝÛHH[[ÜKXXÚ[ÝÙ\\È^XÝHÛHÛÜXÝÜ[ÛÛH\ÛÛÛHY]ÙÛHØØ][Û\ÙHHÛY\È[Ý][Y[ÈÈ[[Z[]HÜÛÈ[ÝÙ\ËÛÛ][ÛY[HÛÛÙÝØ\YHÜYÚ[[[[ÜHÚ]HZÙHÚ[H[ÛH[H\\×LNHÙXÙH]ÙY[
+Î[KH[È[[ÜH[\YÈXÙ\È\[ÜÜÙ\ÜÚ[ÛÙX]Ú[ÈÝ][Û\KHZÙH\]Z\Y\KZXYY\\ÛHH\\×LNHÙXÙHÝ\HØX[]ÚXÚÛHÚHXØÙ\ÜÙY]][[Ë^XHY]
+ÎMHHLMYÜHH[\HLM[]\]\YÈH\ÛÜX\Ý\ÈØ\È]HÙXÝ\]H\Z[[[[H[\K[ÛHÛÙÜ\[È\ÈÝ[ÎÈHYÈÜÜ[]HÜXØÙ\ÜÈÚ[ÝËY[WLN\ÈÝ][Y[\ÈHYNÚHÛZ[\ÈÚH]\ÝXÚYH[[ÜK]HZÙH[]ÈXÙHÛÝ[ÛH]HY[\\Y[[YHÛÛY[ÛH[ÛH[]ÛÛHÚ]XØÙ\ÜÈÈHÝ\HØX[]BËÈ8¥ 8¥ ST8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ ØÝ[Y[Ù][[Y[RY
+	ØØ\ÙK\Ù][ÉÊK^ÛÛ[HÐTÑKÙ][ÎÂ[Ý[ÛXZÙPØ\ÊÛÛZ[\Y][\ÊHÂÛÛÝ[HØÝ[Y[Ù][[Y[RY
+ÛÛZ[\Y
+NÂ][\ËÜXXÚ
+][HOÂÛÛÝØ\HØÝ[Y[ÜX]Q[[Y[
+	Ù]ÊNÂØ\Û\ÜÓ[YHH	ØØ\	ÎÂØ\[\SH]Û\ÜÏHØ\ZXÛÛÚ][KXÛÛOÙ]]Û\ÜÏHØ\XÙH]Û\ÜÏHØ\[[YHÚ][K[Y_OÙ]	Ú][KÛHÈ]Û\ÜÏHØ\\ÛHÚ][KÛ_OÙ]	ÉßB]Û\ÜÏHØ\Y]Z[Ú][K]Z[OÙ]Ù]ÂØ\Y][\Ý[\	ØÛXÚÉË
 
-    <div id="verdict">
-      <div class="verdict-headline" id="verdict-headline"></div>
-      <div class="verdict-body" id="verdict-body"></div>
-      <div class="share-block" id="share-block">
-        <div class="stamp-card" id="stamp-card"></div>
-        <button class="share-btn" onclick="copyStamp()">Copy Result</button>
-        <span class="share-confirm" id="share-confirm">Copied</span>
-      </div>
-    </div>
+HOØ\Û\ÜÓ\ÝÙÙÛJ	ÛÜ[ÊJNÂ[\[Ú[
+Ø\
+NÂJNÂBXZÙPØ\Ê	ÜÝ\ÜXÝXØ\ÉËÐTÑKÝ\ÜXÝÊNÂXZÙPØ\Ê	ÛY]ÙXØ\ÉËÐTÑKY]ÙÊNÂXZÙPØ\Ê	ÛØØ][ÛXØ\ÉËÐTÑKØØ][ÛÊNÂËÈÛY\ÂÛÛÝÛYS\ÝHØÝ[Y[Ù][[Y[RY
+	ØÛYK[\Ý	ÊNÂÐTÑKÛY\ËÜXXÚ
 
-  </div>
-</div>
+ËJHOÂÛÛÝHØÝ[Y[ÜX]Q[[Y[
+	Ù]ÊNÂÛ\ÜÓ[YHH	ØÛYIÎÂ[\SHÜ[Û\ÜÏHÛYK[[HÚH
+È_KÜÜ[ØßXÂÛYS\Ý\[Ú[
+
+NÂJNÂËÈÝ][Y[ÂÛÛÝÝ]\ÝHØÝ[Y[Ù][[Y[RY
+	ÜÝ][Y[[\Ý	ÊNÂÐTÑKÝ][Y[ËÜXXÚ
+ÈOÂÛÛÝHØÝ[Y[ÜX]Q[[Y[
+	Ù]ÊNÂÛ\ÜÓ[YHH	ÜÝ][Y[	ÎÂ[\SH]Û\ÜÏHÝ][Y[[[YHÜËÝ\ÜXÝOÙ]]Û\ÜÏHÝ][Y[]^ÜË^OÙ]ÂÝ]\Ý\[Ú[
+
+NÂJNÂËÈ8¥ 8¥ SSRSUSÓÔQ8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ ËÈÝÜÎY]ÙÈ
+ÈØØ][ÛÈÛÛÎÝ\ÜXÝÈ
+ÈØØ][ÛÂÛÛÝÝÑÜÝ\ÈHÂÈX[	ÓY]ÙÉË][\ÎÐTÑKY]ÙÈKÈX[	ÓØØ][ÛÉË][\ÎÐTÑKØØ][ÛÈBNÂÛÛÝÛÛÜÝ\ÈHÂÈX[	ÔÝ\ÜXÝÉË][\ÎÐTÑKÝ\ÜXÝÈKÈX[	ÓØØ][ÛÉË][\ÎÐTÑKØØ][ÛÈBNÂÛÛÝÜYHØÝ[Y[Ù][[Y[RY
+	Ù[[KYÜY	ÊNÂÛÛÝÜYÝ]HHßNÂËÈXY\ÝÜÂÛÛÝXYÝÌHHÜY[Ù\ÝÊ
+NÂXYÝÌK[Ù\Ù[
 
-<div class="foot">
-  <span class="foot-text">The Case Room · Pixel &amp; Ink · 2026</span>
-  <span class="foot-num" id="foot-num">001 / ???</span>
-</div>
+KÝ]\SH	ÏÝÎÂÛÛÜÝ\ËÜXXÚ
+ÈOÂÛÛÝHØÝ[Y[ÜX]Q[[Y[
+	Ý	ÊNÂÛÛÜ[HË][\Ë[ÝÂ^ÛÛ[HËX[ÂXYÝÌK\[Ú[
+
+NÂJNÂÛÛÝXYÝÌHÜY[Ù\ÝÊ
+NÂXYÝÌ[Ù\Ù[
 
-<script>
-// ── LOAD CASE DATA ─────────────────────────────────
-const CASE = {
-  "id": "001",
-  "title": "The Missing Envelope",
-  "date": "2026-10-14",
-  "series": "Pixel & Ink · Investigation Series",
-  "setting": "Meridian House, Bengaluru. A sealed envelope containing a signed acquisition contract vanished from the partners' office sometime between 7 and 9 pm. Three people were in the building.",
-  "answer": { "who": "Reena Sood", "how": "Swapped with a fake", "where": "The partners' office" },
-  "suspects": [
-    { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Bilingual. Has access to every floor. Was seen near the partners' office at 7:45 pm.", "icon": "⚖️" },
-    { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. Was logged into the security system until 8:30 pm.", "icon": "🔑" },
-    { "id": "priya",  "name": "Priya Nair",  "role": "Legal Intern",      "detail": "Worked late to file documents. Left the building at 8:10 pm.", "icon": "📋" }
-  ],
-  "methods": [
-    { "id": "lifted", "name": "Lifted from the desk",    "detail": "Taken directly — no substitution. The absence would be noticed immediately.", "icon": "✋" },
-    { "id": "fake",   "name": "Swapped with a fake",     "detail": "A replica envelope placed in its spot. Discovered only when opened the next morning.", "icon": "📄" },
-    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes. Window of opportunity.", "icon": "🚨" }
-  ],
-  "locations": [
-    { "id": "partners", "name": "The partners' office", "detail": "Third floor. Keycard access only. The envelope was last confirmed here at 7:30 pm.", "icon": "🏛️" },
-    { "id": "mailroom", "name": "The mail room",        "detail": "Ground floor. Open access. Outgoing post collected at 9 pm sharp.", "icon": "📬" },
-    { "id": "rooftop",  "name": "The rooftop terrace",  "detail": "Accessible via stairwell only. One person was seen up there around 8:20 pm.", "icon": "🌆" }
-  ],
-  "clues": [
-    "The person who lifted from the desk was on the rooftop terrace — the same person was not in the partners' office.",
-    "Priya Nair left before the fire alarm went off."
-  ],
-  "statements": [
-    { "suspect": "Reena Sood",  "text": "I was in the partners' office reviewing documents. I never went to the mail room." },
-    { "suspect": "Marcus Vaz",  "text": "I checked the rooftop at 8:20 pm as part of my rounds. I had no reason to touch that envelope." },
-    { "suspect": "Priya Nair",  "text": "I filed everything in the mail room and left by 8:10. I didn't go up to the third floor after 7." }
-  ],
-  "solution": "Reena Sood swapped the envelope with a fake while alone in the partners' office. Priya's statement is true — she left before the alarm. Marcus's statement is true — he was on the rooftop. Reena's statement is the lie: she claims she never went to the mail room, but the fake envelope had to come from somewhere. She prepared it beforehand and made the swap in the partners' office, where she had legitimate access."
-};
+KÝ]\SH	ÏÝÎÂÛÛÜÝ\ËÜXXÚ
+ÈOÂË][\ËÜXXÚ
+][HOÂÛÛÝHØÝ[Y[ÜX]Q[[e[
+	Ý	ÊNÂËÈÛX\X]X][ÛÚÚ\XY[ÈHÈH\XÛ\ËZÙH^ÛÜÛÛÝÛÜÈH][K[YKÜ]
+	È	ÊNÂÛÛÝÚÚ\HÉÝIË	ØIË	Ø[×NÂÛÛÝYX[[Ù[HÛÜË[
+ÈO\ÚÚ\[ÛY\ÊËÓÝÙ\Ø\ÙJ
+JJHÛÜÖÌNÂ^ÛÛ[HYX[[Ù[\XÙJÖÉÉ×KÙË	ÉÊK\XÙJË	Ë	ÉÊNÂXYÝÌ\[Ú[
+
+NÂJNÂJNÂËÈ]HÝÜÂÝÑÜÝ\ËÜXXÚ
+ÈOÂÛÛÝÙ\ÝÈHÜY[Ù\ÝÊ
+NÂÛÛÝÙ\HØÝ[Y[ÜX]Q[[Y[
+	Ý	ÊNÂÙ\ÛÛÜ[HH
+ÈÛÛÜÝ\ËYXÙJ
+KÊHOH
+ÈË][\Ë[Ý
+NÂÙ\^ÛÛ[HËX[ÂÙ\Ý[K^[YÛH	ÛY	ÎÂÙ\Ý[KY[ÓYH	ÌL	ÎÂÙ\ÝË\[Ú[
+Ù\
+NÂË][\ËÜXXÚ
+ÝÈOÂÛÛÝHÜY[Ù\ÝÊ
+NÂÛÛÝX[H[Ù\Ù[
 
-// ── RENDER ─────────────────────────────────────────
-document.getElementById('case-setting').textContent = CASE.setting;
+NÂX[Û\ÜÓ[YHH	ÜÝË[X[	ÎÂËÈÝÈX[\ÙH[[YK[Ø]HÛHY\HÛÂÛÛÝ[YHHÝË[YNÂX[^ÛÛ[H[YK[ÝÈ[YKÛXÙJ
+H
+È	ø )È[YNÂÛÛÜÝ\ËÜXXÚ
+ÙÈOÂÙË][\ËÜXXÚ
+ÛÛOÂÛÛÝÙ^HH	ÜÝËYW×ÉØÛÛYXÂÜYÝ]VÚÙ^WHHÂÛÛÝH[Ù\Ù[
 
-function makeCards(containerId, items) {
-  const el = document.getElementById(containerId);
-  items.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <div class="card-icon">${item.icon}</div>
-      <div class="card-body">
-        <div class="card-name">${item.name}</div>
-        ${item.role ? `<div class="card-role">${item.role}</div>` : ''}
-        <div class="card-detail">${item.detail}</div>
-      </div>`;
-    card.addEventListener('click', () => card.classList.toggle('open'));
-    el.appendChild(card);
-  });
-}
+NÂÛ\ÜÓ[YHH	ØÙ[	ÎÂ]\Ù]Ý]HH	Ì	ÎÂ]\Ù]Ù^HHÙ^NÂ]\Ù]ÝÈHÝËYÂ]\Ù]ÛÛHÛÛYÂY][\Ý[\	ØÛXÚÉË
 
-makeCards('suspect-cards',  CASE.suspects);
-makeCards('method-cards',   CASE.methods);
-makeCards('location-cards', CASE.locations);
+HOÂÛÛÝÈH
+\ÙR[
+]\Ù]Ý]JH
+ÈJH	HÎÂ]\Ù]Ý]HHÎÂÜYÝ]VÚÙ^WHHÎÂJNÂJNÂJNÂJNÂJNÂËÈ8¥ 8¥ PÐÕTÐUSÓÔÕÓÈ
+[\[[ÙÜY
+H8¥ 8¥ 8¥ 8¥ ÛÛÝ[\Ò[HØÝ[Y[Ù][[Y[RY
+	Ü[\ËZ[	ÊNÂY
+[\Ò[	ÐTÑK[\ÊH[\Ò[^ÛÛ[HÐTÑK[\ÎÂÛÛÝÚÔÙ[HØÝ[Y[Ù][[Y[RY
+	ØXØË]ÚÉÊNÂÛÛÝÝÔÙ[HØÝ[Y[Ù][[Y[RY
+	ØXØËZÝÉÊNÂÛÛÝÚ\TÙ[HØÝ[Y[Ù][[Y[RY
+	ØXØË]Ú\IÊNÂÐTÑKÝ\ÜXÝËÜXXÚ
+ÈOÈÛÛÝÈHØÝ[Y[ÜX]Q[[Y[
+	ÛÜ[ÛÊNÈË[YHHË[YNÈË^ÛÛ[HË[YNÈÚÔÙ[\[Ú[
+ÊNÈJNÂÐTÑKY]ÙËÜXXÚ
+HOÈÛÛÝÈHØÝ[Y[ÜX]Q[[Y[
+	ÛÜ[ÛÊNÈË[YHHK[YNÈË^ÛÛ[HK[YNÈÝÔÙ[\[Ú[
+ÊNÈJNÂÐTÑKØØ][ÛËÜXXÚ
+OÈÛÛÝÈHØÝ[Y[ÜX]Q[[Y[
+	ÛÜ[ÛÊNÈË[YHH[YNÈË^ÛÛ[H[YNÈÚ\TÙ[\[Ú[
+ÊNÈJNÂËÈ8¥ 8¥ PÐÕTÐUSÓÑÒPÈ8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ ÛÛÝPVÕQTÈHÂ]Y\Õ\ÙYHÂ]Ø\ÙSÝ\H[ÙNÂÛÛÝ\ÈHÙØÝ[Y[Ù][[Y[RY
+	Ü\LIÊKØÝ[Y[Ù][[Y[RY
+	Ü\LÊWNÂ[Ý[ÛØÚÑÜJ
+HÂÚÔÙ[\ØXYHYNÂÝÔÙ[\ØXYHYNÂÚ\TÙ[\ØXYHYNÂØÝ[Y[Ù][[Y[RY
+	ØXØÝ\ÙKXÊK\ØXYHYNÂØÝ[Y[Ù][[Y[RY
+	ØXØÝ\ÙKXÊKÝ[KÜXÚ]HH	ÌÍIÎÂØÝ[Y[Ù][[Y[RY
+	ØXØÝ\ÙKXÊKÝ[KÝ\ÛÜH	ÙY][	ÎÂB[Ý[ÛÚÝÔÝ[\
+ÛÛY
+HÂÛÛÝØÚÈHØÝ[Y[Ù][[Y[RY
+	ÜÚ\KXØÚÉÊNÂÛÛÝØ\HØÝ[Y[Ù][[Y[RY
+	ÜÝ[\XØ\	ÊNÂÛÛÝÝÈHÛÛYÈ
+Y\Õ\ÙYOOHHÈ	ü'çê8§!IÈ	ü'çéH8§!IÊB	ü'çéH<'çéIÎÂÛÛÝÝ]\ÈHÛÛYÈÛÛY[	ÝY\Õ\ÙYHÙ	ÓPVÕQTßH][\	ÝY\Õ\ÙYHÈ	ÜÉÈ	ÉßX	ÐØ\ÙHÙ[ÛÛ	ÎÂØ\^ÛÛ[BHÐTÑHÓÓH0­ÈÐTÑHW
+ÂHZ\ÜÚ[È[[ÜW
+Â	ÙÝßW
+Â	ÜÝ]\ßW
+ÂXØ\Ù\ÛÛK^[[[Ë[ÈËÈXÙZÛ\8 %ÝØ\Ü[Ý\ÝÛTÚ[]BØÚËÛ\ÜÓ\ÝY
+	Ý\ÚXIÊNÂB[Ý[ÛÛÜTÝ[\
 
-// Clues
-const clueList = document.getElementById('clue-list');
-CASE.clues.forEach((c, i) => {
-  const d = document.createElement('div');
-  d.className = 'clue';
-  d.innerHTML = `<span class="clue-num">${i + 1}.</span>${c}`;
-  clueList.appendChild(d);
-});
+HÂÛÛÝ^HØÝ[Y[Ù][[Y[RY
+	ÜÝ[\XØ\	ÊK^ÛÛ[ÂÛÛÝÛÛ\HHØÝ[Y[Ù][[Y[RY
+	ÜÚ\KXÛÛ\IÊNÂ]YØ]ÜÛ\Ø\Ü]U^
+^
+K[
 
-// Statements
-const stmtList = document.getElementById('statement-list');
-CASE.statements.forEach(s => {
-  const d = document.createElement('div');
-  d.className = 'statement';
-  d.innerHTML = `<div class="statement-name">${s.suspect}</div><div class="statement-text">${s.text}</div>`;
-  stmtList.appendChild(d);
-});
+HOÂÛÛ\KÛ\ÜÓ\ÝY
+	ÜÚÝÉÊNÂÙ][Y[Ý]
 
-// ── ELIMINATION GRID ───────────────────────────────
-// Rows: methods + locations  |  Cols: suspects + locations
-const rowGroups = [
-  { label: 'Methods',   items: CASE.methods },
-  { label: 'Locations', items: CASE.locations }
-];
-const colGroups = [
-  { label: 'Suspects',  items: CASE.suspects },
-  { label: 'Locations', items: CASE.locations }
-];
 
-const grid = document.getElementById('elim-grid');
-const gridState = {};
+HOÛÛ\KÛ\ÜÓ\Ý[[ÝJ	ÜÚÝÉÊK
+NÂJKØ]Ú
 
-// Header rows
-const headRow1 = grid.insertRow();
-headRow1.insertCell().outerHTML = '<th></th>';
-colGroups.forEach(g => {
-  const th = document.createElement('th');
-  th.colSpan = g.items.length;
-  th.textContent = g.label;
-  headRow1.appendChild(th);
-});
 
-const headRow2 = grid.insertRow();
-headRow2.insertCell().outerHTML = '<th></th>';
-colGroups.forEach(g => {
-  g.items.forEach(item => {
-    const th = document.createElement('th');
-    // Smart abbreviation: skip leading "The" / "A" articles, take next word
-    const words = item.name.split(' ');
-    const skip = ['the','a','an'];
-    const meaningful = words.find(w => !skip.includes(w.toLowerCase())) || words[0];
-    th.textContent = meaningful.replace(/['']/g, '').replace(/,$/, '');
-    headRow2.appendChild(th);
-  });
-});
+HOÂËÈ[XÚÎÙ[XÝH^ÛÛÝ[HØÝ[Y[Ù][[Y[RY
+	ÜÝ[\XØ\	ÊNÂÛÛÝ[ÙHHØÝ[Y[ÜX]T[ÙJ
+NÂ[ÙKÙ[XÝÙPÛÛ[Ê[
+NÂÚ[ÝËÙ]Ù[XÝ[Û
+K[[ÝP[[Ù\Ê
+NÂÚ[ÝËÙ]Ù[XÝ[Û
+KY[ÙJ[ÙJNÂJNÂB[Ý[ÛXZÙPXØÝ\Ø][Û
+HÂY
+Ø\ÙSÝ\H]\ÂÛÛÝÚÈHÚÔÙ[[YNÂÛÛÝÝÈHÝÔÙ[[YNÂÛÛÝÚ\HHÚ\TÙ[[YNÂY
+]ÚÈZÝÈ]Ú\JH]\ÂY\Õ\ÙY
+ÊÎÂÛÛÝ\XÝHØÝ[Y[Ù][[Y[RY
+	Ý\XÝ	ÊNÂÛÛÝXY[HHØÝ[Y[Ù][[Y[RY
+	Ý\XÝZXY[IÊNÂÛÛÝÙHHØÝ[Y[Ù][[Y[RY
+	Ý\XÝXÙIÊNÂ\XÝÝ[K\Ü^HH	ØØÚÉÎÂÛÛÝÛÜXÝHÚÈOOHÐTÑK[ÝÙ\ÚÈ	ÝÈOOHÐTÑK[ÝÙ\ÝÈ	Ú\HOOHÐTÑK[ÝÙ\Ú\NÂY
+ÛÜXÝ
+HÂØ\ÙSÝ\HYNÂ\ËÜXXÚ
 
-// Data rows
-rowGroups.forEach(rg => {
-  const sepRow = grid.insertRow();
-  const sepTh = document.createElement('th');
-  sepTh.colSpan = 1 + colGroups.reduce((a, g) => a + g.items.length, 0);
-  sepTh.textContent = rg.label;
-  sepTh.style.textAlign = 'left';
-  sepTh.style.paddingLeft = '10px';
-  sepRow.appendChild(sepTh);
-
-  rg.items.forEach(row => {
-    const tr = grid.insertRow();
-    const labelTd = tr.insertCell();
-    labelTd.className = 'row-label';
-    // Row label: use full name, truncate only if very long
-    const rName = row.name;
-    labelTd.textContent = rName.length > 22 ? rName.slice(0, 20) + '…' : rName;
-
-    colGroups.forEach(cg => {
-      cg.items.forEach(col => {
-        const key = `${row.id}__${col.id}`;
-        gridState[key] = 0;
-        const td = tr.insertCell();
-        td.className = 'cell';
-        td.dataset.state = '0';
-        td.dataset.key = key;
-        td.dataset.row = row.id;
-        td.dataset.col = col.id;
-        td.addEventListener('click', () => {
-          const s = (parseInt(td.dataset.state) + 1) % 3;
-          td.dataset.state = s;
-          gridState[key] = s;
-        });
-      });
-    });
-  });
-});
-
-// ── ACCUSATION DROPDOWNS (independent of grid) ────
-const whoSel   = document.getElementById('acc-who');
-const howSel   = document.getElementById('acc-how');
-const whereSel = document.getElementById('acc-where');
-
-CASE.suspects.forEach(s  => { const o = document.createElement('option'); o.value = s.name; o.textContent = s.name; whoSel.appendChild(o); });
-CASE.methods.forEach(m   => { const o = document.createElement('option'); o.value = m.name; o.textContent = m.name; howSel.appendChild(o); });
-CASE.locations.forEach(l => { const o = document.createElement('option'); o.value = l.name; o.textContent = l.name; whereSel.appendChild(o); });
-
-// ── ACCUSATION LOGIC ───────────────────────────────
-const MAX_TRIES = 2;
-let triesUsed = 0;
-let caseOver  = false;
-
-const pips = [document.getElementById('pip-1'), document.getElementById('pip-2')];
-
-function lockForm() {
-  whoSel.disabled = true;
-  howSel.disabled = true;
-  whereSel.disabled = true;
-  document.getElementById('accuse-btn').disabled = true;
-  document.getElementById('accuse-btn').style.opacity = '0.35';
-  document.getElementById('accuse-btn').style.cursor = 'default';
-}
-
-function showStamp(solved) {
-  const block = document.getElementById('share-block');
-  const card  = document.getElementById('stamp-card');
-  const dots  = solved
-    ? (triesUsed === 1 ? '🟨 ✅' : '🟥 ✅')
-    : '🟥 🟥';
-  const status = solved
-    ? `Solved in ${triesUsed} of ${MAX_TRIES} attempt${triesUsed > 1 ? 's' : ''}`
-    : 'Case went cold';
-  card.textContent =
-    `THE CASE ROOM · CASE 001\n` +
-    `The Missing Envelope\n\n` +
-    `${dots}\n\n` +
-    `${status}\n` +
-    `thinkygames.com`;  // placeholder — swap for your own URL when live
-  block.classList.add('visible');
-}
-
-function copyStamp() {
-  const text = document.getElementById('stamp-card').textContent;
-  const confirm = document.getElementById('share-confirm');
-  navigator.clipboard.writeText(text).then(() => {
-    confirm.classList.add('show');
-    setTimeout(() => confirm.classList.remove('show'), 2000);
-  }).catch(() => {
-    // fallback: select the text
-    const el = document.getElementById('stamp-card');
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-  });
-}
-
-function makeAccusation() {
-  if (caseOver) return;
-  const who   = whoSel.value;
-  const how   = howSel.value;
-  const where = whereSel.value;
-  if (!who || !how || !where) return;
-
-  triesUsed++;
-  const verdict  = document.getElementById('verdict');
-  const headline = document.getElementById('verdict-headline');
-  const body     = document.getElementById('verdict-body');
-  verdict.style.display = 'block';
-
-  const correct = who === CASE.answer.who && how === CASE.answer.how && where === CASE.answer.where;
-
-  if (correct) {
-    caseOver = true;
-    pips.forEach((p, i) => { p.className = 'pip' + (i < triesUsed - 1 ? ' used' : ''); });
-    lockForm();
-    verdict.className = 'correct';
-    headline.textContent = 'Case closed.';
-    body.textContent = CASE.solution;
-    showStamp(true);
-  } else if (triesUsed >= MAX_TRIES) {
-    caseOver = true;
-    pips.forEach(p => { p.className = 'pip used'; });
-    lockForm();
-    verdict.className = 'cold';
-    headline.textContent = 'The case goes cold.';
-    body.textContent = 'Both attempts exhausted. ' + CASE.solution;
-    showStamp(false);
-  } else {
-    pips[triesUsed - 1].classList.add('used');
-    verdict.className = 'wrong';
-    headline.textContent = 'Not quite.';
-    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining — review your notes.';
-  }
-  verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-</script>
+JHOÈÛ\ÜÓ[YHH	Ü\	È
+È
+HY\Õ\ÙYHHÈ	È\ÙY	È	ÉÊNÈJNÂØÚÑÜJ
+NÂ\XÝÛ\ÜÓ[YHH	ØÛÜXÝ	ÎÂXY[K^ÛÛ[H	ÐØ\ÙHÛÜÙYÎÂÙK^ÛÛ[HÐTÑKÛÛ][ÛÂÚÝÔÝ[\
+YJNÂH[ÙHY
+Y\Õ\ÙYHPVÕQTÊHÂØ\ÙSÝ\HYNÂ\ËÜXXÚ
+OÈÛ\ÜÓ[YHH	Ü\\ÙY	ÎÈJNÂØÚÑÜJ
+NÂ\XÝÛ\ÜÓ[YHH	ØÛÛ	ÎÂXY[K^ÛÛ[H	ÕHØ\ÙHÛÙ\ÈÛÛÎÂÙK^ÛÛ[H	ÐÝ][\È^]\ÝY	È
+ÈÐTÑKÛÛ][ÛÂÚÝÔÝ[\
+[ÙJNÂH[ÙHÂ\ÖÝY\Õ\ÙYHWKÛ\ÜÓ\ÝY
+	Ý\ÙY	ÊNÂ\XÝÛ\ÜÓ[YHH	ÝÜÛÉÎÂXY[K^ÛÛ[H	ÓÝ]Z]KÎÂÙK^ÛÛ[H	ÕH]Y[ÙHÙ\Û	ÝÝ\Ü]ÛÛÛ\Ú[ÛÛH][\[XZ[[È8 %]Y]È[Ý\Ý\ËÎÂB\XÝØÜÛ[ÕY]ÊÈZ][Ü	ÜÛ[ÛÝ	ËØÚÎ	ÛX\\Ý	ÈJNÂBÜØÜ\
