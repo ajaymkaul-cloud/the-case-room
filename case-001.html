@@ -1,0 +1,862 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>The Case Room</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+
+<style>
+  :root {
+    --bg: #080604;
+    --fg: #f0e6d0;
+    --fg-mid: #9a8a6e;
+    --fg-low: #221e16;
+    --gold: #c8a45a;
+    --gold-dim: #6a5228;
+    --red: #7a1a1a;
+    --card-bg: #110f0a;
+    --card-border: #2a2418;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    min-height: 100vh;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    padding: 18px max(40px, 16px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    border-bottom: 1px solid var(--fg-low);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 50;
+  }
+  .bar-left { display: flex; align-items: center; gap: 20px; }
+  .bar-center {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-style: italic;
+    font-size: 13px;
+    color: var(--fg-mid);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .bar-right { display: flex; align-items: center; gap: 14px; justify-content: flex-end; }
+  .bar-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--fg);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .bar-logo em { color: var(--gold); font-style: italic; }
+  .bar-label { font-size: 11px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
+  .bar-stamp {
+    font-size: 11px; letter-spacing: 0.18em; color: var(--red);
+    text-transform: uppercase; border: 1px solid var(--red);
+    padding: 3px 10px; transform: rotate(2deg); display: inline-block; opacity: 0.8;
+  }
+
+  /* CASE HEADER */
+  .case-header {
+    padding: 44px max(40px, 16px) 32px;
+    border-bottom: 1px solid var(--fg-low);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: start;
+  }
+  .case-header-text { min-width: 0; }
+  .case-number {
+    font-size: 12px; letter-spacing: 0.38em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .case-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-style: italic;
+    font-size: clamp(32px, 6vw, 56px);
+    line-height: 1;
+    color: var(--fg);
+    margin-bottom: 18px;
+    text-wrap: balance;
+  }
+  .case-title-rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 18px;
+  }
+  .case-title-rule::before,
+  .case-title-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-dim));
+  }
+  .case-title-rule::after {
+    background: linear-gradient(to left, transparent, var(--gold-dim));
+  }
+  .case-title-rule span {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .case-setting {
+    font-size: 15px;
+    color: var(--fg-mid);
+    line-height: 1.8;
+    max-width: 560px;
+    font-style: italic;
+  }
+  /* DOSSIER PANEL */
+  .case-dossier {
+    border: 1px solid var(--fg-low);
+    padding: 20px 22px;
+    min-width: 200px;
+    max-width: 240px;
+    position: relative;
+    background: rgba(17,14,10,0.6);
+  }
+  .case-dossier::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid var(--gold-dim);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .dossier-label {
+    font-size: 8px;
+    letter-spacing: 0.45em;
+    color: var(--fg-mid);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    opacity: 0.6;
+  }
+  .dossier-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 12px;
+  }
+  .dossier-row:last-child { margin-bottom: 0; }
+  .dossier-key {
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .dossier-val {
+    font-size: 11px;
+    color: var(--fg);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .dossier-divider {
+    height: 1px;
+    background: var(--fg-low);
+    margin: 10px 0;
+  }
+  .dossier-stamp {
+    margin-top: 14px;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--red);
+    text-transform: uppercase;
+    border: 1px solid var(--red);
+    display: inline-block;
+    padding: 4px 10px;
+    transform: rotate(-3deg);
+    opacity: 0.75;
+  }
+  @media (max-width: 700px) {
+    .case-header { grid-template-columns: 1fr; }
+    .case-dossier { max-width: 100%; display: flex; flex-wrap: wrap; gap: 16px; }
+    .case-dossier::before { display: none; }
+    .dossier-label { width: 100%; }
+    .dossier-stamp { margin-top: 0; }
+  }
+
+  /* MAIN LAYOUT */
+  .puzzle-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    max-width: 1100px;
+  }
+  .puzzle-left {
+    border-right: 1px solid var(--fg-low);
+    padding: 32px max(40px, 16px) 32px;
+  }
+  .puzzle-right {
+    padding: 32px max(40px, 16px) 32px;
+  }
+
+  /* SECTION LABELS */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--fg-low);
+  }
+
+  /* EVIDENCE CARDS */
+  .card-group { margin-bottom: 36px; }
+  .card-group-title {
+    font-size: 11px; letter-spacing: 0.32em; color: var(--fg-mid);
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .cards { display: flex; flex-direction: column; gap: 8px; }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .card:hover { border-color: var(--gold-dim); background: #161209; }
+  .card.open  { border-color: var(--gold-dim); background: #161209; }
+  .card-icon  { font-size: 22px; flex-shrink: 0; line-height: 1.3; }
+  .card-body  { flex: 1; min-width: 0; }
+  .card-name  {
+    font-size: 15px; font-weight: 700; color: var(--fg);
+    letter-spacing: 0.02em; margin-bottom: 3px;
+  }
+  .card-role  { font-size: 12px; color: var(--gold); letter-spacing: 0.06em; margin-bottom: 8px; }
+  .card-detail {
+    font-size: 14px; color: var(--fg-mid); line-height: 1.65;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .card.open .card-detail { max-height: 100px; }
+
+  /* CLUES */
+  .clue-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+  .clue {
+    font-size: 14px; color: var(--fg-mid); line-height: 1.75;
+    padding: 14px 18px;
+    border-left: 2px solid var(--gold-dim);
+    background: var(--card-bg);
+  }
+  .clue-num { color: var(--gold); font-weight: 700; margin-right: 8px; }
+
+  /* STATEMENTS */
+  .statement-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+  .statement {
+    padding: 14px 18px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+  }
+  .statement-name { font-size: 11px; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+  .statement-text { font-size: 14px; color: var(--fg-mid); line-height: 1.7; font-style: italic; }
+  .statement-text::before { content: '\201C'; color: var(--gold-dim); }
+  .statement-text::after  { content: '\201D'; color: var(--gold-dim); }
+
+  /* ELIMINATION GRID */
+  .grid-wrap { overflow-x: auto; margin-bottom: 36px; }
+  .elim-grid {
+    border-collapse: collapse;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    min-width: 340px;
+  }
+  .elim-grid th, .elim-grid td {
+    border: 1px solid var(--fg-low);
+    padding: 10px 12px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .elim-grid th {
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    background: var(--card-bg);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+  .elim-grid td.row-label {
+    text-align: left;
+    color: var(--fg-mid);
+    font-size: 12px;
+    background: var(--card-bg);
+    white-space: nowrap;
+  }
+  .elim-grid td.cell {
+    cursor: pointer;
+    width: 44px;
+    font-size: 18px;
+    transition: background 0.15s;
+  }
+  .elim-grid td.cell:hover { background: #1a1610; }
+  .elim-grid td.cell[data-state="0"]::after { content: ''; }
+  .elim-grid td.cell[data-state="1"]::after { content: '✕'; color: var(--red); }
+  .elim-grid td.cell[data-state="2"]::after { content: '✓'; color: var(--gold); }
+  .grid-hint { font-size: 11px; color: var(--fg-low); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+
+  /* ACCUSATION FORM */
+  .accuse-form { display: flex; flex-direction: column; gap: 16px; }
+  .accuse-row { display: flex; flex-direction: column; gap: 7px; }
+  .accuse-label {
+    font-size: 11px; letter-spacing: 0.35em; color: var(--gold);
+    text-transform: uppercase;
+  }
+  .accuse-select {
+    appearance: none;
+    background: var(--card-bg);
+    border: 1px solid var(--gold-dim);
+    color: var(--fg);
+    font-family: 'Courier Prime', monospace;
+    font-size: 15px;
+    padding: 12px 18px;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .accuse-select:focus { border-color: var(--gold); }
+  .accuse-btn {
+    margin-top: 8px;
+    padding: 16px;
+    border: 1px solid var(--gold-dim);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s;
+  }
+  .accuse-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.3s ease;
+    z-index: 0;
+  }
+  .accuse-btn:hover { color: var(--bg); border-color: var(--gold); }
+  .accuse-btn:hover::before { transform: translateX(0); }
+  .accuse-btn span { position: relative; z-index: 1; }
+
+  /* TRIES */
+  .tries-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .tries-label { font-size: 11px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
+  .tries-pips { display: flex; gap: 6px; }
+  .pip {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    transition: background 0.3s;
+  }
+  .pip.used { background: var(--red); }
+  .pip.gone { background: var(--fg-low); }
+
+  /* VERDICT */
+  #verdict {
+    display: none;
+    margin-top: 24px;
+    padding: 24px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+  }
+  #verdict.correct { border-color: var(--gold); }
+  #verdict.wrong   { border-color: var(--red); }
+  #verdict.cold    { border-color: var(--fg-low); }
+  .verdict-headline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  #verdict.correct .verdict-headline { color: var(--gold); }
+  #verdict.wrong   .verdict-headline { color: var(--red); }
+  #verdict.cold    .verdict-headline { color: var(--fg-mid); }
+  .verdict-body { font-size: 14px; color: var(--fg-mid); line-height: 1.8; }
+
+  /* SHARE STAMP */
+  .share-block {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--fg-low);
+  }
+  .share-block.visible { display: block; }
+  .stamp-card {
+    background: var(--bg);
+    border: 1px solid var(--fg-low);
+    padding: 16px 18px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--fg-mid);
+    line-height: 1.9;
+    white-space: pre;
+    margin-bottom: 12px;
+    user-select: all;
+  }
+  .share-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--gold-dim);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .share-btn:hover { background: var(--gold); color: var(--bg); }
+  .share-confirm { font-size: 11px; color: var(--gold); letter-spacing: 0.15em; margin-left: 12px; opacity: 0; transition: opacity 0.3s; }
+  .share-confirm.show { opacity: 1; }
+
+  /* FOOTER */
+  .foot {
+    padding: 20px max(40px, 16px);
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--fg-low); flex-wrap: wrap; gap: 10px;
+    margin-top: 40px;
+  }
+  .foot-text { font-size: 11px; letter-spacing: 0.22em; color: var(--fg-low); text-transform: uppercase; }
+  .foot-num  { font-size: 11px; letter-spacing: 0.18em; color: var(--gold-dim); text-transform: uppercase; }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .puzzle-layout { grid-template-columns: 1fr; }
+    .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); }
+    .case-header, .puzzle-left, .puzzle-right { padding-left: 20px; padding-right: 20px; }
+    .top-bar { padding-left: 20px; padding-right: 20px; }
+    .card-name  { font-size: 16px; }
+    .card-role  { font-size: 13px; }
+    .card-detail { font-size: 14px; }
+    .clue       { font-size: 15px; }
+    .statement-text { font-size: 15px; }
+    .accuse-select  { font-size: 16px; padding: 14px 18px; }
+    .accuse-btn     { font-size: 14px; padding: 18px; }
+    .verdict-body   { font-size: 15px; }
+  }
+</style>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="bar-left">
+    <a class="bar-logo" href="./index.html">The Case<em>Room</em></a>
+    <span class="bar-label">Case No. 001</span>
+  </div>
+  <div class="bar-center">The Missing Envelope</div>
+  <div class="bar-right">
+    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Bengaluru · Law Firm</span>
+    <span class="bar-stamp" id="case-stamp">Open</span>
+  </div>
+</div>
+
+<!-- CASE HEADER -->
+<div class="case-header">
+  <div class="case-header-text">
+    <div class="case-number" id="case-number">Case 001 · Open Investigation</div>
+    <h1 class="case-title" id="case-title">The Missing Envelope</h1>
+    <div class="case-title-rule"><span>Bengaluru · Law Firm · 2026</span></div>
+    <p class="case-setting" id="case-setting"></p>
+  </div>
+  <div class="case-dossier">
+    <div class="dossier-label">Case File</div>
+    <div class="dossier-row">
+      <span class="dossier-key">File No.</span>
+      <span class="dossier-val">CR-001-2026</span>
+    </div>
+    <div class="dossier-row">
+      <span class="dossier-key">Location</span>
+      <span class="dossier-val">Meridian House<br>Bengaluru</span>
+    </div>
+    <div class="dossier-divider"></div>
+    <div class="dossier-row">
+      <span class="dossier-key">Incident</span>
+      <span class="dossier-val">Theft of legal document</span>
+    </div>
+    <div class="dossier-row">
+      <span class="dossier-key">Window</span>
+      <span class="dossier-val">19:00 – 21:00 hrs</span>
+    </div>
+    <div class="dossier-row">
+      <span class="dossier-key">Persons of interest</span>
+      <span class="dossier-val">3 suspects</span>
+    </div>
+    <div class="dossier-stamp">Open</div>
+  </div>
+</div>
+
+<!-- PUZZLE -->
+<div class="puzzle-layout">
+
+  <!-- LEFT: suspects, methods, locations, clues, statements -->
+  <div class="puzzle-left">
+
+    <div class="section-label">Evidence Cards</div>
+
+    <div class="card-group">
+      <div class="card-group-title">Suspects</div>
+      <div class="cards" id="suspect-cards"></div>
+    </div>
+
+    <div class="card-group">
+      <div class="card-group-title">Methods</div>
+      <div class="cards" id="method-cards"></div>
+    </div>
+
+    <div class="card-group">
+      <div class="card-group-title">Locations</div>
+      <div class="cards" id="location-cards"></div>
+    </div>
+
+    <div class="section-label">Clues &amp; Evidence</div>
+    <div class="clue-list" id="clue-list"></div>
+
+    <div class="section-label">Witness Statements</div>
+    <div class="statement-list" id="statement-list"></div>
+
+  </div>
+
+  <!-- RIGHT: grid + accusation -->
+  <div class="puzzle-right">
+
+    <div class="section-label">Elimination Grid</div>
+    <p class="grid-hint">Click a cell to cross off · Click again to confirm · Click once more to clear</p>
+    <div class="grid-wrap">
+      <table class="elim-grid" id="elim-grid"></table>
+    </div>
+
+    <div class="section-label">Make Your Accusation</div>
+    <div class="tries-row">
+      <span class="tries-label">Attempts</span>
+      <div class="tries-pips" id="tries-pips">
+        <div class="pip" id="pip-1"></div>
+        <div class="pip" id="pip-2"></div>
+      </div>
+    </div>
+    <div class="accuse-form">
+      <div class="accuse-row">
+        <div class="accuse-label">Who?</div>
+        <select class="accuse-select" id="acc-who">
+          <option value="">— Select suspect —</option>
+        </select>
+      </div>
+      <div class="accuse-row">
+        <div class="accuse-label">How?</div>
+        <select class="accuse-select" id="acc-how">
+          <option value="">— Select method —</option>
+        </select>
+      </div>
+      <div class="accuse-row">
+        <div class="accuse-label">Where?</div>
+        <select class="accuse-select" id="acc-where">
+          <option value="">— Select location —</option>
+        </select>
+      </div>
+      <button class="accuse-btn" id="accuse-btn" onclick="makeAccusation()">
+        <span>Make Your Accusation</span>
+      </button>
+    </div>
+
+    <div id="verdict">
+      <div class="verdict-headline" id="verdict-headline"></div>
+      <div class="verdict-body" id="verdict-body"></div>
+      <div class="share-block" id="share-block">
+        <div class="stamp-card" id="stamp-card"></div>
+        <button class="share-btn" onclick="copyStamp()">Copy Result</button>
+        <span class="share-confirm" id="share-confirm">Copied</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="foot">
+  <span class="foot-text">The Case Room · Pixel &amp; Ink · 2026</span>
+  <span class="foot-num" id="foot-num">001 / ???</span>
+</div>
+
+<script>
+// ── LOAD CASE DATA ─────────────────────────────────
+const CASE = {
+  "id": "001",
+  "title": "The Missing Envelope",
+  "date": "2026-10-14",
+  "series": "Pixel & Ink · Investigation Series",
+  "setting": "Meridian House, Bengaluru. A sealed envelope containing a signed acquisition contract vanished from the partners' office sometime between 7 and 9 pm. Three people were in the building.",
+  "answer": { "who": "Reena Sood", "how": "Swapped with a fake", "where": "The partners' office" },
+  "suspects": [
+    { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Bilingual. Has access to every floor. Was seen near the partners' office at 7:45 pm.", "icon": "⚖️" },
+    { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. Was logged into the security system until 8:30 pm.", "icon": "🔑" },
+    { "id": "priya",  "name": "Priya Nair",  "role": "Legal Intern",      "detail": "Worked late to file documents. Left the building at 8:10 pm.", "icon": "📋" }
+  ],
+  "methods": [
+    { "id": "lifted", "name": "Lifted from the desk",    "detail": "Taken directly — no substitution. The absence would be noticed immediately.", "icon": "✋" },
+    { "id": "fake",   "name": "Swapped with a fake",     "detail": "A replica envelope placed in its spot. Discovered only when opened the next morning.", "icon": "📄" },
+    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes. Window of opportunity.", "icon": "🚨" }
+  ],
+  "locations": [
+    { "id": "partners", "name": "The partners' office", "detail": "Third floor. Keycard access only. The envelope was last confirmed here at 7:30 pm.", "icon": "🏛️" },
+    { "id": "mailroom", "name": "The mail room",        "detail": "Ground floor. Open access. Outgoing post collected at 9 pm sharp.", "icon": "📬" },
+    { "id": "rooftop",  "name": "The rooftop terrace",  "detail": "Accessible via stairwell only. One person was seen up there around 8:20 pm.", "icon": "🌆" }
+  ],
+  "clues": [
+    "The person who lifted from the desk was on the rooftop terrace — the same person was not in the partners' office.",
+    "Priya Nair left before the fire alarm went off."
+  ],
+  "statements": [
+    { "suspect": "Reena Sood",  "text": "I was in the partners' office reviewing documents. I never went to the mail room." },
+    { "suspect": "Marcus Vaz",  "text": "I checked the rooftop at 8:20 pm as part of my rounds. I had no reason to touch that envelope." },
+    { "suspect": "Priya Nair",  "text": "I filed everything in the mail room and left by 8:10. I didn't go up to the third floor after 7." }
+  ],
+  "solution": "Reena Sood swapped the envelope with a fake while alone in the partners' office. Priya's statement is true — she left before the alarm. Marcus's statement is true — he was on the rooftop. Reena's statement is the lie: she claims she never went to the mail room, but the fake envelope had to come from somewhere. She prepared it beforehand and made the swap in the partners' office, where she had legitimate access."
+};
+
+// ── RENDER ─────────────────────────────────────────
+document.getElementById('case-setting').textContent = CASE.setting;
+
+function makeCards(containerId, items) {
+  const el = document.getElementById(containerId);
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-icon">${item.icon}</div>
+      <div class="card-body">
+        <div class="card-name">${item.name}</div>
+        ${item.role ? `<div class="card-role">${item.role}</div>` : ''}
+        <div class="card-detail">${item.detail}</div>
+      </div>`;
+    card.addEventListener('click', () => card.classList.toggle('open'));
+    el.appendChild(card);
+  });
+}
+
+makeCards('suspect-cards',  CASE.suspects);
+makeCards('method-cards',   CASE.methods);
+makeCards('location-cards', CASE.locations);
+
+// Clues
+const clueList = document.getElementById('clue-list');
+CASE.clues.forEach((c, i) => {
+  const d = document.createElement('div');
+  d.className = 'clue';
+  d.innerHTML = `<span class="clue-num">${i + 1}.</span>${c}`;
+  clueList.appendChild(d);
+});
+
+// Statements
+const stmtList = document.getElementById('statement-list');
+CASE.statements.forEach(s => {
+  const d = document.createElement('div');
+  d.className = 'statement';
+  d.innerHTML = `<div class="statement-name">${s.suspect}</div><div class="statement-text">${s.text}</div>`;
+  stmtList.appendChild(d);
+});
+
+// ── ELIMINATION GRID ───────────────────────────────
+// Rows: methods + locations  |  Cols: suspects + locations
+const rowGroups = [
+  { label: 'Methods',   items: CASE.methods },
+  { label: 'Locations', items: CASE.locations }
+];
+const colGroups = [
+  { label: 'Suspects',  items: CASE.suspects },
+  { label: 'Locations', items: CASE.locations }
+];
+
+const grid = document.getElementById('elim-grid');
+const gridState = {};
+
+// Header rows
+const headRow1 = grid.insertRow();
+headRow1.insertCell().outerHTML = '<th></th>';
+colGroups.forEach(g => {
+  const th = document.createElement('th');
+  th.colSpan = g.items.length;
+  th.textContent = g.label;
+  headRow1.appendChild(th);
+});
+
+const headRow2 = grid.insertRow();
+headRow2.insertCell().outerHTML = '<th></th>';
+colGroups.forEach(g => {
+  g.items.forEach(item => {
+    const th = document.createElement('th');
+    // Smart abbreviation: skip leading "The" / "A" articles, take next word
+    const words = item.name.split(' ');
+    const skip = ['the','a','an'];
+    const meaningful = words.find(w => !skip.includes(w.toLowerCase())) || words[0];
+    th.textContent = meaningful.replace(/['']/g, '').replace(/,$/, '');
+    headRow2.appendChild(th);
+  });
+});
+
+// Data rows
+rowGroups.forEach(rg => {
+  const sepRow = grid.insertRow();
+  const sepTh = document.createElement('th');
+  sepTh.colSpan = 1 + colGroups.reduce((a, g) => a + g.items.length, 0);
+  sepTh.textContent = rg.label;
+  sepTh.style.textAlign = 'left';
+  sepTh.style.paddingLeft = '10px';
+  sepRow.appendChild(sepTh);
+
+  rg.items.forEach(row => {
+    const tr = grid.insertRow();
+    const labelTd = tr.insertCell();
+    labelTd.className = 'row-label';
+    // Row label: use full name, truncate only if very long
+    const rName = row.name;
+    labelTd.textContent = rName.length > 22 ? rName.slice(0, 20) + '…' : rName;
+
+    colGroups.forEach(cg => {
+      cg.items.forEach(col => {
+        const key = `${row.id}__${col.id}`;
+        gridState[key] = 0;
+        const td = tr.insertCell();
+        td.className = 'cell';
+        td.dataset.state = '0';
+        td.dataset.key = key;
+        td.dataset.row = row.id;
+        td.dataset.col = col.id;
+        td.addEventListener('click', () => {
+          const s = (parseInt(td.dataset.state) + 1) % 3;
+          td.dataset.state = s;
+          gridState[key] = s;
+        });
+      });
+    });
+  });
+});
+
+// ── ACCUSATION DROPDOWNS (independent of grid) ────
+const whoSel   = document.getElementById('acc-who');
+const howSel   = document.getElementById('acc-how');
+const whereSel = document.getElementById('acc-where');
+
+CASE.suspects.forEach(s  => { const o = document.createElement('option'); o.value = s.name; o.textContent = s.name; whoSel.appendChild(o); });
+CASE.methods.forEach(m   => { const o = document.createElement('option'); o.value = m.name; o.textContent = m.name; howSel.appendChild(o); });
+CASE.locations.forEach(l => { const o = document.createElement('option'); o.value = l.name; o.textContent = l.name; whereSel.appendChild(o); });
+
+// ── ACCUSATION LOGIC ───────────────────────────────
+const MAX_TRIES = 2;
+let triesUsed = 0;
+let caseOver  = false;
+
+const pips = [document.getElementById('pip-1'), document.getElementById('pip-2')];
+
+function lockForm() {
+  whoSel.disabled = true;
+  howSel.disabled = true;
+  whereSel.disabled = true;
+  document.getElementById('accuse-btn').disabled = true;
+  document.getElementById('accuse-btn').style.opacity = '0.35';
+  document.getElementById('accuse-btn').style.cursor = 'default';
+}
+
+function showStamp(solved) {
+  const block = document.getElementById('share-block');
+  const card  = document.getElementById('stamp-card');
+  const dots  = solved
+    ? (triesUsed === 1 ? '🟨 ✅' : '🟥 ✅')
+    : '🟥 🟥';
+  const status = solved
+    ? `Solved in ${triesUsed} of ${MAX_TRIES} attempt${triesUsed > 1 ? 's' : ''}`
+    : 'Case went cold';
+  card.textContent =
+    `THE CASE ROOM · CASE 001\n` +
+    `The Missing Envelope\n\n` +
+    `${dots}\n\n` +
+    `${status}\n` +
+    `thinkygames.com`;  // placeholder — swap for your own URL when live
+  block.classList.add('visible');
+}
+
+function copyStamp() {
+  const text = document.getElementById('stamp-card').textContent;
+  const confirm = document.getElementById('share-confirm');
+  navigator.clipboard.writeText(text).then(() => {
+    confirm.classList.add('show');
+    setTimeout(() => confirm.classList.remove('show'), 2000);
+  }).catch(() => {
+    // fallback: select the text
+    const el = document.getElementById('stamp-card');
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+
+function makeAccusation() {
+  if (caseOver) return;
+  const who   = whoSel.value;
+  const how   = howSel.value;
+  const where = whereSel.value;
+  if (!who || !how || !where) return;
+
+  triesUsed++;
+  const verdict  = document.getElementById('verdict');
+  const headline = document.getElementById('verdict-headline');
+  const body     = document.getElementById('verdict-body');
+  verdict.style.display = 'block';
+
+  const correct = who === CASE.answer.who && how === CASE.answer.how && where === CASE.answer.where;
+
+  if (correct) {
+    caseOver = true;
+    pips.forEach((p, i) => { p.className = 'pip' + (i < triesUsed - 1 ? ' used' : ''); });
+    lockForm();
+    verdict.className = 'correct';
+    headline.textContent = 'Case closed.';
+    body.textContent = CASE.solution;
+    showStamp(true);
+  } else if (triesUsed >= MAX_TRIES) {
+    caseOver = true;
+    pips.forEach(p => { p.className = 'pip used'; });
+    lockForm();
+    verdict.className = 'cold';
+    headline.textContent = 'The case goes cold.';
+    body.textContent = 'Both attempts exhausted. ' + CASE.solution;
+    showStamp(false);
+  } else {
+    pips[triesUsed - 1].classList.add('used');
+    verdict.className = 'wrong';
+    headline.textContent = 'Not quite.';
+    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining — review your notes.';
+  }
+  verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>

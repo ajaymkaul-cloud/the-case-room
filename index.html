@@ -1,0 +1,689 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>The Case Room</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+
+<style>
+  :root {
+    --bg: #080604;
+    --fg: #f0e6d0;
+    --fg-mid: #9a8a6e;
+    --fg-low: #221e16;
+    --gold: #c8a45a;
+    --gold-dim: #6a5228;
+    --red: #7a1a1a;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #000;
+    color: var(--fg);
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    min-height: 100vh;
+    overflow: hidden;
+    padding-left: max(0px, env(safe-area-inset-left, 0px));
+    padding-right: max(0px, env(safe-area-inset-right, 0px));
+  }
+
+  /* ── GATE SCREEN ── */
+  #gate {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 24px;
+    transition: opacity 1.2s ease;
+  }
+  #gate.out { opacity: 0; pointer-events: none; }
+
+  .gate-pulse {
+    width: 56px; height: 56px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 50%;
+    position: relative;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .gate-pulse::after {
+    content: '';
+    position: absolute; inset: 8px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    animation: pulse 2.4s ease-in-out 0.4s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.95); }
+    50%       { opacity: 1;   transform: scale(1.05); }
+  }
+
+  .gate-label {
+    font-size: 11px; letter-spacing: 0.42em;
+    color: var(--fg-mid); text-transform: uppercase;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 1;   }
+  }
+
+  /* ── MAIN CANVAS (rain) ── */
+  canvas#bg { position: fixed; inset: 0; z-index: 0; }
+
+  /* ── INTRO SEQUENCE ── */
+  #intro {
+    position: fixed; inset: 0; z-index: 50;
+    pointer-events: none; opacity: 0; overflow: hidden;
+  }
+  #intro.show { opacity: 1; }
+  #intro.out  { opacity: 0; transition: opacity 1.5s ease; }
+
+  #thief-wrap {
+    position: absolute; bottom: 0; right: 8vw;
+    width: clamp(90px, 12vw, 160px); height: auto;
+    transform: translateY(100%);
+    animation: riseUp 1.2s cubic-bezier(0.22,1,0.36,1) 0.6s forwards;
+  }
+  #thief-wrap svg { width: 100%; height: auto; display: block; }
+  @keyframes riseUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0%); }
+  }
+  #thief-group { animation: peekBob 2.8s ease-in-out 2s infinite; }
+  @keyframes peekBob {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-8px); }
+  }
+
+  /* ── CAPTIONS ── */
+  #caption {
+    position: fixed;
+    top: 50%; left: 0; right: 0;
+    transform: translateY(-50%);
+    text-align: center; z-index: 60; pointer-events: none;
+    padding: 0 max(32px, 8vw);
+  }
+  .cap-line {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700; font-style: italic;
+    font-size: clamp(22px, 4.5vw, 52px);
+    color: var(--fg);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+    text-wrap: balance;
+    text-shadow:
+      0 0 80px rgba(200,164,90,0.15),
+      0 2px 20px rgba(0,0,0,1);
+  }
+  .cap-line.show { opacity: 1; }
+
+  /* ── LANDING ── */
+  #landing {
+    position: relative; z-index: 10;
+    min-height: 100vh; display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transition: opacity 1.2s ease; overflow-y: auto; overflow-x: hidden;
+  }
+  #landing.show { opacity: 1; pointer-events: auto; }
+
+  /* vignette */
+  #landing::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(0,0,0,0.55) 100%);
+    z-index: 1;
+  }
+  .top-bar, .hero-band, .cases-band, .foot { position: relative; z-index: 2; }
+
+  .top-bar {
+    padding: 18px max(40px, env(safe-area-inset-left, 16px));
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--fg-low);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%);
+  }
+  .bar-label { font-size: 10px; letter-spacing: 0.3em; color: var(--fg-mid); text-transform: uppercase; }
+  .bar-stamp {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--red);
+    text-transform: uppercase; border: 1px solid var(--red);
+    padding: 3px 10px; transform: rotate(2deg); display: inline-block;
+    opacity: 0.85; box-shadow: 0 0 12px rgba(122,26,26,0.3);
+  }
+
+  /* Film grain overlay on entire page */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 1000;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+  }
+
+  /* Hero nameplate */
+  .hero-band {
+    text-align: center;
+    padding: 72px max(40px, env(safe-area-inset-left, 16px)) 56px;
+    border-bottom: 1px solid var(--fg-low);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Radial spotlight */
+  .hero-band::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 500px;
+    background: radial-gradient(ellipse at 50% 35%,
+      rgba(200,164,90,0.11) 0%,
+      rgba(200,164,90,0.04) 35%,
+      transparent 65%);
+    pointer-events: none;
+  }
+  /* Horizontal scan line shimmer across hero */
+  .hero-band::after {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.03) 3px,
+      rgba(0,0,0,0.03) 4px
+    );
+  }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.55em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 28px;
+    opacity: 0; animation: up 0.7s ease 0.1s forwards;
+    position: relative; z-index: 1;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: '—';
+    margin: 0 12px;
+    opacity: 0.4;
+  }
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900; font-style: italic;
+    font-size: clamp(56px, 12vw, 118px);
+    line-height: 0.85; letter-spacing: -0.03em;
+    color: var(--fg); text-wrap: balance;
+    text-shadow:
+      0 0 80px rgba(200,164,90,0.18),
+      0 0 160px rgba(200,164,90,0.08),
+      0 2px 0 rgba(0,0,0,0.9),
+      0 4px 20px rgba(0,0,0,0.9),
+      0 8px 40px rgba(0,0,0,0.7);
+    opacity: 0; animation: up 1s ease 0.3s forwards;
+    margin-bottom: 32px;
+    position: relative; z-index: 1;
+  }
+  h1 em {
+    color: var(--gold); display: block; font-style: italic;
+    text-shadow:
+      0 0 60px rgba(200,164,90,0.5),
+      0 0 120px rgba(200,164,90,0.2),
+      0 2px 0 rgba(0,0,0,0.9);
+  }
+  .rule {
+    display: flex; align-items: center; gap: 12px;
+    width: fit-content; margin: 0 auto 24px;
+    opacity: 0; animation: up 0.6s ease 0.7s forwards;
+    position: relative; z-index: 1;
+  }
+  .rule::before, .rule::after {
+    content: '';
+    display: block; height: 1px; width: 48px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim));
+  }
+  .rule::after { background: linear-gradient(270deg, transparent, var(--gold-dim)); }
+  .rule-diamond {
+    width: 5px; height: 5px;
+    background: var(--gold-dim);
+    transform: rotate(45deg);
+  }
+  .tagline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic; font-size: clamp(13px, 1.6vw, 16px);
+    color: var(--fg-mid); line-height: 2; max-width: 340px;
+    margin: 0 auto;
+    opacity: 0; animation: up 0.7s ease 0.85s forwards;
+    position: relative; z-index: 1;
+  }
+
+  /* Case files grid */
+  .cases-band {
+    padding: 48px max(40px, env(safe-area-inset-left, 16px)) 56px;
+    opacity: 0; animation: up 0.8s ease 1s forwards;
+  }
+  .cases-label {
+    font-size: 11px; letter-spacing: 0.38em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .cases-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--fg-low);
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .case-card {
+    background: #0e0c08;
+    border: 1px solid var(--fg-low);
+    border-top: none;
+    text-decoration: none;
+    color: inherit;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s, background 0.3s, transform 0.25s, box-shadow 0.3s;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  /* Atmospheric top band — overridden per card */
+  .case-card-band {
+    height: 72px;
+    position: relative; overflow: hidden;
+    flex-shrink: 0;
+    border-top: 3px solid var(--gold-dim);
+    transition: border-color 0.3s;
+  }
+  .case-card-band::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, #0e0c08 100%);
+  }
+  /* Watermark case number */
+  .case-card-band::before {
+    content: attr(data-num);
+    position: absolute; right: 12px; bottom: -8px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900; font-style: italic;
+    font-size: 72px; line-height: 1;
+    color: rgba(200,164,90,0.08);
+    letter-spacing: -0.04em;
+    pointer-events: none; z-index: 1;
+  }
+
+  /* Card body */
+  .case-card-body {
+    padding: 20px 22px 20px;
+    display: flex; flex-direction: column; gap: 9px;
+    flex: 1;
+  }
+  /* Light leak from top-left on hover */
+  .case-card::before {
+    content: '';
+    position: absolute; top: 72px; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(200,164,90,0.05) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  /* Corner fold */
+  .case-card::after {
+    content: '';
+    position: absolute; bottom: 0; right: 0;
+    width: 20px; height: 20px;
+    background: linear-gradient(225deg, rgba(200,164,90,0.2) 0%, transparent 60%);
+    opacity: 0.2; transition: opacity 0.3s, width 0.3s, height 0.3s;
+    pointer-events: none;
+  }
+  .case-card:hover {
+    border-color: var(--gold-dim);
+    background: #111009;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .case-card:hover .case-card-band { border-color: var(--gold); }
+  .case-card:hover::before { opacity: 1; }
+  .case-card:hover::after { opacity: 0.4; width: 28px; height: 28px; }
+
+  .case-card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .case-num {
+    font-size: 9px; letter-spacing: 0.35em; color: var(--gold);
+    text-transform: uppercase;
+  }
+  .case-status {
+    font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 2px 7px; border: 1px solid;
+  }
+  .case-status.open   { color: var(--gold); border-color: var(--gold-dim); }
+  .case-status.new    { color: #6aaa60; border-color: #3a6038; }
+  .case-status.locked { color: var(--fg-low); border-color: var(--fg-low); }
+
+  .case-title-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic; font-weight: 700;
+    font-size: clamp(20px, 2.8vw, 25px);
+    color: var(--fg); line-height: 1.1;
+  }
+  .case-setting-text {
+    font-size: 10px; letter-spacing: 0.18em; color: var(--fg-mid);
+    text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+  }
+  .case-setting-text::before {
+    content: '◈';
+    font-size: 7px; opacity: 0.5;
+  }
+  .case-divider {
+    height: 1px; background: var(--fg-low);
+    margin: 2px 0;
+  }
+  .case-brief-text {
+    font-size: 11.5px; line-height: 1.75; color: var(--fg-mid);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .case-cta {
+    margin-top: 6px;
+    font-size: 9px; letter-spacing: 0.35em; color: var(--gold);
+    text-transform: uppercase; display: flex; align-items: center; gap: 8px;
+    opacity: 0.7; transition: opacity 0.2s;
+  }
+  .case-cta::after { content: '→'; transition: transform 0.2s; }
+  .case-card:hover .case-cta { opacity: 1; }
+  .case-card:hover .case-cta::after { transform: translateX(5px); }
+
+  .case-card.locked-card {
+    opacity: 0.32; cursor: default; pointer-events: none;
+  }
+
+  /* Per-card atmospheric bands */
+  .band-001 {
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(100,80,40,0.5) 0%, transparent 60%),
+      linear-gradient(135deg, #1a1508 0%, #0d0c07 60%, #120f07 100%);
+  }
+  .band-002 {
+    background:
+      radial-gradient(ellipse at 80% 40%, rgba(80,30,10,0.6) 0%, transparent 55%),
+      linear-gradient(135deg, #180d06 0%, #0e0a06 60%, #1a0e08 100%);
+  }
+  .band-003 {
+    background: #0a0a0a;
+  }
+
+  /* Footer */
+  .foot {
+    padding: 18px max(40px, env(safe-area-inset-left, 16px));
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--fg-low); flex-wrap: wrap; gap: 10px;
+  }
+  .foot-text { font-size: 9px; letter-spacing: 0.28em; color: var(--fg-low); text-transform: uppercase; }
+  .foot-num  { font-size: 9px; letter-spacing: 0.22em; color: var(--gold-dim); text-transform: uppercase; }
+
+  @keyframes up {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .hero-band { padding: 48px 20px 40px; }
+    .cases-band { padding: 36px 20px 48px; }
+    .top-bar, .foot { padding-left: 20px; padding-right: 20px; }
+    #thief-wrap { right: 5vw; width: 80px; }
+  }
+</style>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-pulse"></div>
+  <div class="gate-label">Tap to enter</div>
+</div>
+
+<!-- BG canvas -->
+<canvas id="bg"></canvas>
+
+<!-- INTRO SEQUENCE -->
+<div id="intro">
+  <div id="caption">
+    <div class="cap-line" id="cap1">Every crime leaves something behind.</div>
+    <div class="cap-line" id="cap2">Everyone had a reason. One had the nerve.</div>
+    <div class="cap-line" id="cap3">The truth is already in the room.</div>
+  </div>
+  <div id="thief-wrap">
+    <svg id="thief-group" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#c8a45a">
+        <path d="M336.406,166.563c-10.891,1.75-72.609,12.094-76.5,12.094c-3.906,0-3.906,0-3.906,0s0,0-3.906,0
+          s-65.609-10.344-76.5-12.094c-18.719-3.031-34.344,2.266-39.813,4.531c-22.969,9.531-15.25,31.813-10.156,40.063
+          c7.047,11.344,33.781,41.125,60.125,44.609c34.344,4.516,64-21.172,70.25-21.172c6.234,0,35.906,25.688,70.25,21.172
+          c26.344-3.484,53.094-33.266,60.125-44.609c5.094-8.25,12.813-30.531-10.156-40.063
+          C370.734,168.828,355.125,163.531,336.406,166.563z M184.656,220.984c-11.094-10.734-9.25-21.516,3.688-22.391
+          c12.969-0.906,34.813,4.5,35.172,11.656C224.438,228.156,195.75,231.75,184.656,220.984z M327.344,220.984
+          c-11.109,10.766-39.797,7.172-38.859-10.734c0.359-7.156,22.203-12.563,35.141-11.656
+          C336.594,199.469,338.438,210.25,327.344,220.984z"/>
+        <path d="M402.75,115.906c0-5.031-5.219-15.094-14.578-17.125C374.656,19.156,296.563,0,256,0
+          S137.344,19.156,123.813,98.781c-9.375,2.031-14.563,12.094-14.563,17.125c0,5.047,0,33.25,0,33.25h293.5
+          C402.75,149.156,402.75,120.953,402.75,115.906z"/>
+        <path d="M356.719,382.234c0-20.203-6.281-42.297-26.234-42.297H181.5c-19.938,0-26.234,22.094-26.234,42.297
+          c0,4.797-93.359,28.828-93.359,82.656c0,12.516,30.422,47.109,193.031,47.109h2.109c162.625,0,193.047-34.594,193.047-47.109
+          C450.094,411.063,356.719,387.031,356.719,382.234z"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<!-- LANDING PAGE -->
+<div id="landing">
+  <div class="top-bar">
+    <span class="bar-label">Pixel &amp; Ink · Investigation Series</span>
+    <span class="bar-stamp">Classified</span>
+  </div>
+
+  <div class="hero-band">
+    <div class="eyebrow">Daily Mystery Puzzles</div>
+    <h1>The Case<em>Room</em></h1>
+    <div class="rule"><span class="rule-diamond"></span></div>
+    <p class="tagline">The truth is already here.<br>Whether you find it depends<br>on what you choose to look at.</p>
+  </div>
+
+  <div class="cases-band">
+    <div class="cases-label">Active Case Files</div>
+    <div class="cases-grid">
+
+      <!-- Case 001 -->
+      <a class="case-card" href="./case-001.html">
+        <div class="case-card-band band-001" data-num="001"></div>
+        <div class="case-card-body">
+          <div class="case-card-top">
+            <span class="case-num">Case No. 001</span>
+            <span class="case-status open">Open</span>
+          </div>
+          <div class="case-title-text">The Missing Envelope</div>
+          <div class="case-setting-text">Mehta &amp; Iyer Associates · Bengaluru</div>
+          <div class="case-divider"></div>
+          <div class="case-brief-text">A confidential settlement offer vanished from a senior partner's office overnight. Three people had access. The deal closes in 24 hours.</div>
+          <div class="case-cta">Open Case File</div>
+        </div>
+      </a>
+
+      <!-- Case 002 -->
+      <a class="case-card" href="./case-002.html">
+        <div class="case-card-band band-002" data-num="002"></div>
+        <div class="case-card-body">
+          <div class="case-card-top">
+            <span class="case-num">Case No. 002</span>
+            <span class="case-status new">New</span>
+          </div>
+          <div class="case-title-text">The Last Shot</div>
+          <div class="case-setting-text">Film City · Mumbai</div>
+          <div class="case-divider"></div>
+          <div class="case-brief-text">The lead actor was found unconscious in his trailer 13 minutes before the final scene. Someone had tampered with his drink. The production insurance pays triple if it's sabotage.</div>
+          <div class="case-cta">Open Case File</div>
+        </div>
+      </a>
+
+      <!-- Case 003 placeholder -->
+      <div class="case-card locked-card">
+        <div class="case-card-band band-003" data-num="003"></div>
+        <div class="case-card-body">
+          <div class="case-card-top">
+            <span class="case-num">Case No. 003</span>
+            <span class="case-status locked">Sealed</span>
+          </div>
+          <div class="case-title-text">———</div>
+          <div class="case-setting-text">Location Unknown</div>
+          <div class="case-divider"></div>
+          <div class="case-brief-text">This file is sealed pending investigation.</div>
+          <div class="case-cta" style="color:var(--fg-low)">Unavailable</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="foot-text">© 2026 Pixel &amp; Ink · The Case Room</span>
+    <span class="foot-num">002 / ???</span>
+  </div>
+</div>
+
+<script>
+// ── BG + RAIN ──
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function drawBg() {
+  const w = canvas.width, h = canvas.height;
+  const g = ctx.createRadialGradient(w*.5, 0, 0, w*.5, h*.5, Math.max(w,h));
+  g.addColorStop(0,   '#181410');
+  g.addColorStop(0.3, '#0e0c09');
+  g.addColorStop(1,   '#060503');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  const c = ctx.createRadialGradient(w*.5, -60, 0, w*.5, h*.6, h*.8);
+  c.addColorStop(0,   'rgba(200,164,90,0.09)');
+  c.addColorStop(0.5, 'rgba(200,164,90,0.02)');
+  c.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.fillStyle = c;
+  ctx.fillRect(0, 0, w, h);
+}
+
+const drops = Array.from({length:110}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  len: Math.random() * 22 + 8,
+  spd: Math.random() * 3 + 1.8,
+  a:   Math.random() * 0.16 + 0.04,
+}));
+
+function rainFrame() {
+  drawBg();
+  drops.forEach(d => {
+    ctx.save();
+    ctx.globalAlpha = d.a;
+    ctx.strokeStyle = '#c8a45a';
+    ctx.lineWidth   = 0.55;
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x - d.len*.14, d.y + d.len);
+    ctx.stroke();
+    ctx.restore();
+    d.y += d.spd;
+    d.x -= d.spd * .12;
+    if (d.y > canvas.height + 20) { d.y = -20; d.x = Math.random() * canvas.width; }
+  });
+  requestAnimationFrame(rainFrame);
+}
+rainFrame();
+
+// ── AUDIO ──
+let audioCtx = null;
+
+function buildSuspenseAudio() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const now = audioCtx.currentTime;
+
+  function drone(freq, detune, gain, startT, durT) {
+    const osc  = audioCtx.createOscillator();
+    const g    = audioCtx.createGain();
+    const filt = audioCtx.createBiquadFilter();
+    osc.type = 'sawtooth';
+    osc.frequency.value = freq;
+    osc.detune.value = detune;
+    filt.type = 'lowpass'; filt.frequency.value = 320; filt.Q.value = 1.2;
+    g.gain.setValueAtTime(0, startT);
+    g.gain.linearRampToValueAtTime(gain, startT + 1.2);
+    g.gain.linearRampToValueAtTime(gain * .7, startT + durT - 1.5);
+    g.gain.linearRampToValueAtTime(0, startT + durT);
+    osc.connect(filt); filt.connect(g); g.connect(audioCtx.destination);
+    osc.start(startT); osc.stop(startT + durT);
+  }
+
+  function heartbeat(t) {
+    [0, 0.28].forEach(offset => {
+      const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * .12, audioCtx.sampleRate);
+      const d   = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) {
+        const env = Math.exp(-i / (audioCtx.sampleRate * .03));
+        d[i] = (Math.random() * 2 - 1) * env * 0.6;
+      }
+      const src  = audioCtx.createBufferSource();
+      const g    = audioCtx.createGain();
+      const filt = audioCtx.createBiquadFilter();
+      filt.type = 'lowpass'; filt.frequency.value = 80;
+      src.buffer = buf;
+      g.gain.value = offset === 0 ? 1 : 0.55;
+      src.connect(filt); filt.connect(g); g.connect(audioCtx.destination);
+      src.start(t + offset);
+    });
+  }
+
+  drone(55, 0,   0.18, now,     8);
+  drone(55, 8,   0.10, now,     8);
+  drone(82, -5,  0.08, now + 1, 7);
+  drone(110, 0,  0.06, now + 3, 4);
+  drone(146, 0,  0.04, now + 5, 3);
+  [0.8, 2.0, 3.1, 4.0, 4.8, 5.5, 6.1, 6.6].forEach(t => heartbeat(now + t));
+  drone(138, 0,  0.11, now + 6.8, 2.5);
+  drone(165, 0,  0.07, now + 6.8, 2.5);
+  drone(220, 3,  0.05, now + 6.8, 2);
+}
+
+// ── INTRO CONTROLLER ──
+function startExperience() {
+  try { buildSuspenseAudio(); } catch(e) {}
+
+  const gate  = document.getElementById('gate');
+  const intro = document.getElementById('intro');
+  const land  = document.getElementById('landing');
+  const cap1  = document.getElementById('cap1');
+  const cap2  = document.getElementById('cap2');
+  const cap3  = document.getElementById('cap3');
+
+  gate.classList.add('out');
+  setTimeout(() => { intro.classList.add('show'); }, 800);
+
+  setTimeout(() => { cap1.classList.add('show'); },    800);
+  setTimeout(() => { cap1.classList.remove('show'); }, 2400);
+  setTimeout(() => { cap2.classList.add('show'); },    2900);
+  setTimeout(() => { cap2.classList.remove('show'); }, 4800);
+  setTimeout(() => { cap3.classList.add('show'); },    5200);
+  setTimeout(() => { cap3.classList.remove('show'); }, 6800);
+
+  setTimeout(() => { intro.classList.add('out'); }, 6900);
+  setTimeout(() => { land.classList.add('show'); },  7600);
+}
+
+document.getElementById('gate').addEventListener('click', startExperience);
+document.getElementById('gate').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') startExperience();
+});
+</script>
