@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>The Case Room</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
@@ -26,7 +27,7 @@
     padding-right: max(0px, env(safe-area-inset-right, 0px));
   }
 
-  /* ── GATE SCREEN ── */
+  /* ââ GATE SCREEN ââ */
   #gate {
     position: fixed;
     inset: 0;
@@ -62,19 +63,29 @@
   }
 
   .gate-label {
-    font-size: 11px; letter-spacing: 0.42em;
+    font-size: clamp(13px, 3vw, 15px); letter-spacing: 0.38em;
     color: var(--fg-mid); text-transform: uppercase;
     animation: blink 2s ease-in-out infinite;
   }
+  .gate-silent {
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    font-size: clamp(11px, 2.5vw, 13px); letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--fg-low); background: none; border: none;
+    cursor: pointer; padding: 12px 20px;
+    transition: color 0.2s;
+    margin-top: -4px;
+    min-height: 44px;
+  }
+  .gate-silent:hover { color: var(--fg-mid); }
   @keyframes blink {
     0%, 100% { opacity: 0.4; }
     50%       { opacity: 1;   }
   }
 
-  /* ── MAIN CANVAS (rain) ── */
+  /* ââ MAIN CANVAS (rain) ââ */
   canvas#bg { position: fixed; inset: 0; z-index: 0; }
 
-  /* ── INTRO SEQUENCE ── */
+  /* ââ INTRO SEQUENCE ââ */
   #intro {
     position: fixed; inset: 0; z-index: 50;
     pointer-events: none; opacity: 0; overflow: hidden;
@@ -99,7 +110,7 @@
     50%      { transform: translateY(-8px); }
   }
 
-  /* ── CAPTIONS ── */
+  /* ââ CAPTIONS ââ */
   #caption {
     position: fixed;
     top: 50%; left: 0; right: 0;
@@ -123,7 +134,7 @@
   }
   .cap-line.show { opacity: 1; }
 
-  /* ── LANDING ── */
+  /* ââ LANDING ââ */
   #landing {
     position: relative; z-index: 10;
     display: flex; flex-direction: column;
@@ -204,7 +215,7 @@
     position: relative; z-index: 1;
   }
   .eyebrow::before, .eyebrow::after {
-    content: '—';
+    content: 'â';
     margin: 0 12px;
     opacity: 0.4;
   }
@@ -289,7 +300,7 @@
     cursor: pointer;
     box-shadow: 0 4px 24px rgba(0,0,0,0.5);
   }
-  /* Atmospheric top band — overridden per card */
+  /* Atmospheric top band â overridden per card */
   .case-card-band {
     height: 72px;
     position: relative; overflow: hidden;
@@ -373,7 +384,7 @@
     text-transform: uppercase; display: flex; align-items: center; gap: 6px;
   }
   .case-setting-text::before {
-    content: '◈';
+    content: 'â';
     font-size: 7px; opacity: 0.5;
   }
   .case-divider {
@@ -391,7 +402,7 @@
     text-transform: uppercase; display: flex; align-items: center; gap: 8px;
     opacity: 0.7; transition: opacity 0.2s;
   }
-  .case-cta::after { content: '→'; transition: transform 0.2s; }
+  .case-cta::after { content: 'â'; transition: transform 0.2s; }
   .case-card:hover .case-cta { opacity: 1; }
   .case-card:hover .case-cta::after { transform: translateX(5px); }
 
@@ -449,7 +460,8 @@
 <!-- GATE -->
 <div id="gate">
   <div class="gate-pulse"></div>
-  <div class="gate-label">Tap to enter</div>
+  <div class="gate-label" id="gate-label">Tap to enter Â· sound on</div>
+  <button class="gate-silent" id="gate-silent" aria-label="Enter without sound">Enter silently</button>
 </div>
 
 <!-- BG canvas -->
@@ -487,12 +499,12 @@
 <!-- LANDING PAGE -->
 <div id="landing">
   <div class="top-bar">
-    <span class="bar-label">Pixel &amp; Ink · Investigation Series</span>
+    <span class="bar-label">Pixel &amp; Ink Â· Investigation Series</span>
     <span class="bar-stamp">Classified</span>
   </div>
 
   <div class="hero-band">
-    <div class="eyebrow">Daily Mystery Puzzles</div>
+    <div class="eyebrow">Interactive Detective Mysteries</div>
     <h1>The Case<em>Room</em></h1>
     <div class="rule"><span class="rule-diamond"></span></div>
     <p class="tagline">The truth is already here.<br>Whether you find it depends<br>on what you choose to look at.</p>
@@ -511,7 +523,7 @@
             <span class="case-status open">Open</span>
           </div>
           <div class="case-title-text">The Missing Envelope</div>
-          <div class="case-setting-text">Mehta &amp; Iyer Associates · Bengaluru</div>
+          <div class="case-setting-text">Mehta &amp; Iyer Associates Â· Bengaluru</div>
           <div class="case-divider"></div>
           <div class="case-brief-text">A confidential settlement offer vanished from a senior partner's office overnight. Three people had access. The deal closes in 24 hours.</div>
           <div class="case-cta">Open Case File</div>
@@ -527,7 +539,7 @@
             <span class="case-status new">New</span>
           </div>
           <div class="case-title-text">The Last Shot</div>
-          <div class="case-setting-text">Film City · Mumbai</div>
+          <div class="case-setting-text">Film City Â· Mumbai</div>
           <div class="case-divider"></div>
           <div class="case-brief-text">The lead actor was found unconscious in his trailer 13 minutes before the final scene. Someone had tampered with his drink. The production insurance pays triple if it's sabotage.</div>
           <div class="case-cta">Open Case File</div>
@@ -542,7 +554,7 @@
             <span class="case-num">Case No. 003</span>
             <span class="case-status locked">Sealed</span>
           </div>
-          <div class="case-title-text">———</div>
+          <div class="case-title-text">âââ</div>
           <div class="case-setting-text">Location Unknown</div>
           <div class="case-divider"></div>
           <div class="case-brief-text">This file is sealed pending investigation.</div>
@@ -554,13 +566,13 @@
   </div>
 
   <div class="foot">
-    <span class="foot-text">© 2026 Pixel &amp; Ink · The Case Room</span>
+    <span class="foot-text">Â© 2026 Pixel &amp; Ink Â· The Case Room</span>
     <span class="foot-num">002 / ???</span>
   </div>
 </div>
 
 <script>
-// ── BG + RAIN ──
+// ââ BG + RAIN ââ
 const canvas = document.getElementById('bg');
 const ctx = canvas.getContext('2d');
 
@@ -615,7 +627,7 @@ function rainFrame() {
 }
 rainFrame();
 
-// ── AUDIO ──
+// ââ AUDIO ââ
 let audioCtx = null;
 
 function buildSuspenseAudio() {
@@ -668,9 +680,16 @@ function buildSuspenseAudio() {
   drone(220, 3,  0.05, now + 6.8, 2);
 }
 
-// ── INTRO CONTROLLER ──
-function startExperience() {
-  try { buildSuspenseAudio(); } catch(e) {}
+// ââ INTRO CONTROLLER ââ
+let started = false;
+
+function startExperience(withSound) {
+  if (started) return;
+  started = true;
+
+  if (withSound) {
+    try { buildSuspenseAudio(); } catch(e) {}
+  }
 
   const gate  = document.getElementById('gate');
   const intro = document.getElementById('intro');
@@ -693,8 +712,18 @@ function startExperience() {
   setTimeout(() => { land.classList.add('show'); },  7600);
 }
 
-document.getElementById('gate').addEventListener('click', startExperience);
-document.getElementById('gate').addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' ') startExperience();
+const gateEl     = document.getElementById('gate');
+const silentBtn  = document.getElementById('gate-silent');
+
+gateEl.addEventListener('click', e => {
+  if (e.target === silentBtn) return; // handled below
+  startExperience(true);
+});
+gateEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') startExperience(true);
+});
+silentBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  startExperience(false);
 });
 </script>
