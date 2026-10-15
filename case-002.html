@@ -577,6 +577,12 @@
         </div>
       </div>
 
+      <!-- ALWAYS-AVAILABLE REVEAL -->
+      <div id="spoiler-block" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--fg-low);display:none;">
+        <button class="reveal-btn" id="spoiler-btn" onclick="revealSpoiler()">Reveal solution -- spoilers</button>
+        <div class="reveal-text" id="spoiler-text"></div>
+      </div>
+
       <!-- SHARE -->
       <div class="share-block" id="share-block">
         <div class="stamp-card" id="stamp-card"></div>
@@ -766,14 +772,24 @@ Veer's message to Ronit supplies a possible motive. The accusation rests on the 
 
 // âââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-let nbState   = {};  // { exId: { relation, suspect } }
-let caseOver  = false;
+let nbState        = {};   // { exId: { relation, suspect } }
+let caseOver       = false;
+let savedSuspect   = '';
+let savedExhibits  = [];   // array of exhibit ids
+let completedAt    = null; // ISO date string
 
-const STORAGE_KEY = 'cr002';
+const STORAGE_KEY = 'cr002v2';
 
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ nbState, caseOver }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      v: 2,
+      nbState,
+      caseOver,
+      suspect:    document.getElementById('sel-suspect')?.value || '',
+      exhibits:   [...checkedExhibits],
+      completedAt
+    }));
   } catch(e) {}
 }
 
@@ -782,8 +798,12 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const data = JSON.parse(raw);
-    if (data.nbState)  nbState  = data.nbState;
-    if (data.caseOver) caseOver = data.caseOver;
+    if (data.v !== 2) return;
+    if (data.nbState)     nbState      = data.nbState;
+    if (data.caseOver)    caseOver     = data.caseOver;
+    if (data.suspect)     savedSuspect = data.suspect;
+    if (data.exhibits)    savedExhibits = data.exhibits;
+    if (data.completedAt) completedAt  = data.completedAt;
   } catch(e) {}
 }
 
@@ -844,7 +864,7 @@ function renderNotebook() {
   const el = document.getElementById('notebook-rows');
   const openIds = Object.keys(nbState);
   if (openIds.length === 0) {
-    el.innerHTML = '<div style="font-size:12px;color:var(--fg-low);padding:8px 0;">No exhibits reviewed yet.</div>';
+    el.innerHTML = '<div style="font-size:12px;color:var(--fg-low);padding:8px 0;">No exhibits opened yet.</div>';
     return;
   }
   el.innerHTML = '';
@@ -903,36 +923,54 @@ function nbClear(exId) {
 
 // âââ EXHIBIT CHECKBOXES âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-function renderExhibitCheckboxes() {
-  const el = document.getElementById('exhibit-checkboxes');
-  el.innerHTML = EXHIBITS.map(ex => `
-    <label class="exhibit-checkbox" id="chk-${ex.id}" onclick="toggleCheck('${ex.id}')">
-      <input type="checkbox" data-id="${ex.id}">
-      <div class="checkbox-box"></div>
-      <div class="checkbox-label">
-        <strong>Exhibit ${ex.id}</strong>${ex.name}
-      </div>
-    </label>`).join('');
-}
-
 let checkedExhibits = new Set();
 
-function toggleCheck(id) {
-  if (caseOver) return;
-  const lbl = document.getElementById('chk-' + id);
-  if (checkedExhibits.has(id)) {
-    checkedExhibits.delete(id);
-    lbl.classList.remove('checked');
-  } else {
-    if (checkedExhibits.size >= 2) {
-      const first = [...checkedExhibits][0];
-      checkedExhibits.delete(first);
-      document.getElementById('chk-' + first).classList.remove('checked');
-    }
-    checkedExhibits.add(id);
-    lbl.classList.add('checked');
-  }
-  updateNote();
+function renderExhibitCheckboxes() {
+  const container = document.getElementById('exhibit-checkboxes');
+  container.innerHTML = '';
+
+  EXHIBITS.forEach(ex => {
+    const label = document.createElement('label');
+    label.className = 'exhibit-checkbox';
+    label.id = 'chk-' + ex.id;
+
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.dataset.id = ex.id;
+    input.checked = checkedExhibits.has(ex.id);
+    input.disabled = caseOver;
+
+    const box = document.createElement('div');
+    box.className = 'checkbox-box';
+
+    const text = document.createElement('div');
+    text.className = 'checkbox-label';
+    const title = document.createElement('strong');
+    title.textContent = 'Exhibit ' + ex.id;
+    text.appendChild(title);
+    text.appendChild(document.createTextNode(ex.name));
+
+    label.appendChild(input);
+    label.appendChild(box);
+    label.appendChild(text);
+    label.classList.toggle('checked', input.checked);
+
+    input.addEventListener('change', () => {
+      if (input.checked && checkedExhibits.size >= 2) {
+        input.checked = false;
+        document.getElementById('accuse-note').textContent =
+          'Two exhibits are already selected. Deselect one first.';
+        return;
+      }
+      if (input.checked) checkedExhibits.add(ex.id);
+      else checkedExhibits.delete(ex.id);
+      label.classList.toggle('checked', input.checked);
+      updateNote();
+      saveState();
+    });
+
+    container.appendChild(label);
+  });
 }
 
 function updateNote() {
@@ -977,6 +1015,7 @@ function submitAccusation() {
     lockForm();
     showShare(true);
     revealEl.classList.add('show');
+    document.getElementById('spoiler-block').style.display = 'none';
   } else if (correctSuspect && !exhibitsOk) {
     vEl.classList.add('wrong');
     headline.textContent = FEEDBACK.wrong_exhibits.headline;
@@ -1001,8 +1040,26 @@ function revealSolution() {
   revBtn.style.display = 'none';
 }
 
+function revealSpoiler() {
+  const el  = document.getElementById('spoiler-text');
+  const btn = document.getElementById('spoiler-btn');
+  el.textContent = SOLUTION_REVEAL;
+  el.classList.add('show');
+  btn.style.display = 'none';
+  // Lock the form once a player consciously surrenders
+  if (!caseOver) {
+    caseOver = true;
+    lockForm();
+    showShare(false);
+    saveState();
+  }
+}
+
 function lockForm() {
   document.getElementById('sel-suspect').disabled = true;
+  document.querySelectorAll('#exhibit-checkboxes input[type="checkbox"]').forEach(inp => {
+    inp.disabled = true;
+  });
   document.querySelectorAll('.exhibit-checkbox').forEach(el => el.style.pointerEvents = 'none');
   document.getElementById('accuse-btn').disabled = true;
   document.getElementById('case-stamp').textContent  = 'Closed';
@@ -1011,17 +1068,22 @@ function lockForm() {
   document.getElementById('case-stamp-2').textContent  = 'Closed';
   document.getElementById('case-stamp-2').style.borderColor = 'var(--green-bright)';
   document.getElementById('case-stamp-2').style.color        = 'var(--green-bright)';
+  const caseNum = document.querySelector('.case-number');
+  if (caseNum) caseNum.textContent = 'Case 002 Â· Closed';
 }
 
 function showShare(solved) {
+  if (solved && !completedAt) completedAt = new Date().toISOString();
   const block = document.getElementById('share-block');
   block.classList.add('visible');
   const stamp = document.getElementById('stamp-card');
-  const date  = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  const dateStr = completedAt
+    ? new Date(completedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+    : new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
   stamp.textContent =
 `THE CASE ROOM
 Case 002 - The Last Shot
-${date}
+${dateStr}
 
 ${solved ? 'SOLVED' : 'UNSOLVED'}
 
@@ -1031,15 +1093,18 @@ thecaseroom.pixelandink.in`;
 function copyStamp() {
   const text = document.getElementById('stamp-card').textContent;
   const conf = document.getElementById('share-confirm');
-  const copy = () => {
+  const showMsg = (msg) => {
+    conf.textContent = msg;
     conf.classList.add('show');
     setTimeout(() => conf.classList.remove('show'), 2000);
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(copy).catch(() => { selectStamp(); copy(); });
+    navigator.clipboard.writeText(text)
+      .then(() => showMsg('Copied'))
+      .catch(() => { selectStamp(); showMsg('Text selected -- copy manually'); });
   } else {
     selectStamp();
-    copy();
+    showMsg('Text selected -- copy manually');
   }
 }
 
@@ -1055,15 +1120,38 @@ function selectStamp() {
 // âââ INIT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 loadState();
+
+// Restore checked exhibits from saved state before rendering checkboxes
+savedExhibits.forEach(id => checkedExhibits.add(id));
+
 renderExhibits();
 renderStatements();
 renderNotebook();
 renderExhibitCheckboxes();
 updateNote();
 
+// Restore suspect selection
+if (savedSuspect) {
+  const sel = document.getElementById('sel-suspect');
+  if (sel) sel.value = savedSuspect;
+}
+
+// Show the always-available spoiler button to anyone (non-solved players)
+if (!caseOver) {
+  document.getElementById('spoiler-block').style.display = 'block';
+}
+
 if (caseOver) {
   lockForm();
-  showShare(true);
+
+  // Restore full verdict UI
+  const vEl = document.getElementById('verdict');
+  vEl.style.display = 'block';
+  vEl.classList.add('correct');
+  document.getElementById('verdict-headline').textContent = FEEDBACK.correct.headline;
+  document.getElementById('verdict-body').textContent     = FEEDBACK.correct.body;
   document.getElementById('verdict-reveal').classList.add('show');
+
+  showShare(true);
 }
 </script>
