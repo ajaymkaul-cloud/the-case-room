@@ -216,7 +216,7 @@
   }
   .exhibit-content {
     padding: 16px 18px;
-    font-size: 15px; color: var(--fg-mid); line-height: 1.75;
+    font-size: 16px; color: var(--fg-mid); line-height: 1.8;
     white-space: pre-line;
   }
   .exhibit-content strong { color: var(--fg); }
@@ -229,7 +229,7 @@
     background: var(--card-bg);
   }
   .statement-name {
-    font-size: 10px; color: var(--gold); letter-spacing: 0.18em;
+    font-size: 14px; color: var(--gold); letter-spacing: 0.14em;
     text-transform: uppercase; margin-bottom: 4px;
   }
   .statement-role {
@@ -237,7 +237,7 @@
     text-transform: uppercase; margin-bottom: 10px;
   }
   .statement-text {
-    font-size: 15px; color: var(--fg-mid); line-height: 1.75; font-style: italic;
+    font-size: 16px; color: var(--fg-mid); line-height: 1.8; font-style: italic;
   }
   .statement-text::before { content: '\201C'; color: var(--gold-dim); }
   .statement-text::after  { content: '\201D'; color: var(--gold-dim); }
@@ -274,11 +274,11 @@
   .nb-center {
     flex: 1; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px;
   }
-  .nb-exhibit-name { font-size: 13px; color: var(--fg); font-weight: 700; }
+  .nb-exhibit-name { font-size: 15px; color: var(--fg); font-weight: 700; }
   .nb-relation-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
   .nb-relation-btn {
-    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-    padding: 3px 10px; border: 1px solid var(--fg-low);
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 5px 11px; border: 1px solid var(--fg-low);
     background: transparent; color: var(--fg-mid);
     cursor: pointer; transition: all 0.15s; font-family: 'Courier Prime', monospace;
   }
@@ -286,8 +286,8 @@
   .nb-relation-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,0.08); }
   .nb-suspect-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
   .nb-suspect-btn {
-    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    padding: 3px 10px; border: 1px solid var(--fg-low);
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 5px 11px; border: 1px solid var(--fg-low);
     background: transparent; color: var(--fg-mid);
     cursor: pointer; transition: all 0.15s; font-family: 'Courier Prime', monospace;
   }
@@ -307,16 +307,16 @@
   .accuse-form { display: flex; flex-direction: column; gap: 16px; }
   .accuse-row  { display: flex; flex-direction: column; gap: 7px; }
   .accuse-label {
-    font-size: 11px; letter-spacing: 0.35em; color: var(--gold); text-transform: uppercase;
+    font-size: 13px; letter-spacing: 0.28em; color: var(--gold); text-transform: uppercase;
   }
   .accuse-sublabel {
-    font-size: 11px; color: var(--fg-mid); letter-spacing: 0.04em; margin-top: -4px;
+    font-size: 14px; color: var(--fg-mid); letter-spacing: 0.03em; margin-top: -4px;
   }
   .accuse-select {
     appearance: none;
     background: var(--card-bg); border: 1px solid var(--gold-dim);
     color: var(--fg); font-family: 'Courier Prime', monospace;
-    font-size: 15px; padding: 12px 18px; cursor: pointer;
+    font-size: 16px; padding: 13px 18px; cursor: pointer;
     outline: none; width: 100%; transition: border-color 0.2s;
   }
   .accuse-select:focus { border-color: var(--gold); }
@@ -352,10 +352,10 @@
     border-top: none; border-left: none; transform: rotate(45deg);
   }
   .exhibit-checkbox.checked { border-color: var(--gold-dim); }
-  .checkbox-label { font-size: 13px; color: var(--fg-mid); line-height: 1.5; }
-  .checkbox-label strong { color: var(--fg); display: block; margin-bottom: 2px; }
+  .checkbox-label { font-size: 15px; color: var(--fg-mid); line-height: 1.6; }
+  .checkbox-label strong { font-size: 14px; color: var(--fg); display: block; margin-bottom: 2px; }
   .accuse-note {
-    font-size: 13px; color: var(--fg-mid); font-style: italic; line-height: 1.6;
+    font-size: 15px; color: var(--fg-mid); font-style: italic; line-height: 1.7;
     border-left: 2px solid var(--gold-dim); padding-left: 10px;
   }
   .accuse-btn {
@@ -389,7 +389,7 @@
   }
   #verdict.correct .verdict-headline { color: var(--gold); }
   #verdict.wrong   .verdict-headline { color: var(--red); }
-  .verdict-body { font-size: 15px; color: var(--fg-mid); line-height: 1.8; }
+  .verdict-body { font-size: 16px; color: var(--fg-mid); line-height: 1.8; }
   .verdict-reveal {
     margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--fg-low);
     display: none;
@@ -402,7 +402,7 @@
     padding: 8px 18px; cursor: pointer; transition: all 0.2s;
   }
   .reveal-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
-  .reveal-text { margin-top: 14px; font-size: 15px; color: var(--fg-mid); line-height: 1.8; display: none; white-space: pre-wrap; }
+  .reveal-text { margin-top: 14px; font-size: 16px; color: var(--fg-mid); line-height: 1.8; display: none; white-space: pre-wrap; }
   .reveal-text.show { display: block; }
 
   /* SHARE */
@@ -470,14 +470,16 @@
     .case-dossier::before { display: none; }
     .dossier-stamp { margin-top: 0; }
     .exhibit-name  { font-size: 15px; }
-    .exhibit-content { font-size: 15px; line-height: 1.75; }
-    .statement-text { font-size: 15px; line-height: 1.75; }
+    .exhibit-content { font-size: 16px; line-height: 1.8; }
+    .statement-text { font-size: 16px; line-height: 1.8; }
+    .statement-name { font-size: 14px; }
     .accuse-select { font-size: 16px; padding: 14px 16px; }
-    .accuse-btn    { font-size: 15px; padding: 18px; }
-    .verdict-body  { font-size: 15px; line-height: 1.8; }
-    .verdict-headline { font-size: 20px; }
-    .nb-exhibit-tag { min-width: 64px; font-size: 9px; }
-    .nb-exhibit-name { font-size: 12px; }
+    .accuse-btn    { font-size: 14px; padding: 18px; }
+    .verdict-body  { font-size: 16px; line-height: 1.8; }
+    .verdict-headline { font-size: 21px; }
+    .nb-exhibit-tag { min-width: 64px; font-size: 10px; }
+    .nb-exhibit-name { font-size: 15px; }
+    .nb-relation-btn, .nb-suspect-btn { font-size: 12px; }
     .rules-grid { grid-template-columns: 1fr; }
   }
 </style>
@@ -560,7 +562,7 @@
   <div class="puzzle-right">
     <div class="section-label">Your Notebook</div>
     <div class="notebook">
-      <div class="notebook-hint">Open an exhibit, then tag it. Link it to a suspect if it implicates one. </div>
+      <div class="notebook-hint">Open an exhibit, then tag it. Link it to a suspect if it implicates one.</div>
       <div id="notebook-rows"></div>
     </div>
 
@@ -615,7 +617,7 @@
         <div class="stamp-card" id="stamp-card"></div>
         <div style="display:flex;align-items:center;">
           <button class="share-btn" onclick="copyStamp()">Copy Result</button>
-          <span class="share-confirm" id="share-confirm">SCopied</span>
+          <span class="share-confirm" id="share-confirm">Copied</span>
         </div>
       </div>
     </div>
@@ -629,7 +631,7 @@
 </div>
 
 <script>
-// â DATA âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// âââ DATA âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 const EXHIBITS = [
   {
