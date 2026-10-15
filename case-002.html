@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>The Case Room</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
@@ -558,7 +560,7 @@
   <div class="puzzle-right">
     <div class="section-label">Your Notebook</div>
     <div class="notebook">
-      <div class="notebook-hint">Open an exhibit, then tag it. Link it to a suspect if it implicates one.</div>
+      <div class="notebook-hint">Open an exhibit, then tag it. Link it to a suspect if it implicates one. </div>
       <div id="notebook-rows"></div>
     </div>
 
@@ -613,7 +615,7 @@
         <div class="stamp-card" id="stamp-card"></div>
         <div style="display:flex;align-items:center;">
           <button class="share-btn" onclick="copyStamp()">Copy Result</button>
-          <span class="share-confirm" id="share-confirm">Copied</span>
+          <span class="share-confirm" id="share-confirm">SCopied</span>
         </div>
       </div>
     </div>
@@ -627,7 +629,7 @@
 </div>
 
 <script>
-// âââ DATA âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// â DATA âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 const EXHIBITS = [
   {
@@ -967,7 +969,7 @@ function renderExhibitCheckboxes() {
     const label = document.createElement('label');
     label.className = 'exhibit-checkbox';
     label.id = 'chk-' + ex.id;
-    
+
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.dataset.id = ex.id;
@@ -1099,7 +1101,8 @@ function showShare(solved) {
     ? new Date(completedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
     : new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
   const outcomeLabel = solved ? 'SOLVED' : 'SOLUTION REVEALED';
-  stamp.textContent = `THEQ CASE ROOM
+  stamp.textContent =
+`THE CASE ROOM
 Case 002 - The Last Shot
 ${dateStr}
 
@@ -1135,62 +1138,140 @@ function selectStamp() {
   sel.addRange(range);
 }
 
-// âââ OUTCOME RENDER ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// âââ OUTCOME RENDER âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 function renderOutcome() {
+  const verdict = document.getElementById('verdict');
+  const spoilerBlock = document.getElementById('spoiler-block');
+  const revealSection = document.getElementById('verdict-reveal');
+  const revealText = document.getElementById('reveal-text');
+  const revealButton = document.getElementById('reveal-btn');
+
   if (caseStatus === 'investigating') {
-    document.getElementById('spoiler-block').style.display = 'block';
+    spoilerBlock.style.display = 'block';
     return;
   }
 
   lockForm();
 
   const solved = caseStatus === 'solved';
-  const verdict = document.getElementById('verdict');
 
   verdict.style.display = 'block';
-  verdict.className = ÛÛYÈ	ØÛÜXÝ	È	ÉÎÂØÝ[Y[Ù][[Y[RY
-	Ý\XÝZXY[IÊK^ÛÛ[BÛÛYÈ	ÐØ\ÙHÛÜÙYÈ	ÔÛÛ][Û]X[YÎÂØÝ[Y[Ù][[Y[RY
-	Ý\XÝXÙIÊK^ÛÛ[BÛÛYÈQQPÒËÛÜXÝÙB	Ö[ÝHÚÜÙHÈ]X[HÛÛ][Û\ÈØ\ÙH\ÈÝXÛÜY\ÈÛÛYÎÂØÝ[Y[Ù][[Y[RY
-	ÜÜÚ[\XØÚÉÊKÝ[K\Ü^HH	ÛÛIÎÂØÝ[Y[Ù][[Y[RY
-	Ý\XÝ\]X[	ÊKÛ\ÜÓ\ÝY
-	ÜÚÝÉÊNÂY
-\ÛÛY
-HÂÛÛÝ]^HØÝ[Y[Ù][[Y[RY
-	Ü]X[]^	ÊNÂ]^^ÛÛ[HÓÓUSÓÔUPSÂ]^Û\ÜÓ\ÝY
-	ÜÚÝÉÊNÂØÝ[Y[Ù][[Y[RY
-	Ü]X[XÊKÝ[K\Ü^HH	ÛÛIÎÂBÛÛÝÝ]\Õ^HÛÛYÈ	ÔÛÛY	È	Ô]X[Y	ÎÂÉØØ\ÙK\Ý[\	Ë	ØØ\ÙK\Ý[\L×KÜXXÚ
-YOÂÛÛÝ[HØÝ[Y[Ù][[Y[RY
-Y
-NÂY
-[
-HÂ[^ÛÛ[HÝ]\Õ^Â[Ý[KÜ\ÛÛÜH	Ý\KYÜY[XYÚ
-IÎÂ[Ý[KÛÛÜH	Ý\KYÜY[XYÚ
-IÎÂBJNÂÛÛÝXY[ÈHØÝ[Y[]Y\TÙ[XÝÜ	ËØ\ÙK[[X\ÊNÂY
-XY[ÊHXY[Ë^ÛÛ[HØ\ÙH0­È	ÜÝ]\Õ^XÂÚÝÔÚ\JÛÛY
-NÂB[Ý[Û\Ù]Ø\ÙJ
-HÂY
-]Ú[ÝËÛÛ\J	ÐÛX\[Ý\Ý\È[\Ý\\ÈØ\ÙOÉÊJH]\ÂHÈØØ[ÝÜYÙK[[ÝR][JÕÔQÑWÒÑVJNÈHØ]Ú
-\ÜHßBÚ[ÝËØØ][Û[ØY
+  verdict.className = solved ? 'correct' : '';
 
-NÂBËÈ8¥ 8¥ 8¥ SU8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ ØYÝ]J
-NÂØ]Y^X]ËÜXXÚ
-YOÚXÚÙY^X]ËY
-Y
-JNÂ[\^X]Ê
-NÂ[\Ý][Y[Ê
-NÂ[\ÝXÛÚÊ
-NÂ[\^X]ÚXÚØÞ\Ê
-NÂ\]SÝJ
-NÂY
-Ø]YÝ\ÜXÝ
-HÂÛÛÝÙ[HØÝ[Y[Ù][[Y[RY
-	ÜÙ[\Ý\ÜXÝ	ÊNÂY
-Ù[
-HÙ[[YHHØ]YÝ\ÜXÝÂBØÝ[Y[Ù][[Y[RY
-	ÜÙ[\Ý\ÜXÝ	ÊKY][\Ý[\	ØÚ[ÙIË
+  document.getElementById('verdict-headline').textContent =
+    solved ? FEEDBACK.correct.headline : 'Solution revealed.';
 
-HOÂØÝ[Y[Ù][[Y[RY
-	ÜÙ[\Ý\ÜXÝ	ÊKÛ\ÜÓ\Ý[[ÝJ	Ù\ÜÊNÂØ]TÝ]J
-NÂJNÂ[\Ý]ÛÛYJ
-NÂÜØÜ\
+  document.getElementById('verdict-body').textContent =
+    solved
+      ? FEEDBACK.correct.body
+      : 'You chose to reveal the solution. This case is recorded as revealed, not solved.';
+
+  spoilerBlock.style.display = 'none';
+  revealSection.classList.add('show');
+
+  if (solved) {
+    revealText.classList.remove('show');
+    revealButton.style.display = '';
+  } else {
+    revealSolution();
+  }
+
+  const statusText = solved ? 'Solved' : 'Revealed';
+  const statusColor = solved ? 'var(--green-bright)' : 'var(--gold)';
+
+  ['case-stamp', 'case-stamp-2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = statusText;
+    el.style.borderColor = statusColor;
+    el.style.color = statusColor;
+  });
+
+  const heading = document.querySelector('.case-number');
+  if (heading) heading.textContent = `Case 002 - ${statusText}`;
+
+  showShare(solved);
+}
+
+function resetCase() {
+  const confirmed = window.confirm('Clear your notes and restart this case?');
+  if (!confirmed) return;
+
+  try { localStorage.removeItem(STORAGE_KEY); } catch (error) {}
+
+  nbState = {};
+  caseStatus = 'investigating';
+  savedSuspect = '';
+  savedExhibits = [];
+  checkedExhibits = new Set();
+  completedAt = null;
+
+  const suspectSelect = document.getElementById('sel-suspect');
+  suspectSelect.disabled = false;
+  suspectSelect.value = '';
+  suspectSelect.classList.remove('error');
+
+  document.getElementById('accuse-btn').disabled = false;
+
+  const verdict = document.getElementById('verdict');
+  verdict.style.display = 'none';
+  verdict.className = '';
+
+  document.getElementById('verdict-headline').textContent = '';
+  document.getElementById('verdict-body').textContent = '';
+  document.getElementById('verdict-reveal').classList.remove('show');
+  document.getElementById('reveal-text').classList.remove('show');
+  document.getElementById('reveal-text').textContent = '';
+  document.getElementById('reveal-btn').style.display = '';
+  document.getElementById('spoiler-text').classList.remove('show');
+  document.getElementById('spoiler-text').textContent = '';
+  document.getElementById('spoiler-btn').style.display = '';
+  document.getElementById('share-block').classList.remove('visible');
+  document.getElementById('stamp-card').textContent = '';
+  document.getElementById('share-confirm').classList.remove('show');
+
+  ['case-stamp', 'case-stamp-2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = 'Open';
+    el.style.borderColor = '';
+    el.style.color = '';
+  });
+
+  const heading = document.querySelector('.case-number');
+  if (heading) heading.textContent = 'Case 002 - Open Investigation';
+
+  renderExhibits();
+  renderNotebook();
+  renderExhibitCheckboxes();
+  updateNote();
+  renderOutcome();
+  saveState();
+}
+
+// âââ INIT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+loadState();
+
+savedExhibits.forEach(id => checkedExhibits.add(id));
+
+renderExhibits();
+renderStatements();
+renderNotebook();
+renderExhibitCheckboxes();
+updateNote();
+
+const suspectSelect = document.getElementById('sel-suspect');
+
+if (savedSuspect) {
+  suspectSelect.value = savedSuspect;
+}
+
+suspectSelect.addEventListener('change', () => {
+  suspectSelect.classList.remove('error');
+  saveState();
+});
+
+renderOutcome();
+</script>
