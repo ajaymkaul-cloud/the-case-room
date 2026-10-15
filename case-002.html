@@ -60,7 +60,7 @@
     letter-spacing: -0.01em;
   }
   .bar-logo em { color: var(--gold); font-style: italic; }
-  .bar-label { font-size: 11px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
+  .bar-label { font-size: 12px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
   .bar-stamp {
     font-size: 11px; letter-spacing: 0.18em; color: var(--red);
     text-transform: uppercase; border: 1px solid var(--red);
@@ -78,7 +78,7 @@
   }
   .case-header-text { min-width: 0; }
   .case-number {
-    font-size: 12px; letter-spacing: 0.38em; color: var(--gold);
+    font-size: 13px; letter-spacing: 0.38em; color: var(--gold);
     text-transform: uppercase; margin-bottom: 14px;
   }
   .case-title {
@@ -129,7 +129,7 @@
     font-size: 8px; letter-spacing: 0.3em; color: var(--gold);
     text-transform: uppercase; opacity: 0.6;
   }
-  .dossier-val { font-size: 11px; color: var(--fg); letter-spacing: 0.04em; line-height: 1.4; }
+  .dossier-val { font-size: 12px; color: var(--fg); letter-spacing: 0.04em; line-height: 1.4; }
   .dossier-divider { height: 1px; background: var(--fg-low); margin: 10px 0; }
   .dossier-stamp {
     margin-top: 14px; font-size: 13px; letter-spacing: 0.2em; color: var(--red);
@@ -152,7 +152,7 @@
     gap: 6px 32px;
   }
   .rule-item {
-    font-size: 12px; color: var(--fg-mid); line-height: 1.6;
+    font-size: 13px; color: var(--fg-mid); line-height: 1.6;
     padding-left: 14px; position: relative;
   }
   .rule-item::before {
@@ -209,12 +209,12 @@
     border-top: 0px solid var(--fg-low);
   }
   .exhibit.open .exhibit-body {
-    max-height: 900px;
+    max-height: 2000px;
     border-top: 1px solid var(--fg-low);
   }
   .exhibit-content {
     padding: 16px 18px;
-    font-size: 14px; color: var(--fg-mid); line-height: 1.75;
+    font-size: 15px; color: var(--fg-mid); line-height: 1.75;
     white-space: pre-line;
   }
   .exhibit-content strong { color: var(--fg); }
@@ -231,11 +231,11 @@
     text-transform: uppercase; margin-bottom: 4px;
   }
   .statement-role {
-    font-size: 10px; color: var(--fg-low); letter-spacing: 0.12em;
+    font-size: 10px; color: var(--fg-mid); letter-spacing: 0.12em;
     text-transform: uppercase; margin-bottom: 10px;
   }
   .statement-text {
-    font-size: 14px; color: var(--fg-mid); line-height: 1.75; font-style: italic;
+    font-size: 15px; color: var(--fg-mid); line-height: 1.75; font-style: italic;
   }
   .statement-text::before { content: '\201C'; color: var(--gold-dim); }
   .statement-text::after  { content: '\201D'; color: var(--gold-dim); }
@@ -247,7 +247,7 @@
   /* NOTEBOOK */
   .notebook { margin-bottom: 36px; }
   .notebook-hint {
-    font-size: 12px; color: var(--fg-mid); line-height: 1.6;
+    font-size: 13px; color: var(--fg-mid); line-height: 1.6;
     margin-bottom: 16px; border-left: 2px solid var(--gold-dim); padding-left: 12px;
   }
   .nb-row {
@@ -327,7 +327,15 @@
     transition: border-color 0.2s;
   }
   .exhibit-checkbox:hover { border-color: var(--gold-dim); }
-  .exhibit-checkbox input[type="checkbox"] { display: none; }
+  .exhibit-checkbox input[type="checkbox"] {
+    display: block;
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%);
+    white-space: nowrap; border: 0;
+  }
+  .exhibit-checkbox { position: relative; }
   .checkbox-box {
     width: 16px; height: 16px; border: 1px solid var(--gold-dim);
     flex-shrink: 0; margin-top: 1px; position: relative;
@@ -345,7 +353,7 @@
   .checkbox-label { font-size: 13px; color: var(--fg-mid); line-height: 1.5; }
   .checkbox-label strong { color: var(--fg); display: block; margin-bottom: 2px; }
   .accuse-note {
-    font-size: 12px; color: var(--fg-mid); font-style: italic; line-height: 1.6;
+    font-size: 13px; color: var(--fg-mid); font-style: italic; line-height: 1.6;
     border-left: 2px solid var(--gold-dim); padding-left: 10px;
   }
   .accuse-btn {
@@ -379,7 +387,7 @@
   }
   #verdict.correct .verdict-headline { color: var(--gold); }
   #verdict.wrong   .verdict-headline { color: var(--red); }
-  .verdict-body { font-size: 14px; color: var(--fg-mid); line-height: 1.8; }
+  .verdict-body { font-size: 15px; color: var(--fg-mid); line-height: 1.8; }
   .verdict-reveal {
     margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--fg-low);
     display: none;
@@ -392,7 +400,7 @@
     padding: 8px 18px; cursor: pointer; transition: all 0.2s;
   }
   .reveal-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
-  .reveal-text { margin-top: 14px; font-size: 14px; color: var(--fg-mid); line-height: 1.8; display: none; }
+  .reveal-text { margin-top: 14px; font-size: 15px; color: var(--fg-mid); line-height: 1.8; display: none; white-space: pre-wrap; }
   .reveal-text.show { display: block; }
 
   /* SHARE */
@@ -405,7 +413,8 @@
     background: var(--bg); border: 1px solid var(--fg-low);
     padding: 16px 18px; font-size: 12px; letter-spacing: 0.08em;
     color: var(--fg-mid); line-height: 1.9;
-    overflow-wrap: break-word; word-break: break-all;
+    overflow-wrap: anywhere; word-break: normal;
+    white-space: pre-wrap;
     margin-bottom: 12px; user-select: all;
   }
   .share-btn {
@@ -422,6 +431,16 @@
   }
   .share-confirm.show { opacity: 1; }
 
+  /* FOCUS */
+  button:focus-visible, a:focus-visible, select:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+  }
+  .exhibit-checkbox:focus-within {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
   /* FOOTER */
   .foot {
     padding: 20px max(40px, 16px);
@@ -436,7 +455,8 @@
     .puzzle-layout { grid-template-columns: 1fr; }
     .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); }
     .case-header, .puzzle-left, .puzzle-right, .case-rules { padding-left: 16px; padding-right: 16px; }
-    .top-bar { padding-left: 16px; padding-right: 16px; }
+    .top-bar { padding-left: 16px; padding-right: 16px; grid-template-columns: 1fr; }
+    .bar-left { min-width: 0; flex-wrap: wrap; gap: 8px 16px; }
     .bar-center { display: none; }
     .bar-right  { display: none; }
     .bar-logo   { font-size: 15px; }
@@ -581,6 +601,11 @@
       <div id="spoiler-block" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--fg-low);display:none;">
         <button class="reveal-btn" id="spoiler-btn" onclick="revealSpoiler()">Reveal solution -- spoilers</button>
         <div class="reveal-text" id="spoiler-text"></div>
+      </div>
+
+      <!-- RESET -->
+      <div style="margin-top:16px;">
+        <button type="button" class="reveal-btn" onclick="resetCase()">Restart case</button>
       </div>
 
       <!-- SHARE -->
@@ -772,25 +797,27 @@ Veer's message to Ronit supplies a possible motive. The accusation rests on the 
 
 // âââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-let nbState        = {};   // { exId: { relation, suspect } }
-let caseOver       = false;
-let savedSuspect   = '';
-let savedExhibits  = [];   // array of exhibit ids
-let completedAt    = null; // ISO date string
+let nbState       = {};   // { exId: { relation, suspect } }
+let caseStatus    = 'investigating'; // 'investigating' | 'solved' | 'revealed'
+let savedSuspect  = '';
+let savedExhibits = [];   // array of exhibit ids
+let completedAt   = null; // ISO date string
 
-const STORAGE_KEY = 'cr002v2';
+const STORAGE_KEY = 'cr002v3';
+
+function isCaseOver() { return caseStatus !== 'investigating'; }
 
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      v: 2,
+      v: 3,
       nbState,
-      caseOver,
+      status:     caseStatus,
       suspect:    document.getElementById('sel-suspect')?.value || '',
       exhibits:   [...checkedExhibits],
       completedAt
     }));
-  } catch(e) {}
+  } catch(error) {}
 }
 
 function loadState() {
@@ -798,12 +825,19 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const data = JSON.parse(raw);
-    if (data.v !== 2) return;
-    if (data.nbState)     nbState      = data.nbState;
-    if (data.caseOver)    caseOver     = data.caseOver;
-    if (data.suspect)     savedSuspect = data.suspect;
-    if (data.exhibits)    savedExhibits = data.exhibits;
-    if (data.completedAt) completedAt  = data.completedAt;
+    if (data.v !== 3) return;
+    if (data.nbState) {
+      const validIds = new Set(EXHIBITS.map(e => e.id));
+      Object.keys(data.nbState).forEach(k => { if (validIds.has(k)) nbState[k] = data.nbState[k]; });
+    }
+    if (['investigating','solved','revealed'].includes(data.status)) caseStatus = data.status;
+    const suspectIds = new Set(SUSPECTS.map(s => s.id));
+    if (data.suspect && suspectIds.has(data.suspect)) savedSuspect = data.suspect;
+    if (Array.isArray(data.exhibits)) {
+      const validIds = new Set(EXHIBITS.map(e => e.id));
+      savedExhibits = data.exhibits.filter(id => validIds.has(id)).slice(0, 2);
+    }
+    if (data.completedAt) completedAt = data.completedAt;
   } catch(e) {}
 }
 
@@ -899,7 +933,7 @@ function renderNotebook() {
 }
 
 function nbSetRelation(exId, rel) {
-  if (caseOver) return;
+  if (isCaseOver()) return;
   if (!nbState[exId]) nbState[exId] = {};
   nbState[exId].relation = nbState[exId].relation === rel ? null : rel;
   saveState();
@@ -907,7 +941,7 @@ function nbSetRelation(exId, rel) {
 }
 
 function nbSetSuspect(exId, suspId) {
-  if (caseOver) return;
+  if (isCaseOver()) return;
   if (!nbState[exId]) nbState[exId] = {};
   nbState[exId].suspect = nbState[exId].suspect === suspId ? null : suspId;
   saveState();
@@ -915,7 +949,7 @@ function nbSetSuspect(exId, suspId) {
 }
 
 function nbClear(exId) {
-  if (caseOver) return;
+  if (isCaseOver()) return;
   nbState[exId] = {};
   saveState();
   renderNotebook();
@@ -933,12 +967,12 @@ function renderExhibitCheckboxes() {
     const label = document.createElement('label');
     label.className = 'exhibit-checkbox';
     label.id = 'chk-' + ex.id;
-
+    
     const input = document.createElement('input');
     input.type = 'checkbox';
     input.dataset.id = ex.id;
     input.checked = checkedExhibits.has(ex.id);
-    input.disabled = caseOver;
+    input.disabled = isCaseOver();
 
     const box = document.createElement('div');
     box.className = 'checkbox-box';
@@ -984,7 +1018,7 @@ function updateNote() {
 // âââ ACCUSATION âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 function submitAccusation() {
-  if (caseOver) return;
+  if (isCaseOver()) return;
 
   const suspect = document.getElementById('sel-suspect').value;
   const exArr   = [...checkedExhibits];
@@ -996,40 +1030,33 @@ function submitAccusation() {
 
   document.getElementById('sel-suspect').classList.remove('error');
 
-  const vEl      = document.getElementById('verdict');
-  const headline = document.getElementById('verdict-headline');
-  const body     = document.getElementById('verdict-body');
-  const revealEl = document.getElementById('verdict-reveal');
-
-  vEl.style.display = 'block';
-  vEl.className = '';
-
   const correctSuspect = suspect === ANSWER.suspect;
   const exhibitsOk     = DECISIVE_EXHIBITS.every(e => exArr.includes(e));
 
   if (correctSuspect && exhibitsOk) {
-    vEl.classList.add('correct');
-    headline.textContent = FEEDBACK.correct.headline;
-    body.textContent     = FEEDBACK.correct.body;
-    caseOver = true;
-    lockForm();
-    showShare(true);
-    revealEl.classList.add('show');
-    document.getElementById('spoiler-block').style.display = 'none';
-  } else if (correctSuspect && !exhibitsOk) {
-    vEl.classList.add('wrong');
-    headline.textContent = FEEDBACK.wrong_exhibits.headline;
-    body.textContent     = FEEDBACK.wrong_exhibits.body;
+    caseStatus = 'solved';
+    completedAt = new Date().toISOString();
+    saveState();
+    renderOutcome();
   } else {
-    vEl.classList.add('wrong');
-    const key = 'wrong_suspect_' + suspect;
-    const fb  = FEEDBACK[key] || { headline: 'Theory unsupported.', body: 'The evidence does not uniquely establish this suspect. Review the exhibits.' };
-    headline.textContent = fb.headline;
-    body.textContent     = fb.body;
+    const vEl      = document.getElementById('verdict');
+    const headline = document.getElementById('verdict-headline');
+    const body     = document.getElementById('verdict-body');
+    vEl.style.display = 'block';
+    vEl.className = 'wrong';
+    if (correctSuspect && !exhibitsOk) {
+      headline.textContent = FEEDBACK.wrong_exhibits.headline;
+      body.textContent     = FEEDBACK.wrong_exhibits.body;
+    } else {
+      const key = 'wrong_suspect_' + suspect;
+      const fb  = FEEDBACK[key] || { headline: 'Theory unsupported.', body: 'The evidence does not uniquely establish this suspect. Review the exhibits.' };
+      headline.textContent = fb.headline;
+      body.textContent     = fb.body;
+    }
+    saveState();
   }
 
-  vEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  saveState();
+  document.getElementById('verdict').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function revealSolution() {
@@ -1041,18 +1068,17 @@ function revealSolution() {
 }
 
 function revealSpoiler() {
-  const el  = document.getElementById('spoiler-text');
-  const btn = document.getElementById('spoiler-btn');
-  el.textContent = SOLUTION_REVEAL;
-  el.classList.add('show');
-  btn.style.display = 'none';
-  // Lock the form once a player consciously surrenders
-  if (!caseOver) {
-    caseOver = true;
-    lockForm();
-    showShare(false);
-    saveState();
-  }
+  if (caseStatus !== 'investigating') return;
+
+  const confirmed = window.confirm(
+    'Reveal the solution? This case will be marked as revealed, not solved.'
+  );
+  if (!confirmed) return;
+
+  caseStatus = 'revealed';
+  completedAt = new Date().toISOString();
+  saveState();
+  renderOutcome();
 }
 
 function lockForm() {
@@ -1062,14 +1088,6 @@ function lockForm() {
   });
   document.querySelectorAll('.exhibit-checkbox').forEach(el => el.style.pointerEvents = 'none');
   document.getElementById('accuse-btn').disabled = true;
-  document.getElementById('case-stamp').textContent  = 'Closed';
-  document.getElementById('case-stamp').style.borderColor = 'var(--green-bright)';
-  document.getElementById('case-stamp').style.color        = 'var(--green-bright)';
-  document.getElementById('case-stamp-2').textContent  = 'Closed';
-  document.getElementById('case-stamp-2').style.borderColor = 'var(--green-bright)';
-  document.getElementById('case-stamp-2').style.color        = 'var(--green-bright)';
-  const caseNum = document.querySelector('.case-number');
-  if (caseNum) caseNum.textContent = 'Case 002 Â· Closed';
 }
 
 function showShare(solved) {
@@ -1080,12 +1098,12 @@ function showShare(solved) {
   const dateStr = completedAt
     ? new Date(completedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
     : new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-  stamp.textContent =
-`THE CASE ROOM
+  const outcomeLabel = solved ? 'SOLVED' : 'SOLUTION REVEALED';
+  stamp.textContent = `THEQ CASE ROOM
 Case 002 - The Last Shot
 ${dateStr}
 
-${solved ? 'SOLVED' : 'UNSOLVED'}
+${outcomeLabel}
 
 thecaseroom.pixelandink.in`;
 }
@@ -1117,41 +1135,62 @@ function selectStamp() {
   sel.addRange(range);
 }
 
-// âââ INIT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// âââ OUTCOME RENDER ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-loadState();
+function renderOutcome() {
+  if (caseStatus === 'investigating') {
+    document.getElementById('spoiler-block').style.display = 'block';
+    return;
+  }
 
-// Restore checked exhibits from saved state before rendering checkboxes
-savedExhibits.forEach(id => checkedExhibits.add(id));
-
-renderExhibits();
-renderStatements();
-renderNotebook();
-renderExhibitCheckboxes();
-updateNote();
-
-// Restore suspect selection
-if (savedSuspect) {
-  const sel = document.getElementById('sel-suspect');
-  if (sel) sel.value = savedSuspect;
-}
-
-// Show the always-available spoiler button to anyone (non-solved players)
-if (!caseOver) {
-  document.getElementById('spoiler-block').style.display = 'block';
-}
-
-if (caseOver) {
   lockForm();
 
-  // Restore full verdict UI
-  const vEl = document.getElementById('verdict');
-  vEl.style.display = 'block';
-  vEl.classList.add('correct');
-  document.getElementById('verdict-headline').textContent = FEEDBACK.correct.headline;
-  document.getElementById('verdict-body').textContent     = FEEDBACK.correct.body;
-  document.getElementById('verdict-reveal').classList.add('show');
+  const solved = caseStatus === 'solved';
+  const verdict = document.getElementById('verdict');
 
-  showShare(true);
-}
-</script>
+  verdict.style.display = 'block';
+  verdict.className = ÛÛYÈ	ØÛÜXÝ	È	ÉÎÂØÝ[Y[Ù][[Y[RY
+	Ý\XÝZXY[IÊK^ÛÛ[BÛÛYÈ	ÐØ\ÙHÛÜÙYÈ	ÔÛÛ][Û]X[YÎÂØÝ[Y[Ù][[Y[RY
+	Ý\XÝXÙIÊK^ÛÛ[BÛÛYÈQQPÒËÛÜXÝÙB	Ö[ÝHÚÜÙHÈ]X[HÛÛ][Û\ÈØ\ÙH\ÈÝXÛÜY\ÈÛÛYÎÂØÝ[Y[Ù][[Y[RY
+	ÜÜÚ[\XØÚÉÊKÝ[K\Ü^HH	ÛÛIÎÂØÝ[Y[Ù][[Y[RY
+	Ý\XÝ\]X[	ÊKÛ\ÜÓ\ÝY
+	ÜÚÝÉÊNÂY
+\ÛÛY
+HÂÛÛÝ]^HØÝ[Y[Ù][[Y[RY
+	Ü]X[]^	ÊNÂ]^^ÛÛ[HÓÓUSÓÔUPSÂ]^Û\ÜÓ\ÝY
+	ÜÚÝÉÊNÂØÝ[Y[Ù][[Y[RY
+	Ü]X[XÊKÝ[K\Ü^HH	ÛÛIÎÂBÛÛÝÝ]\Õ^HÛÛYÈ	ÔÛÛY	È	Ô]X[Y	ÎÂÉØØ\ÙK\Ý[\	Ë	ØØ\ÙK\Ý[\L×KÜXXÚ
+YOÂÛÛÝ[HØÝ[Y[Ù][[Y[RY
+Y
+NÂY
+[
+HÂ[^ÛÛ[HÝ]\Õ^Â[Ý[KÜ\ÛÛÜH	Ý\KYÜY[XYÚ
+IÎÂ[Ý[KÛÛÜH	Ý\KYÜY[XYÚ
+IÎÂBJNÂÛÛÝXY[ÈHØÝ[Y[]Y\TÙ[XÝÜ	ËØ\ÙK[[X\ÊNÂY
+XY[ÊHXY[Ë^ÛÛ[HØ\ÙH0­È	ÜÝ]\Õ^XÂÚÝÔÚ\JÛÛY
+NÂB[Ý[Û\Ù]Ø\ÙJ
+HÂY
+]Ú[ÝËÛÛ\J	ÐÛX\[Ý\Ý\È[\Ý\\ÈØ\ÙOÉÊJH]\ÂHÈØØ[ÝÜYÙK[[ÝR][JÕÔQÑWÒÑVJNÈHØ]Ú
+\ÜHßBÚ[ÝËØØ][Û[ØY
+
+NÂBËÈ8¥ 8¥ 8¥ SU8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ 8¥ ØYÝ]J
+NÂØ]Y^X]ËÜXXÚ
+YOÚXÚÙY^X]ËY
+Y
+JNÂ[\^X]Ê
+NÂ[\Ý][Y[Ê
+NÂ[\ÝXÛÚÊ
+NÂ[\^X]ÚXÚØÞ\Ê
+NÂ\]SÝJ
+NÂY
+Ø]YÝ\ÜXÝ
+HÂÛÛÝÙ[HØÝ[Y[Ù][[Y[RY
+	ÜÙ[\Ý\ÜXÝ	ÊNÂY
+Ù[
+HÙ[[YHHØ]YÝ\ÜXÝÂBØÝ[Y[Ù][[Y[RY
+	ÜÙ[\Ý\ÜXÝ	ÊKY][\Ý[\	ØÚ[ÙIË
+
+HOÂØÝ[Y[Ù][[Y[RY
+	ÜÙ[\Ý\ÜXÝ	ÊKÛ\ÜÓ\Ý[[ÝJ	Ù\ÜÊNÂØ]TÝ]J
+NÂJNÂ[\Ý]ÛÛYJ
+NÂÜØÜ\
