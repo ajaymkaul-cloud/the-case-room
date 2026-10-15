@@ -315,8 +315,8 @@
   }
   .elim-grid td.cell:hover { background: #1a1610; }
   .elim-grid td.cell[data-state="0"]::after { content: ''; }
-  .elim-grid td.cell[data-state="1"]::after { content: 'â'; color: var(--red); }
-  .elim-grid td.cell[data-state="2"]::after { content: 'â'; color: var(--gold); }
+  .elim-grid td.cell[data-state="1"]::after { content: '\2715'; color: var(--red); }
+  .elim-grid td.cell[data-state="2"]::after { content: '\2713'; color: var(--gold); }
   .grid-hint { font-size: 11px; color: var(--fg-low); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
 
   /* ACCUSATION FORM */
@@ -740,7 +740,7 @@ rowGroups.forEach(rg => {
     labelTd.className = 'row-label';
     // Row label: use full name, truncate only if very long
     const rName = row.name;
-    labelTd.textContent = rName.length > 22 ? rName.slice(0, 20) + 'â¦' : rName;
+    labelTd.textContent = rName.length > 22 ? rName.slice(0, 20) + '...' : rName;
 
     colGroups.forEach(cg => {
       cg.items.forEach(col => {
@@ -784,20 +784,24 @@ function lockForm() {
   whereSel.disabled = true;
   document.getElementById('accuse-btn').disabled = true;
   document.getElementById('accuse-btn').style.opacity = '0.35';
-  docst block = document.getElementById('share-block');
+  document.getElementById('accuse-btn').style.cursor = 'default';
+}
+
+function showStamp(solved) {
+  const block = document.getElementById('share-block');
   const card  = document.getElementById('stamp-card');
   const dots  = solved
-    ? (triesUsed === 1 ? 'ð¨ â' : 'ð¥ â')
-    : 'ð¥ ð¥';
+    ? (triesUsed === 1 ? '[S] [OK]' : '[M] [OK]')
+    : '[M] [M]';
   const status = solved
     ? `Solved in ${triesUsed} of ${MAX_TRIES} attempt${triesUsed > 1 ? 's' : ''}`
     : 'Case went cold';
   card.textContent =
-    `THE CASE ROOM Â· CASE 001\n` +
+    `THE CASE ROOM &middot; CASE 001\n` +
     `The Missing Envelope\n\n` +
     `${dots}\n\n` +
     `${status}\n` +
-    `thinkygames.com`;  // placeholder â swap for your own URL when live
+    `thinkygames.com`;  // placeholder &mdash; swap for your own URL when live
   block.classList.add('visible');
 }
 
@@ -852,7 +856,7 @@ function makeAccusation() {
     pips[triesUsed - 1].classList.add('used');
     verdict.className = 'wrong';
     headline.textContent = 'Not quite.';
-    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining â review your notes.';
+    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining &mdash; review your notes.';
   }
   verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
