@@ -426,6 +426,144 @@
     white-space: pre;
     margin-bottom: 12px;
     user-select: all;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* OUTCOME STAMP OVERLAY */
+  .outcome-stamp {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .outcome-stamp-inner {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 16px 6px;
+    border: 3px solid #c0281a;
+    border-radius: 2px;
+    position: relative;
+    opacity: 0;
+    transform: scale(2.2) rotateX(-25deg) translateY(-20px);
+    filter: url(#stamp-worn);
+  }
+  .outcome-stamp-inner::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1.5px solid rgba(192,40,26,0.55);
+    border-radius: 1px;
+    pointer-events: none;
+  }
+  .outcome-stamp-inner .sl1,
+  .outcome-stamp-inner .sl2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 22px;
+    color: #c0281a;
+    letter-spacing: 0.1em;
+    line-height: 1.05;
+    text-shadow: 1px 1px 0 #8b1a10;
+  }
+  .outcome-stamp-inner .ssub {
+    font-size: 7px;
+    letter-spacing: 0.45em;
+    color: rgba(192,40,26,0.7);
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* solved tilts left, closed tilts right */
+  .outcome-stamp-inner.solved { --end-rot: -3deg; }
+  .outcome-stamp-inner.closed { --end-rot: 2deg; }
+
+  @keyframes ostamp-slam-neg3 {
+    0%   { opacity: 0;   transform: rotate(-3deg) scale(2.2) rotateX(-25deg) translateY(-20px); }
+    52%  { opacity: 0.92; transform: rotate(-3deg) scale(0.90) rotateX(0deg) translateY(0); }
+    68%  { opacity: 0.92; transform: rotate(-3deg) scale(1.05) rotateX(0deg); }
+    80%  { opacity: 0.92; transform: rotate(-3deg) scale(0.97); }
+    100% { opacity: 0.92; transform: rotate(-3deg) scale(1.00); }
+  }
+  @keyframes ostamp-slam-pos2 {
+    0%   { opacity: 0;   transform: rotate(2deg) scale(2.2) rotateX(-25deg) translateY(-20px); }
+    52%  { opacity: 0.92; transform: rotate(2deg) scale(0.90) rotateX(0deg) translateY(0); }
+    68%  { opacity: 0.92; transform: rotate(2deg) scale(1.05) rotateX(0deg); }
+    80%  { opacity: 0.92; transform: rotate(2deg) scale(0.97); }
+    100% { opacity: 0.92; transform: rotate(2deg) scale(1.00); }
+  }
+  @keyframes ostamp-ring {
+    0%   { opacity: 0.5; transform: scale(0.92); }
+    100% { opacity: 0;   transform: scale(1.6); }
+  }
+  .outcome-stamp-inner.solved.slam { animation: ostamp-slam-neg3 0.52s cubic-bezier(0.22,1,0.36,1) forwards; }
+  .outcome-stamp-inner.closed.slam { animation: ostamp-slam-pos2 0.52s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+  .ostamp-ring {
+    position: absolute;
+    inset: -6px;
+    border: 2px solid rgba(192,40,26,0.5);
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ostamp-ring.pulse { animation: ostamp-ring 0.4s ease-out 0.46s forwards; }
+
+  /* UNSOLVED â transient wrong-guess stamp, shown over verdict */
+  .wrong-stamp-wrap {
+    display: flex; align-items: center; justify-content: center;
+    margin: 16px 0 0;
+    pointer-events: none;
+  }
+  .wrong-stamp-inner {
+    display: inline-flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 7px 18px 6px;
+    border: 3px dashed #c0281a; border-radius: 2px;
+    position: relative; opacity: 0;
+    transform: scale(2.2) rotateX(-25deg) translateY(-20px);
+    filter: url(#stamp-worn);
+  }
+  .wrong-stamp-inner .sl1 {
+    font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic;
+    font-size: 22px; color: #c0281a; letter-spacing: 0.12em; line-height: 1.05;
+    text-shadow: 1px 1px 0 #8b1a10;
+  }
+  .wrong-stamp-inner .ssub {
+    font-size: 7px; letter-spacing: 0.45em;
+    color: rgba(192,40,26,0.7); text-transform: uppercase; margin-top: 3px;
+  }
+  @keyframes wstamp-slam {
+    0%   { opacity: 0;    transform: scale(2.2) rotateX(-25deg) translateY(-20px); }
+    52%  { opacity: 0.92; transform: scale(0.90) rotateX(0deg) translateY(0); }
+    68%  { opacity: 0.92; transform: scale(1.05) rotateX(0deg); }
+    80%  { opacity: 0.92; transform: scale(0.97); }
+    100% { opacity: 0.92; transform: scale(1.00); }
+  }
+  @keyframes wstamp-fadeout {
+    0%   { opacity: 0.92; }
+    100% { opacity: 0; }
+  }
+  .wrong-stamp-inner.slam {
+    animation: wstamp-slam 0.52s cubic-bezier(0.22,1,0.36,1) forwards,
+               wstamp-fadeout 0.4s ease-in 2.02s forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .outcome-stamp-inner, .outcome-stamp-inner.slam {
+      animation: none !important;
+      opacity: 0.92 !important;
+      transform: rotate(var(--end-rot, 0deg)) !important;
+    }
+    .wrong-stamp-inner, .wrong-stamp-inner.slam {
+      animation: none !important; opacity: 0 !important;
+    }
   }
   .share-btn {
     padding: 10px 20px;
@@ -593,8 +731,31 @@
     <div id="verdict">
       <div class="verdict-headline" id="verdict-headline"></div>
       <div class="verdict-body" id="verdict-body"></div>
+      <div class="wrong-stamp-wrap" id="wrong-stamp-wrap" hidden>
+        <div class="wrong-stamp-inner" id="wrong-stamp-inner">
+          <div class="sl1">UNSOLVED</div>
+          <div class="ssub">Review your notes</div>
+        </div>
+      </div>
       <div class="share-block" id="share-block">
-        <div class="stamp-card" id="stamp-card"></div>
+        <svg style="position:absolute;width:0;height:0" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="stamp-worn" x="-5%" y="-5%" width="110%" height="110%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="3" result="noise"/>
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+          </defs>
+        </svg>
+        <div class="stamp-card" id="stamp-card">
+          <div class="outcome-stamp" id="outcome-stamp" hidden>
+            <div class="outcome-stamp-inner" id="outcome-stamp-inner">
+              <div class="ostamp-ring" id="ostamp-ring"></div>
+              <div class="sl1" id="ostamp-l1"></div>
+              <div class="sl2" id="ostamp-l2"></div>
+              <div class="ssub" id="ostamp-sub"></div>
+            </div>
+          </div>
+        </div>
         <button class="share-btn" onclick="copyStamp()">Copy Result</button>
         <span class="share-confirm" id="share-confirm">Copied</span>
       </div>
@@ -796,13 +957,46 @@ function showStamp(solved) {
   const status = solved
     ? `Solved in ${triesUsed} of ${MAX_TRIES} attempt${triesUsed > 1 ? 's' : ''}`
     : 'Case went cold';
-  card.textContent =
-    `THE CASE ROOM &middot; CASE 001\n` +
-    `The Missing Envelope\n\n` +
-    `${dots}\n\n` +
-    `${status}\n` +
-    `thinkygames.com`;  // placeholder &mdash; swap for your own URL when live
+  // set copyable text as a text node before the stamp overlay
+  card.childNodes[0] && card.childNodes[0].nodeType === 3
+    ? (card.childNodes[0].textContent = `THE CASE ROOM Â· CASE 001\n` +
+        `The Missing Envelope\n\n` +
+        `${dots}\n\n` +
+        `${status}\n` +
+        `thecaseroom.pixelandink.in`)
+    : card.insertBefore(
+        document.createTextNode(
+          `THE CASE ROOM Â· CASE 001\n` +
+          `The Missing Envelope\n\n` +
+          `${dots}\n\n` +
+          `${status}\n` +
+          `thecaseroom.pixelandink.in`
+        ),
+        card.firstChild
+      );
   block.classList.add('visible');
+
+  // stamp animation
+  const overlay = document.getElementById('outcome-stamp');
+  const inner   = document.getElementById('outcome-stamp-inner');
+  const ring    = document.getElementById('ostamp-ring');
+  const l1      = document.getElementById('ostamp-l1');
+  const l2      = document.getElementById('ostamp-l2');
+  const sub     = document.getElementById('ostamp-sub');
+
+  l1.textContent  = 'CASE';
+  l2.textContent  = solved ? 'SOLVED' : 'CLOSED';
+  sub.textContent = solved ? 'Case 001' : 'Cold file';
+
+  inner.classList.remove('solved', 'closed', 'slam');
+  ring.classList.remove('pulse');
+  inner.classList.add(solved ? 'solved' : 'closed');
+  overlay.hidden = false;
+
+  // trigger reflow then animate
+  void inner.offsetWidth;
+  inner.classList.add('slam');
+  ring.classList.add('pulse');
 }
 
 function copyStamp() {
@@ -819,6 +1013,17 @@ function copyStamp() {
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
   });
+}
+
+function showWrongStamp() {
+  const wrap  = document.getElementById('wrong-stamp-wrap');
+  const inner = document.getElementById('wrong-stamp-inner');
+  inner.classList.remove('slam');
+  wrap.hidden = false;
+  void inner.offsetWidth;
+  inner.classList.add('slam');
+  // hide after animation completes
+  setTimeout(() => { wrap.hidden = true; inner.classList.remove('slam'); }, 2500);
 }
 
 function makeAccusation() {
@@ -856,7 +1061,8 @@ function makeAccusation() {
     pips[triesUsed - 1].classList.add('used');
     verdict.className = 'wrong';
     headline.textContent = 'Not quite.';
-    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining &mdash; review your notes.';
+    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining â review your notes.';
+    showWrongStamp();
   }
   verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
