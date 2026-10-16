@@ -593,20 +593,60 @@
 
   /* RESPONSIVE */
   @media (max-width: 700px) {
+    /* Layout */
     .puzzle-layout { grid-template-columns: 1fr; }
-    .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); }
+    .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); padding-bottom: 36px; }
     .case-header, .puzzle-left, .puzzle-right { padding-left: 20px; padding-right: 20px; }
+
+    /* Top bar */
     .top-bar { padding-left: 20px; padding-right: 20px; grid-template-columns: auto 1fr; }
     .top-bar > *:last-child { display: none; }
     .top-bar-center { text-align: left; }
-    .card-name  { font-size: 16px; }
-    .card-role  { font-size: 13px; }
-    .card-detail { font-size: 14px; }
-    .clue       { font-size: 15px; }
-    .statement-text { font-size: 15px; }
-    .accuse-select  { font-size: 16px; padding: 14px 18px; }
-    .accuse-btn     { font-size: 14px; padding: 18px; }
-    .verdict-body   { font-size: 15px; }
+    .bar-label { font-size: 13px; }
+    .bar-case  { font-size: 12px; }
+
+    /* Case header text */
+    .case-title-rule span { font-size: 12px; letter-spacing: 0.2em; }
+    .case-setting { font-size: 16px; }
+
+    /* Dossier panel — full width, bigger text */
+    .case-dossier { max-width: 100%; }
+    .dossier-label { font-size: 12px; letter-spacing: 0.25em; }
+    .dossier-key   { font-size: 12px; letter-spacing: 0.18em; }
+    .dossier-val   { font-size: 14px; }
+
+    /* Section labels */
+    .section-label { font-size: 13px; letter-spacing: 0.2em; margin-bottom: 16px; }
+
+    /* Evidence cards */
+    .card-name   { font-size: 17px; }
+    .card-role   { font-size: 14px; }
+    .card-detail { font-size: 15px; line-height: 1.7; }
+    .card-icon   { font-size: 26px; }
+
+    /* Clues + statements */
+    .clue           { font-size: 16px; line-height: 1.75; padding: 14px 16px; }
+    .clue-num       { font-size: 16px; }
+    .statement-text { font-size: 16px; line-height: 1.75; }
+    .statement-name { font-size: 13px; }
+
+    /* Elimination grid — horizontal scroll so nothing truncates */
+    .grid-hint { font-size: 13px; letter-spacing: 0.1em; }
+    .elim-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #elim-grid { font-size: 13px; min-width: 480px; }
+    #elim-grid th, #elim-grid td { font-size: 13px; padding: 7px 6px; }
+
+    /* Accusation section */
+    .tries-label    { font-size: 13px; }
+    .accuse-label   { font-size: 15px; letter-spacing: 0.18em; }
+    .accuse-select  { font-size: 16px; padding: 15px 18px; }
+    .accuse-btn     { font-size: 15px; padding: 18px; letter-spacing: 0.14em; }
+
+    /* Verdict + share */
+    .verdict-headline { font-size: 20px; }
+    .verdict-body     { font-size: 16px; line-height: 1.8; }
+    .share-label      { font-size: 13px; }
+    .stamp-card       { font-size: 14px; }
   }
 </style>
 
@@ -694,7 +734,7 @@
 
     <div class="section-label">Elimination Grid</div>
     <p class="grid-hint">Click a cell to cross off &middot; Click again to confirm &middot; Click once more to clear</p>
-    <div class="grid-wrap">
+    <div class="grid-wrap elim-scroll-wrap">
       <table class="elim-grid" id="elim-grid"></table>
     </div>
 
@@ -779,7 +819,7 @@ const CASE = {
   "date": "2026-10-14",
   "series": "Pixel & Ink &middot; Investigation Series",
   "setting": "Meridian House, Bengaluru. A sealed envelope containing a signed acquisition contract vanished from the partners' office sometime between 7 and 9 pm. Three people were in the building.",
-  "answer": { "who": "Reena Sood", "how": "Swapped with a fake", "where": "The partners' office" },
+  "answerHash": "5b4b656c",
   "suspects": [
     { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Bilingual. Has access to every floor. Was seen near the partners' office at 7:45 pm.", "icon": "&#9878;&#65039;" },
     { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. Was logged into the security system until 8:30 pm.", "icon": "&#128273;" },
@@ -796,16 +836,17 @@ const CASE = {
     { "id": "rooftop",  "name": "The rooftop terrace",  "detail": "Accessible via stairwell only. One person was seen up there around 8:20 pm.", "icon": "&#127750;" }
   ],
   "clues": [
-    "The person who lifted from the desk was on the rooftop terrace &mdash; the same person was not in the partners' office.",
-    "Priya Nair left the building at 7:55 pm &mdash; ten minutes before the fire alarm.",
-    "The building's security log records a keycard entry to the mail room at 7:50 pm. Only one suspect accessed that floor between 7 and 8 pm."
+    "The security camera on the third floor shows Reena Sood entering the partners' office alone at 7:48 pm. Marcus Vaz and Priya Nair are not seen on that floor after 7:30 pm.",
+    "Priya Nair left the building at 7:55 pm — ten minutes before the fire alarm. Her exit is confirmed by the ground-floor turnstile log.",
+    "The building's security log records Reena Sood's keycard accessing the mail room at 7:50 pm. Her statement claims she never went there.",
+    "The envelope on the desk was not missing — it was still present the next morning. It was a replica. The original was substituted, not stolen outright, which rules out any method that would leave an empty desk."
   ],
   "statements": [
     { "suspect": "Reena Sood",  "text": "I was in the partners' office reviewing documents. I never went to the mail room." },
     { "suspect": "Marcus Vaz",  "text": "I checked the rooftop at 8:20 pm as part of my rounds. I had no reason to touch that envelope." },
-    { "suspect": "Priya Nair",  "text": "I filed everything in the mail room and left by 8:10. I didn't go up to the third floor after 7." }
+    { "suspect": "Priya Nair",  "text": "I filed some documents and left before eight. I never went up to the third floor after 7." }
   ],
-  "solution": "Reena Sood swapped the envelope with a fake while alone in the partners' office. Priya left at 7:55 pm &mdash; ten minutes before the fire alarm &mdash; so her account holds. Marcus was on the rooftop at 8:20 pm, consistent with his statement. The security log places a keycard entry to the mail room at 7:50 pm. Reena is the only suspect who accessed that floor, directly contradicting her claim that she never went there. She retrieved a pre-prepared fake envelope from the mail room, then used her legitimate access to the partners' office to make the swap."
+  "solution": "Reena Sood swapped the envelope with a fake she had prepared in advance. At 7:50 pm her keycard accessed the mail room — where she had stored the replica — directly contradicting her claim that she never went there. Two minutes later the camera places her alone in the partners' office at 7:48 pm, before Priya left the building at 7:55 pm and before Marcus reached the rooftop at 8:20 pm. Neither Priya nor Marcus was on the third floor after 7:30 pm. The envelope was not missing the next morning — it was a fake, which rules out lifting it from the desk or taking it during the fire alarm. The substitution required access to the partners' office and a pre-staged replica: only Reena had both."
 };
 
 // &#9472;&#9472; RENDER &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
@@ -962,14 +1003,14 @@ function showStamp(solved) {
     : 'Case went cold';
   // set copyable text as a text node before the stamp overlay
   card.childNodes[0] && card.childNodes[0].nodeType === 3
-    ? (card.childNodes[0].textContent = `THE CASE ROOM &#183; CASE 001\n` +
+    ? (card.childNodes[0].textContent = `THE CASE ROOM · CASE 001\n` +
         `The Missing Envelope\n\n` +
         `${dots}\n\n` +
         `${status}\n` +
         `thecaseroom.pixelandink.in`)
     : card.insertBefore(
         document.createTextNode(
-          `THE CASE ROOM &#183; CASE 001\n` +
+          `THE CASE ROOM · CASE 001\n` +
           `The Missing Envelope\n\n` +
           `${dots}\n\n` +
           `${status}\n` +
@@ -1029,6 +1070,16 @@ function showWrongStamp() {
   setTimeout(() => { wrap.hidden = true; inner.classList.remove('slam'); }, 2500);
 }
 
+// FNV-1a 32-bit hash, returns 8-char lowercase hex string
+function fnv1a(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
 function makeAccusation() {
   if (caseOver) return;
   const who   = whoSel.value;
@@ -1062,7 +1113,7 @@ function makeAccusation() {
   const body     = document.getElementById('verdict-body');
   verdict.style.display = 'block';
 
-  const correct = who === CASE.answer.who && how === CASE.answer.how && where === CASE.answer.where;
+  const correct = fnv1a(who + how + where) === CASE.answerHash;
 
   if (correct) {
     caseOver = true;
@@ -1084,7 +1135,7 @@ function makeAccusation() {
     pips[triesUsed - 1].classList.add('used');
     verdict.className = 'wrong';
     headline.textContent = 'Not quite.';
-    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining &#8212; review your notes.';
+    body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining — review your notes.';
     showWrongStamp();
   }
   verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
