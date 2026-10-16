@@ -603,7 +603,6 @@
 
       <!-- ALWAYS-AVAILABLE REVEAL -->
       <div id="spoiler-block" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--fg-low);display:none;">
-        <button class="reveal-btn" id="spoiler-btn" onclick="revealSpoiler()">Reveal solution -- spoilers</button>
         <div class="reveal-text" id="spoiler-text"></div>
       </div>
 
@@ -1069,20 +1068,6 @@ function revealSolution() {
   revText.textContent = SOLUTION_REVEAL;
   revText.classList.add('show');
   revBtn.style.display = 'none';
-}
-
-function revealSpoiler() {
-  if (caseStatus !== 'investigating') return;
-
-  const confirmed = window.confirm(
-    'Reveal the solution? This case will be marked as revealed, not solved.'
-  );
-  if (!confirmed) return;
-
-  caseStatus = 'revealed';
-  completedAt = new Date().toISOString();
-  saveState();
-  renderOutcome();
 }
 
 function lockForm() {
