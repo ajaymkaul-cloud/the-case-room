@@ -515,7 +515,7 @@
   }
   .ostamp-ring.pulse { animation: ostamp-ring 0.4s ease-out 0.46s forwards; }
 
-  /* UNSOLVED â transient wrong-guess stamp, shown over verdict */
+  /* UNSOLVED &#8212; transient wrong-guess stamp, shown over verdict */
   .wrong-stamp-wrap {
     display: flex; align-items: center; justify-content: center;
     margin: 16px 0 0;
@@ -596,7 +596,9 @@
     .puzzle-layout { grid-template-columns: 1fr; }
     .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); }
     .case-header, .puzzle-left, .puzzle-right { padding-left: 20px; padding-right: 20px; }
-    .top-bar { padding-left: 20px; padding-right: 20px; }
+    .top-bar { padding-left: 20px; padding-right: 20px; grid-template-columns: auto 1fr; }
+    .top-bar > *:last-child { display: none; }
+    .top-bar-center { text-align: left; }
     .card-name  { font-size: 16px; }
     .card-role  { font-size: 13px; }
     .card-detail { font-size: 14px; }
@@ -770,7 +772,7 @@
 </div>
 
 <script>
-// ââ LOAD CASE DATA âââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; LOAD CASE DATA &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const CASE = {
   "id": "001",
   "title": "The Missing Envelope",
@@ -779,33 +781,34 @@ const CASE = {
   "setting": "Meridian House, Bengaluru. A sealed envelope containing a signed acquisition contract vanished from the partners' office sometime between 7 and 9 pm. Three people were in the building.",
   "answer": { "who": "Reena Sood", "how": "Swapped with a fake", "where": "The partners' office" },
   "suspects": [
-    { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Bilingual. Has access to every floor. Was seen near the partners' office at 7:45 pm.", "icon": "âï¸" },
-    { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. Was logged into the security system until 8:30 pm.", "icon": "ð" },
-    { "id": "priya",  "name": "Priya Nair",  "role": "Legal Intern",      "detail": "Worked late to file documents. Left the building at 8:10 pm.", "icon": "ð" }
+    { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Bilingual. Has access to every floor. Was seen near the partners' office at 7:45 pm.", "icon": "&#9878;&#65039;" },
+    { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. Was logged into the security system until 8:30 pm.", "icon": "&#128273;" },
+    { "id": "priya",  "name": "Priya Nair",  "role": "Legal Intern",      "detail": "Worked late to file documents. Left the building at 7:55 pm.", "icon": "&#128203;" }
   ],
   "methods": [
-    { "id": "lifted", "name": "Lifted from the desk",    "detail": "Taken directly &mdash; no substitution. The absence would be noticed immediately.", "icon": "â" },
-    { "id": "fake",   "name": "Swapped with a fake",     "detail": "A replica envelope placed in its spot. Discovered only when opened the next morning.", "icon": "ð" },
-    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes. Window of opportunity.", "icon": "ð¨" }
+    { "id": "lifted", "name": "Lifted from the desk",    "detail": "Taken directly &mdash; no substitution. The absence would be noticed immediately.", "icon": "&#9995;" },
+    { "id": "fake",   "name": "Swapped with a fake",     "detail": "A replica envelope placed in its spot. Discovered only when opened the next morning.", "icon": "&#128196;" },
+    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes. Window of opportunity.", "icon": "&#128680;" }
   ],
   "locations": [
-    { "id": "partners", "name": "The partners' office", "detail": "Third floor. Keycard access only. The envelope was last confirmed here at 7:30 pm.", "icon": "ðï¸" },
-    { "id": "mailroom", "name": "The mail room",        "detail": "Ground floor. Open access. Outgoing post collected at 9 pm sharp.", "icon": "ð¬" },
-    { "id": "rooftop",  "name": "The rooftop terrace",  "detail": "Accessible via stairwell only. One person was seen up there around 8:20 pm.", "icon": "ð" }
+    { "id": "partners", "name": "The partners' office", "detail": "Third floor. Keycard access only. The envelope was last confirmed here at 7:30 pm.", "icon": "&#127963;&#65039;" },
+    { "id": "mailroom", "name": "The mail room",        "detail": "Ground floor. Open access. Outgoing post collected at 9 pm sharp.", "icon": "&#128236;" },
+    { "id": "rooftop",  "name": "The rooftop terrace",  "detail": "Accessible via stairwell only. One person was seen up there around 8:20 pm.", "icon": "&#127750;" }
   ],
   "clues": [
     "The person who lifted from the desk was on the rooftop terrace &mdash; the same person was not in the partners' office.",
-    "Priya Nair left before the fire alarm went off."
+    "Priya Nair left the building at 7:55 pm &mdash; ten minutes before the fire alarm.",
+    "The building's security log records a keycard entry to the mail room at 7:50 pm. Only one suspect accessed that floor between 7 and 8 pm."
   ],
   "statements": [
     { "suspect": "Reena Sood",  "text": "I was in the partners' office reviewing documents. I never went to the mail room." },
     { "suspect": "Marcus Vaz",  "text": "I checked the rooftop at 8:20 pm as part of my rounds. I had no reason to touch that envelope." },
     { "suspect": "Priya Nair",  "text": "I filed everything in the mail room and left by 8:10. I didn't go up to the third floor after 7." }
   ],
-  "solution": "Reena Sood swapped the envelope with a fake while alone in the partners' office. Priya's statement is true &mdash; she left before the alarm. Marcus's statement is true &mdash; he was on the rooftop. Reena's statement is the lie: she claims she never went to the mail room, but the fake envelope had to come from somewhere. She prepared it beforehand and made the swap in the partners' office, where she had legitimate access."
+  "solution": "Reena Sood swapped the envelope with a fake while alone in the partners' office. Priya left at 7:55 pm &mdash; ten minutes before the fire alarm &mdash; so her account holds. Marcus was on the rooftop at 8:20 pm, consistent with his statement. The security log places a keycard entry to the mail room at 7:50 pm. Reena is the only suspect who accessed that floor, directly contradicting her claim that she never went there. She retrieved a pre-prepared fake envelope from the mail room, then used her legitimate access to the partners' office to make the swap."
 };
 
-// ââ RENDER âââââââââââââââââââââââââââââââââââââââââ
+// &#9472;&#9472; RENDER &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 document.getElementById('case-setting').textContent = CASE.setting;
 
 function makeCards(containerId, items) {
@@ -847,7 +850,7 @@ CASE.statements.forEach(s => {
   stmtList.appendChild(d);
 });
 
-// ââ ELIMINATION GRID âââââââââââââââââââââââââââââââ
+// &#9472;&#9472; ELIMINATION GRID &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 // Rows: methods + locations  |  Cols: suspects + locations
 const rowGroups = [
   { label: 'Methods',   items: CASE.methods },
@@ -923,7 +926,7 @@ rowGroups.forEach(rg => {
   });
 });
 
-// ââ ACCUSATION DROPDOWNS (independent of grid) ââââ
+// &#9472;&#9472; ACCUSATION DROPDOWNS (independent of grid) &#9472;&#9472;&#9472;&#9472;
 const whoSel   = document.getElementById('acc-who');
 const howSel   = document.getElementById('acc-how');
 const whereSel = document.getElementById('acc-where');
@@ -932,7 +935,7 @@ CASE.suspects.forEach(s  => { const o = document.createElement('option'); o.valu
 CASE.methods.forEach(m   => { const o = document.createElement('option'); o.value = m.name; o.textContent = m.name; howSel.appendChild(o); });
 CASE.locations.forEach(l => { const o = document.createElement('option'); o.value = l.name; o.textContent = l.name; whereSel.appendChild(o); });
 
-// ââ ACCUSATION LOGIC âââââââââââââââââââââââââââââââ
+// &#9472;&#9472; ACCUSATION LOGIC &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const MAX_TRIES = 2;
 let triesUsed = 0;
 let caseOver  = false;
@@ -959,14 +962,14 @@ function showStamp(solved) {
     : 'Case went cold';
   // set copyable text as a text node before the stamp overlay
   card.childNodes[0] && card.childNodes[0].nodeType === 3
-    ? (card.childNodes[0].textContent = `THE CASE ROOM Â· CASE 001\n` +
+    ? (card.childNodes[0].textContent = `THE CASE ROOM &#183; CASE 001\n` +
         `The Missing Envelope\n\n` +
         `${dots}\n\n` +
         `${status}\n` +
         `thecaseroom.pixelandink.in`)
     : card.insertBefore(
         document.createTextNode(
-          `THE CASE ROOM Â· CASE 001\n` +
+          `THE CASE ROOM &#183; CASE 001\n` +
           `The Missing Envelope\n\n` +
           `${dots}\n\n` +
           `${status}\n` +
@@ -1031,7 +1034,27 @@ function makeAccusation() {
   const who   = whoSel.value;
   const how   = howSel.value;
   const where = whereSel.value;
-  if (!who || !how || !where) return;
+  if (!who || !how || !where) {
+    const missing = [];
+    if (!who)   missing.push(whoSel);
+    if (!how)   missing.push(howSel);
+    if (!where) missing.push(whereSel);
+    missing[0].focus();
+    // Show inline validation hint
+    let hint = document.getElementById('accuse-hint');
+    if (!hint) {
+      hint = document.createElement('p');
+      hint.id = 'accuse-hint';
+      hint.style.cssText = 'color:var(--red);font-size:13px;letter-spacing:0.04em;margin-top:8px;';
+      document.getElementById('accuse-btn').insertAdjacentElement('afterend', hint);
+    }
+    hint.textContent = 'Select a suspect, method, and location before filing your accusation.';
+    setTimeout(() => { if (hint) hint.textContent = ''; }, 3500);
+    return;
+  }
+  // Clear any hint on valid submission
+  const hint = document.getElementById('accuse-hint');
+  if (hint) hint.textContent = '';
 
   triesUsed++;
   const verdict  = document.getElementById('verdict');
@@ -1061,7 +1084,7 @@ function makeAccusation() {
     pips[triesUsed - 1].classList.add('used');
     verdict.className = 'wrong';
     headline.textContent = 'Not quite.';
-    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining â review your notes.';
+    body.textContent = 'The evidence doesn\'t support that conclusion. One attempt remaining &#8212; review your notes.';
     showWrongStamp();
   }
   verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
