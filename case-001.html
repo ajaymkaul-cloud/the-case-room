@@ -1189,6 +1189,7 @@ notesInput.addEventListener('input', () => {
 
 // &#9472;&#9472; ACCUSATION LOGIC &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const MAX_TRIES = 2;
+const CASE_STARTED_AT = Date.now();
 let triesUsed = 0;
 let caseOver  = false;
 
@@ -1222,22 +1223,32 @@ function updateCaseStatus(state) {
   footerNumber.textContent = next.footer;
 }
 
+function formatElapsedTime() {
+  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - CASE_STARTED_AT) / 1000));
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
+  return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+}
+
 function showStamp(solved) {
   const block = document.getElementById('share-block');
-  const card  = document.getElementById('stamp-card');
-  const dots  = solved
-    ? (triesUsed === 1 ? '[S] [OK]' : '[M] [OK]')
-    : '[M] [M]';
-  const status = solved
-    ? `Solved on attempt ${triesUsed} of ${MAX_TRIES}`
-    : 'Case went cold';
   const copyNode = document.getElementById('stamp-copy');
+  const caseUrl = 'https://thecaseroom.pixelandink.in/case-001.html';
+  // Marks represent complete accusations in sequence, not per-field correctness.
+  const attemptPattern = solved
+    ? (triesUsed === 1 ? '🟩' : '🟥 🟩')
+    : '🟥 🟥';
+  const outcome = solved
+    ? `🔎 Solved in ${triesUsed} ${triesUsed === 1 ? 'accusation' : 'accusations'}`
+    : '🧊 Case went cold';
   copyNode.textContent =
-    `THE CASE ROOM · CASE 001\n` +
+    `🕵️ The Case Room · Case #001\n` +
     `The Missing Envelope\n\n` +
-    `${dots}\n\n` +
-    `${status}\n` +
-    `thecaseroom.pixelandink.in`;
+    `⏱️ Time: ${formatElapsedTime()}\n` +
+    `${attemptPattern}\n` +
+    `${outcome}\n\n` +
+    `Can you spot the contradiction?\n` +
+    `→ ${caseUrl}`;
   block.classList.add('visible');
 
   // stamp animation
