@@ -1,1264 +1,634 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="claude:viewport-fit-sides" content="cover">
-<title>The Case Room</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080604">
+  <meta name="description" content="Case 002: The Last Shot — a fictional interactive detective mystery from The Case Room.">
+  <title>The Case Room — Case 002: The Last Shot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+  <style>
+    :root {
+      --bg: #080604;
+      --fg: #f0e6d0;
+      --fg-mid: #9a8a6e;
+      --fg-low: #221e16;
+      --gold: #c8a45a;
+      --gold-dim: #6a5228;
+      --red: #e06a5b;
+      --red-dim: #7a1a1a;
+      --green-bright: #4a9c6a;
+      --card-bg: #110f0a;
+      --card-border: #2a2418;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--fg);
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      min-height: 100vh;
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+    }
+    button, select { font: inherit; }
+    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
+      outline: 2px solid var(--gold); outline-offset: 3px;
+    }
+    [hidden] { display: none !important; }
 
-<style>
-  :root {
-    --bg: #080604;
-    --fg: #f0e6d0;
-    --fg-mid: #9a8a6e;
-    --fg-low: #221e16;
-    --gold: #c8a45a;
-    --gold-dim: #6a5228;
-    --red: #7a1a1a;
-    --green: #2a5c3a;
-    --green-bright: #4a9c6a;
-    --card-bg: #110f0a;
-    --card-border: #2a2418;
-    color-scheme: dark;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    .top-bar {
+      padding: 18px max(40px, 16px); display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center; gap: 16px; border-bottom: 1px solid var(--fg-low);
+      position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 50;
+    }
+    .bar-left { display: flex; align-items: center; gap: 20px; min-width: 0; }
+    .bar-center {
+      text-align: center; font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic;
+      font-size: 13px; color: var(--fg-mid); letter-spacing: 0.04em; white-space: nowrap;
+    }
+    .bar-right { display: flex; align-items: center; gap: 14px; justify-content: flex-end; }
+    .bar-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: 18px;
+      color: var(--fg); text-decoration: none; letter-spacing: -0.01em; white-space: nowrap;
+    }
+    .bar-logo em { color: var(--gold); }
+    .bar-label { font-size: 12px; letter-spacing: 0.16em; color: var(--fg-mid); text-transform: uppercase; white-space: nowrap; }
+    .bar-location { font-size: 9px; letter-spacing: 0.18em; color: var(--fg-mid); text-transform: uppercase; }
+    .bar-stamp, .dossier-stamp {
+      font-size: 11px; letter-spacing: 0.16em; color: var(--red); text-transform: uppercase;
+      border: 1px solid var(--red-dim); padding: 4px 10px; transform: rotate(2deg); display: inline-block;
+      white-space: nowrap;
+    }
+    .bar-stamp.solved, .dossier-stamp.solved { color: var(--green-bright); border-color: var(--green-bright); }
 
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'Courier Prime', 'Courier New', monospace;
-    min-height: 100vh;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
-  }
+    .case-header {
+      padding: 44px max(40px, 16px) 32px; border-bottom: 1px solid var(--fg-low);
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: start;
+    }
+    .case-header-text { min-width: 0; }
+    .case-number { font-size: 13px; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase; margin-bottom: 14px; }
+    .case-title {
+      font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic;
+      font-size: clamp(32px, 6vw, 56px); line-height: 1.05; color: var(--fg); margin-bottom: 18px; text-wrap: balance;
+    }
+    .case-title-rule { display: flex; align-items: center; gap: 12px; margin: 14px 0 18px; }
+    .case-title-rule::before, .case-title-rule::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-dim)); }
+    .case-title-rule::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
+    .case-title-rule span { font-size: 9px; letter-spacing: 0.22em; color: var(--gold); text-transform: uppercase; opacity: .85; white-space: nowrap; }
+    .case-setting { font-size: 15px; color: var(--fg-mid); line-height: 1.8; max-width: 620px; font-style: italic; }
+    .case-dossier { border: 1px solid var(--fg-low); padding: 20px 22px; min-width: 200px; max-width: 240px; position: relative; background: rgba(17,14,10,.6); }
+    .case-dossier::before { content: ''; position: absolute; inset: 4px; border: 1px solid var(--gold-dim); opacity: .3; pointer-events: none; }
+    .dossier-label { font-size: 10px; letter-spacing: .3em; color: var(--fg-mid); text-transform: uppercase; margin-bottom: 14px; }
+    .dossier-row { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
+    .dossier-row:last-child { margin-bottom: 0; }
+    .dossier-key { font-size: 10px; letter-spacing: .18em; color: var(--gold); text-transform: uppercase; }
+    .dossier-val { font-size: 12px; color: var(--fg); letter-spacing: .03em; line-height: 1.5; }
+    .dossier-divider { height: 1px; background: var(--fg-low); margin: 10px 0; }
+    .dossier-stamp { margin-top: 14px; transform: rotate(-3deg); }
 
-  /* TOP BAR */
-  .top-bar {
-    padding: 18px max(40px, 16px);
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    border-bottom: 1px solid var(--fg-low);
-    position: sticky;
-    top: env(safe-area-inset-top, 0px);
-    background: var(--bg);
-    z-index: 50;
-  }
-  .bar-left  { display: flex; align-items: center; gap: 20px; }
-  .bar-center {
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-weight: 700; font-style: italic;
-    font-size: 13px;
-    color: var(--fg-mid);
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
-  .bar-right { display: flex; align-items: center; gap: 14px; justify-content: flex-end; }
-  .bar-logo {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900; font-style: italic;
-    font-size: 18px;
-    color: var(--fg);
-    text-decoration: none;
-    letter-spacing: -0.01em;
-  }
-  .bar-logo em { color: var(--gold); font-style: italic; }
-  .bar-label { font-size: 12px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
-  .bar-stamp {
-    font-size: 11px; letter-spacing: 0.18em; color: var(--red);
-    text-transform: uppercase; border: 1px solid var(--red);
-    padding: 3px 10px; transform: rotate(2deg); display: inline-block; opacity: 0.8;
-  }
+    .case-rules { padding: 20px max(40px, 16px); border-bottom: 1px solid var(--fg-low); background: rgba(17,14,10,.4); }
+    .rules-label { font-size: 10px; letter-spacing: .3em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+    .rules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 32px; }
+    .rule-item { font-size: 13px; color: var(--fg-mid); line-height: 1.6; padding-left: 14px; position: relative; }
+    .rule-item::before { content: '–'; position: absolute; left: 0; color: var(--gold-dim); }
 
-  /* CASE HEADER */
-  .case-header {
-    padding: 44px max(40px, 16px) 32px;
-    border-bottom: 1px solid var(--fg-low);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 40px;
-    align-items: start;
-  }
-  .case-header-text { min-width: 0; }
-  .case-number {
-    font-size: 13px; letter-spacing: 0.38em; color: var(--gold);
-    text-transform: uppercase; margin-bottom: 14px;
-  }
-  .case-title {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900; font-style: italic;
-    font-size: clamp(32px, 6vw, 56px);
-    line-height: 1;
-    color: var(--fg);
-    margin-bottom: 18px;
-    text-wrap: balance;
-  }
-  .case-title-rule {
-    display: flex; align-items: center; gap: 12px; margin: 14px 0 18px;
-  }
-  .case-title-rule::before, .case-title-rule::after {
-    content: ''; flex: 1; height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold-dim));
-  }
-  .case-title-rule::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
-  .case-title-rule span {
-    font-size: 9px; letter-spacing: 0.35em; color: var(--gold);
-    text-transform: uppercase; opacity: 0.7;
-  }
-  .case-setting {
-    font-size: 15px; color: var(--fg-mid); line-height: 1.8;
-    max-width: 560px; font-style: italic;
-  }
+    .puzzle-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); max-width: 1500px; margin: 0 auto; }
+    .puzzle-left { border-right: 1px solid var(--fg-low); padding: 32px max(40px, 16px) 48px; min-width: 0; }
+    .puzzle-right { padding: 32px max(40px, 16px) 48px; min-width: 0; }
+    .section-label { font-size: 11px; letter-spacing: .27em; color: var(--gold); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--fg-low); }
 
-  /* DOSSIER */
-  .case-dossier {
-    border: 1px solid var(--fg-low);
-    padding: 20px 22px;
-    min-width: 200px; max-width: 240px;
-    position: relative;
-    background: rgba(17,14,10,0.6);
-  }
-  .case-dossier::before {
-    content: ''; position: absolute; inset: 4px;
-    border: 1px solid var(--gold-dim); opacity: 0.3; pointer-events: none;
-  }
-  .dossier-label {
-    font-size: 8px; letter-spacing: 0.45em; color: var(--fg-mid);
-    text-transform: uppercase; margin-bottom: 14px; opacity: 0.6;
-  }
-  .dossier-row { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
-  .dossier-row:last-child { margin-bottom: 0; }
-  .dossier-key {
-    font-size: 8px; letter-spacing: 0.3em; color: var(--gold);
-    text-transform: uppercase; opacity: 0.6;
-  }
-  .dossier-val { font-size: 12px; color: var(--fg); letter-spacing: 0.04em; line-height: 1.4; }
-  .dossier-divider { height: 1px; background: var(--fg-low); margin: 10px 0; }
-  .dossier-stamp {
-    margin-top: 14px; font-size: 13px; letter-spacing: 0.2em; color: var(--red);
-    text-transform: uppercase; border: 1px solid var(--red);
-    display: inline-block; padding: 4px 10px; transform: rotate(-3deg); opacity: 0.75;
-  }
+    .exhibit-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 36px; }
+    .exhibit { background: var(--card-bg); border: 1px solid var(--card-border); transition: border-color .2s, background .2s; }
+    .exhibit:hover, .exhibit.open { border-color: var(--gold-dim); background: #161209; }
+    .exhibit-header {
+      width: 100%; text-align: left; display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+      border: 0; color: inherit; background: transparent; cursor: pointer; font-family: inherit;
+    }
+    .exhibit-tag { font-size: 10px; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; flex-shrink: 0; border: 1px solid var(--gold-dim); padding: 3px 8px; }
+    .exhibit-name { font-size: 15px; font-weight: 700; color: var(--fg); flex: 1; min-width: 0; }
+    .exhibit-arrow { font-size: 11px; color: var(--fg-mid); transition: transform .25s; flex-shrink: 0; }
+    .exhibit.open .exhibit-arrow { transform: rotate(180deg); }
+    .exhibit-body { border-top: 1px solid var(--fg-low); }
+    .exhibit-content { padding: 16px 18px; font-size: 16px; color: var(--fg-mid); line-height: 1.8; white-space: pre-line; }
 
-  /* CASE RULES */
-  .case-rules {
-    padding: 20px max(40px, 16px);
-    border-bottom: 1px solid var(--fg-low);
-    background: rgba(17,14,10,0.4);
-  }
-  .rules-label {
-    font-size: 9px; letter-spacing: 0.45em; color: var(--gold);
-    text-transform: uppercase; margin-bottom: 12px; opacity: 0.7;
-  }
-  .rules-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 6px 32px;
-  }
-  .rule-item {
-    font-size: 13px; color: var(--fg-mid); line-height: 1.6;
-    padding-left: 14px; position: relative;
-  }
-  .rule-item::before {
-    content: '-'; position: absolute; left: 0; color: var(--gold-dim);
-  }
+    .statement-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+    .statement { padding: 14px 18px; border: 1px solid var(--card-border); background: var(--card-bg); }
+    .statement-name { font-size: 14px; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+    .statement-role { font-size: 10px; color: var(--fg-mid); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+    .statement-text { font-size: 16px; color: var(--fg-mid); line-height: 1.8; font-style: italic; }
+    .statement-text::before { content: '\201C'; color: var(--gold-dim); }
+    .statement-text::after { content: '\201D'; color: var(--gold-dim); }
+    .statement-note { margin-top: 8px; font-size: 11px; color: var(--fg-mid); opacity: 1; letter-spacing: .08em; font-style: normal; }
 
-  /* LAYOUT */
-  .puzzle-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
-  .puzzle-left {
-    border-right: 1px solid var(--fg-low);
-    padding: 32px max(40px, 16px) 48px;
-  }
-  .puzzle-right { padding: 32px max(40px, 16px) 48px; }
+    .notebook { margin-bottom: 36px; }
+    .notebook-hint { font-size: 13px; color: var(--fg-mid); line-height: 1.6; margin-bottom: 16px; border-left: 2px solid var(--gold-dim); padding-left: 12px; }
+    .nb-row { display: flex; align-items: stretch; gap: 0; border: 1px solid var(--card-border); background: var(--card-bg); margin-bottom: 8px; transition: border-color .2s; }
+    .nb-row.linked { border-color: var(--gold-dim); background: #161209; }
+    .nb-exhibit-tag { font-size: 10px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; padding: 12px 14px; border-right: 1px solid var(--card-border); display: flex; align-items: center; flex-shrink: 0; min-width: 64px; justify-content: center; }
+    .nb-center { flex: 1; min-width: 0; padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; }
+    .nb-exhibit-name { font-size: 15px; color: var(--fg); font-weight: 700; }
+    .nb-relation-wrap, .nb-suspect-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nb-relation-btn, .nb-suspect-btn { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 9px; border: 1px solid var(--fg-low); background: transparent; color: var(--fg-mid); cursor: pointer; transition: all .15s; font-family: inherit; }
+    .nb-relation-btn:hover, .nb-suspect-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
+    .nb-relation-btn.active, .nb-suspect-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,.08); }
+    .nb-remove { padding: 0 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--fg-mid); border-left: 1px solid var(--card-border); flex-shrink: 0; background: none; border-top: 0; border-right: 0; border-bottom: 0; font-family: inherit; cursor: pointer; }
+    .nb-remove:hover { color: var(--red); }
+    .nb-row:not(.linked) .nb-remove { opacity: .55; }
 
-  /* SECTION LABELS */
-  .section-label {
-    font-size: 11px; letter-spacing: 0.35em; color: var(--gold);
-    text-transform: uppercase; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--fg-low); }
+    .accuse-form { display: flex; flex-direction: column; gap: 16px; }
+    .accuse-row { display: flex; flex-direction: column; gap: 7px; }
+    .accuse-label { font-size: 13px; letter-spacing: .18em; color: var(--gold); text-transform: uppercase; }
+    .accuse-sublabel { font-size: 14px; color: var(--fg-mid); letter-spacing: .03em; }
+    .accuse-select { appearance: none; background: var(--card-bg); border: 1px solid var(--gold-dim); color: var(--fg); font-family: inherit; font-size: 16px; padding: 13px 18px; cursor: pointer; width: 100%; }
+    .accuse-select:focus { border-color: var(--gold); }
+    .accuse-select.error { border-color: var(--red); }
+    .exhibit-checkboxes { display: flex; flex-direction: column; gap: 8px; }
+    .exhibit-checkbox { position: relative; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 10px 14px; border: 1px solid var(--card-border); background: var(--card-bg); transition: border-color .2s; }
+    .exhibit-checkbox:hover { border-color: var(--gold-dim); }
+    .exhibit-checkbox input[type="checkbox"] { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .exhibit-checkbox:focus-within { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .checkbox-box { width: 16px; height: 16px; border: 1px solid var(--gold-dim); flex-shrink: 0; margin-top: 1px; position: relative; background: transparent; }
+    .exhibit-checkbox.checked .checkbox-box { background: var(--gold); border-color: var(--gold); }
+    .exhibit-checkbox.checked .checkbox-box::after { content: ''; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px; border: 2px solid var(--bg); border-top: none; border-left: none; transform: rotate(45deg); }
+    .checkbox-label { font-size: 15px; color: var(--fg-mid); line-height: 1.6; }
+    .checkbox-label strong { font-size: 14px; color: var(--fg); display: block; margin-bottom: 2px; }
+    .accuse-note { font-size: 15px; color: var(--fg-mid); font-style: italic; line-height: 1.7; border-left: 2px solid var(--gold-dim); padding-left: 10px; }
+    .accuse-btn { margin-top: 8px; padding: 16px; border: 1px solid var(--gold-dim); background: transparent; color: var(--gold); font-family: inherit; font-size: 13px; letter-spacing: .22em; text-transform: uppercase; cursor: pointer; position: relative; overflow: hidden; transition: color .3s; }
+    .accuse-btn:hover:not(:disabled) { color: var(--bg); border-color: var(--gold); background: var(--gold); }
+    .accuse-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-  /* EXHIBIT CARDS */
-  .exhibit-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 36px; }
-  .exhibit {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .exhibit:hover  { border-color: var(--gold-dim); background: #161209; }
-  .exhibit.open   { border-color: var(--gold-dim); background: #161209; }
-  .exhibit-header {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 18px;
-  }
-  .exhibit-tag {
-    font-size: 10px; letter-spacing: 0.3em; color: var(--gold);
-    text-transform: uppercase; flex-shrink: 0;
-    border: 1px solid var(--gold-dim); padding: 2px 8px;
-  }
-  .exhibit-name { font-size: 15px; font-weight: 700; color: var(--fg); flex: 1; min-width: 0; }
-  .exhibit-arrow {
-    font-size: 11px; color: var(--fg-mid); transition: transform 0.3s; flex-shrink: 0;
-  }
-  .exhibit.open .exhibit-arrow { transform: rotate(180deg); }
-  .exhibit-body {
-    max-height: 0; overflow: hidden;
-    transition: max-height 0.35s ease;
-    border-top: 0px solid var(--fg-low);
-  }
-  .exhibit.open .exhibit-body {
-    max-height: 2000px;
-    border-top: 1px solid var(--fg-low);
-  }
-  .exhibit-content {
-    padding: 16px 18px;
-    font-size: 16px; color: var(--fg-mid); line-height: 1.8;
-    white-space: pre-line;
-  }
-  .exhibit-content strong { color: var(--fg); }
+    #verdict { display: none; margin-top: 24px; padding: 24px; border: 1px solid var(--card-border); background: var(--card-bg); scroll-margin-top: 20px; }
+    #verdict:focus { outline: 2px solid var(--gold-dim); outline-offset: 3px; }
+    #verdict.correct { border-color: var(--gold); }
+    #verdict.wrong { border-color: var(--red-dim); }
+    .verdict-headline { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; margin-bottom: 12px; }
+    #verdict.correct .verdict-headline { color: var(--gold); }
+    #verdict.wrong .verdict-headline { color: var(--red); }
+    .verdict-body { font-size: 16px; color: var(--fg-mid); line-height: 1.8; }
+    .verdict-reveal { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--fg-low); display: none; }
+    .verdict-reveal.show { display: block; }
+    .reveal-btn { background: none; border: 1px solid var(--fg-low); color: var(--fg-mid); font-family: inherit; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; padding: 10px 14px; cursor: pointer; transition: all .2s; }
+    .reveal-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
+    .reveal-text { margin-top: 14px; font-size: 16px; color: var(--fg-mid); line-height: 1.8; display: none; white-space: pre-wrap; }
+    .reveal-text.show { display: block; }
 
-  /* STATEMENTS */
-  .statement-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
-  .statement {
-    padding: 14px 18px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-  }
-  .statement-name {
-    font-size: 14px; color: var(--gold); letter-spacing: 0.14em;
-    text-transform: uppercase; margin-bottom: 4px;
-  }
-  .statement-role {
-    font-size: 10px; color: var(--fg-mid); letter-spacing: 0.12em;
-    text-transform: uppercase; margin-bottom: 10px;
-  }
-  .statement-text {
-    font-size: 16px; color: var(--fg-mid); line-height: 1.8; font-style: italic;
-  }
-  .statement-text::before { content: '\201C'; color: var(--gold-dim); }
-  .statement-text::after  { content: '\201D'; color: var(--gold-dim); }
-  .statement-note {
-    margin-top: 8px; font-size: 11px; color: var(--fg-low);
-    letter-spacing: 0.1em; font-style: normal;
-  }
+    .share-block { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--fg-low); }
+    .share-block.visible { display: block; }
+    .stamp-card { background: var(--bg); border: 1px solid var(--fg-low); padding: 16px 18px; font-size: 12px; letter-spacing: .06em; color: var(--fg-mid); line-height: 1.9; overflow-wrap: anywhere; white-space: pre-wrap; margin-bottom: 12px; user-select: all; }
+    .share-btn { padding: 10px 20px; border: 1px solid var(--gold-dim); background: transparent; color: var(--gold); font-family: inherit; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; cursor: pointer; }
+    .share-btn:hover { background: var(--gold); color: var(--bg); }
+    .share-confirm { font-size: 11px; color: var(--gold); letter-spacing: .1em; margin-left: 12px; opacity: 0; transition: opacity .3s; }
+    .share-confirm.show { opacity: 1; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
-  /* NOTEBOOK */
-  .notebook { margin-bottom: 36px; }
-  .notebook-hint {
-    font-size: 13px; color: var(--fg-mid); line-height: 1.6;
-    margin-bottom: 16px; border-left: 2px solid var(--gold-dim); padding-left: 12px;
-  }
-  .nb-row {
-    display: flex; align-items: stretch; gap: 0;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .nb-row:hover { border-color: var(--gold-dim); }
-  .nb-row.linked { border-color: var(--gold-dim); background: #161209; }
-  .nb-exhibit-tag {
-    font-size: 10px; letter-spacing: 0.2em; color: var(--gold);
-    text-transform: uppercase; padding: 12px 14px;
-    border-right: 1px solid var(--card-border);
-    display: flex; align-items: center; flex-shrink: 0;
-    min-width: 80px; justify-content: center;
-    transition: border-color 0.2s;
-  }
-  .nb-row.linked .nb-exhibit-tag { border-color: var(--gold-dim); }
-  .nb-center {
-    flex: 1; padding: 10px 14px; display: flex; flex-direction: column; gap: 6px;
-  }
-  .nb-exhibit-name { font-size: 15px; color: var(--fg); font-weight: 700; }
-  .nb-relation-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
-  .nb-relation-btn {
-    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
-    padding: 5px 11px; border: 1px solid var(--fg-low);
-    background: transparent; color: var(--fg-mid);
-    cursor: pointer; transition: all 0.15s; font-family: 'Courier Prime', monospace;
-  }
-  .nb-relation-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
-  .nb-relation-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,0.08); }
-  .nb-suspect-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
-  .nb-suspect-btn {
-    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
-    padding: 5px 11px; border: 1px solid var(--fg-low);
-    background: transparent; color: var(--fg-mid);
-    cursor: pointer; transition: all 0.15s; font-family: 'Courier Prime', monospace;
-  }
-  .nb-suspect-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
-  .nb-suspect-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,0.08); }
-  .nb-remove {
-    padding: 0 12px; display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: var(--fg-low); cursor: pointer;
-    transition: color 0.2s; border-left: 1px solid var(--card-border); flex-shrink: 0;
-    background: none; border-top: none; border-right: none; border-bottom: none;
-    font-family: inherit;
-  }
-  .nb-remove:hover { color: var(--red); }
-  .nb-row:not(.linked) .nb-remove { opacity: 0.3; pointer-events: none; }
+    .foot { padding: 20px max(40px, 16px); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--fg-low); flex-wrap: wrap; gap: 10px; margin-top: 40px; }
+    .foot-text { font-size: 11px; letter-spacing: .15em; color: var(--fg-mid); text-transform: uppercase; }
+    .foot-num { font-size: 11px; letter-spacing: .12em; color: var(--gold); text-transform: uppercase; }
 
-  /* ACCUSATION FORM */
-  .accuse-form { display: flex; flex-direction: column; gap: 16px; }
-  .accuse-row  { display: flex; flex-direction: column; gap: 7px; }
-  .accuse-label {
-    font-size: 13px; letter-spacing: 0.28em; color: var(--gold); text-transform: uppercase;
-  }
-  .accuse-sublabel {
-    font-size: 14px; color: var(--fg-mid); letter-spacing: 0.03em; margin-top: -4px;
-  }
-  .accuse-select {
-    appearance: none;
-    background: var(--card-bg); border: 1px solid var(--gold-dim);
-    color: var(--fg); font-family: 'Courier Prime', monospace;
-    font-size: 16px; padding: 13px 18px; cursor: pointer;
-    outline: none; width: 100%; transition: border-color 0.2s;
-  }
-  .accuse-select:focus { border-color: var(--gold); }
-  .accuse-select.error { border-color: var(--red); }
-  .exhibit-checkboxes { display: flex; flex-direction: column; gap: 8px; }
-  .exhibit-checkbox {
-    display: flex; align-items: flex-start; gap: 12px; cursor: pointer;
-    padding: 10px 14px;
-    border: 1px solid var(--card-border); background: var(--card-bg);
-    transition: border-color 0.2s;
-  }
-  .exhibit-checkbox:hover { border-color: var(--gold-dim); }
-  .exhibit-checkbox input[type="checkbox"] {
-    display: block;
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden; clip-path: inset(50%);
-    white-space: nowrap; border: 0;
-  }
-  .exhibit-checkbox { position: relative; }
-  .checkbox-box {
-    width: 16px; height: 16px; border: 1px solid var(--gold-dim);
-    flex-shrink: 0; margin-top: 1px; position: relative;
-    background: transparent; transition: background 0.15s, border-color 0.15s;
-  }
-  .exhibit-checkbox.checked .checkbox-box {
-    background: var(--gold); border-color: var(--gold);
-  }
-  .exhibit-checkbox.checked .checkbox-box::after {
-    content: ''; position: absolute; left: 4px; top: 1px;
-    width: 5px; height: 9px; border: 2px solid var(--bg);
-    border-top: none; border-left: none; transform: rotate(45deg);
-  }
-  .exhibit-checkbox.checked { border-color: var(--gold-dim); }
-  .checkbox-label { font-size: 15px; color: var(--fg-mid); line-height: 1.6; }
-  .checkbox-label strong { font-size: 14px; color: var(--fg); display: block; margin-bottom: 2px; }
-  .accuse-note {
-    font-size: 15px; color: var(--fg-mid); font-style: italic; line-height: 1.7;
-    border-left: 2px solid var(--gold-dim); padding-left: 10px;
-  }
-  .accuse-btn {
-    margin-top: 8px; padding: 16px;
-    border: 1px solid var(--gold-dim); background: transparent;
-    color: var(--gold); font-family: 'Courier Prime', monospace;
-    font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase;
-    cursor: pointer; position: relative; overflow: hidden; transition: color 0.3s;
-  }
-  .accuse-btn::before {
-    content: ''; position: absolute; inset: 0; background: var(--gold);
-    transform: translateX(-101%); transition: transform 0.3s ease; z-index: 0;
-  }
-  .accuse-btn:hover { color: var(--bg); border-color: var(--gold); }
-  .accuse-btn:hover::before { transform: translateX(0); }
-  .accuse-btn span { position: relative; z-index: 1; }
-  .accuse-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .accuse-btn:disabled::before { display: none; }
-  .accuse-btn:disabled:hover { color: var(--gold); }
-
-  /* VERDICT */
-  #verdict {
-    display: none; margin-top: 24px; padding: 24px;
-    border: 1px solid var(--card-border); background: var(--card-bg);
-  }
-  #verdict.correct { border-color: var(--gold); }
-  #verdict.wrong   { border-color: var(--red); }
-  .verdict-headline {
-    font-family: 'Playfair Display', serif; font-style: italic;
-    font-size: 22px; margin-bottom: 12px;
-  }
-  #verdict.correct .verdict-headline { color: var(--gold); }
-  #verdict.wrong   .verdict-headline { color: var(--red); }
-  .verdict-body { font-size: 16px; color: var(--fg-mid); line-height: 1.8; }
-  .verdict-reveal {
-    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--fg-low);
-    display: none;
-  }
-  .verdict-reveal.show { display: block; }
-  .reveal-btn {
-    background: none; border: 1px solid var(--fg-low);
-    color: var(--fg-mid); font-family: 'Courier Prime', monospace;
-    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
-    padding: 8px 18px; cursor: pointer; transition: all 0.2s;
-  }
-  .reveal-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
-  .reveal-text { margin-top: 14px; font-size: 16px; color: var(--fg-mid); line-height: 1.8; display: none; white-space: pre-wrap; }
-  .reveal-text.show { display: block; }
-
-  /* SHARE */
-  .share-block {
-    display: none; margin-top: 20px; padding-top: 20px;
-    border-top: 1px solid var(--fg-low);
-  }
-  .share-block.visible { display: block; }
-  .stamp-card {
-    background: var(--bg); border: 1px solid var(--fg-low);
-    padding: 16px 18px; font-size: 12px; letter-spacing: 0.08em;
-    color: var(--fg-mid); line-height: 1.9;
-    overflow-wrap: anywhere; word-break: normal;
-    white-space: pre-wrap;
-    margin-bottom: 12px; user-select: all;
-  }
-  .share-btn {
-    padding: 10px 20px; border: 1px solid var(--gold-dim);
-    background: transparent; color: var(--gold);
-    font-family: 'Courier Prime', monospace;
-    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
-    cursor: pointer; transition: background 0.2s, color 0.2s;
-  }
-  .share-btn:hover { background: var(--gold); color: var(--bg); }
-  .share-confirm {
-    font-size: 11px; color: var(--gold); letter-spacing: 0.15em;
-    margin-left: 12px; opacity: 0; transition: opacity 0.3s;
-  }
-  .share-confirm.show { opacity: 1; }
-
-  /* FOCUS */
-  button:focus-visible, a:focus-visible, select:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: 4px;
-  }
-  .exhibit-checkbox:focus-within {
-    outline: 2px solid var(--gold);
-    outline-offset: 3px;
-  }
-
-  /* FOOTER */
-  .foot {
-    padding: 20px max(40px, 16px);
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid var(--fg-low); flex-wrap: wrap; gap: 10px; margin-top: 40px;
-  }
-  .foot-text { font-size: 11px; letter-spacing: 0.22em; color: var(--fg-low); text-transform: uppercase; }
-  .foot-num  { font-size: 11px; letter-spacing: 0.18em; color: var(--gold-dim); text-transform: uppercase; }
-
-  /* RESPONSIVE */
-  @media (max-width: 700px) {
-    .puzzle-layout { grid-template-columns: 1fr; }
-    .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); }
-    .case-header, .puzzle-left, .puzzle-right, .case-rules { padding-left: 16px; padding-right: 16px; }
-    .top-bar { padding-left: 16px; padding-right: 16px; grid-template-columns: 1fr; }
-    .bar-left { min-width: 0; flex-wrap: wrap; gap: 8px 16px; }
-    .bar-center { display: none; }
-    .bar-right  { display: none; }
-    .bar-logo   { font-size: 15px; }
-    .bar-label  { font-size: 10px; }
-    .case-title { font-size: clamp(28px, 7vw, 40px); }
-    .case-setting { font-size: 15px; line-height: 1.7; }
-    .case-header { grid-template-columns: 1fr; }
-    .case-dossier { max-width: 100%; display: flex; flex-wrap: wrap; gap: 16px; }
-    .case-dossier::before { display: none; }
-    .dossier-stamp { margin-top: 0; }
-    .exhibit-name  { font-size: 15px; }
-    .exhibit-content { font-size: 16px; line-height: 1.8; }
-    .statement-text { font-size: 16px; line-height: 1.8; }
-    .statement-name { font-size: 14px; }
-    .accuse-select { font-size: 16px; padding: 14px 16px; }
-    .accuse-btn    { font-size: 14px; padding: 18px; }
-    .verdict-body  { font-size: 16px; line-height: 1.8; }
-    .verdict-headline { font-size: 21px; }
-    .nb-exhibit-tag { min-width: 64px; font-size: 10px; }
-    .nb-exhibit-name { font-size: 15px; }
-    .nb-relation-btn, .nb-suspect-btn { font-size: 12px; }
-    .rules-grid { grid-template-columns: 1fr; }
-  }
-</style>
-
-<!-- TOP BAR -->
-<div class="top-bar">
-  <div class="bar-left">
-    <a class="bar-logo" href="./index.html">The Case<em>Room</em></a>
-    <span class="bar-label">Case No. 002</span>
-  </div>
-  <div class="bar-center">The Last Shot</div>
-  <div class="bar-right">
-    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Mumbai &middot; Film Set</span>
-    <span class="bar-stamp" id="case-stamp">Open</span>
-  </div>
-</div>
-
-<!-- CASE HEADER -->
-<div class="case-header">
-  <div class="case-header-text">
-    <div class="case-number">Case 002 &middot; Open Investigation</div>
-    <h1 class="case-title">The Last Shot</h1>
-    <div class="case-title-rule"><span>Mumbai &middot; Film Set &middot; 2026</span></div>
-    <p class="case-setting">
-      5:47 AM, Film City, Mumbai. Lead actor Veer Kapoor is found unconscious in his trailer minutes before the final shot of <em>Raat Ka Darwaza</em>. He survives but the shoot is suspended. Investigators determine his morning energy drink contained a sedative. The bottle came through the production's catering service. Someone on the crew switched it before it reached him.
-    </p>
-  </div>
-  <div class="case-dossier">
-    <div class="dossier-label">Case File</div>
-    <div class="dossier-row">
-      <span class="dossier-key">File No.</span>
-      <span class="dossier-val">CR-002-2026</span>
+    @media (max-width: 850px) {
+      .puzzle-layout { grid-template-columns: minmax(0, 1fr); }
+      .puzzle-left { border-right: 0; border-bottom: 1px solid var(--fg-low); }
+      .case-header { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+      .case-dossier { max-width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
+      .dossier-label, .dossier-divider { grid-column: 1 / -1; }
+      .dossier-row { margin-bottom: 0; min-width: 0; }
+      .dossier-stamp { justify-self: start; align-self: start; margin-top: 0; }
+    }
+    @media (max-width: 700px) {
+      body { padding-left: 0; padding-right: 0; }
+      .top-bar { padding: 14px 16px; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+      .bar-left { min-width: 0; flex-wrap: wrap; gap: 6px 12px; }
+      .bar-center { display: none; }
+      .bar-right { display: flex; gap: 0; justify-content: flex-end; }
+      .bar-location { display: none; }
+      .bar-logo { font-size: 16px; }
+      .bar-label { font-size: 10px; letter-spacing: .08em; }
+      .bar-stamp { font-size: 10px; padding: 4px 7px; }
+      .case-header, .puzzle-left, .puzzle-right, .case-rules { padding-left: 16px; padding-right: 16px; }
+      .case-header { padding-top: 28px; padding-bottom: 24px; }
+      .case-title { font-size: clamp(30px, 8vw, 42px); line-height: 1.08; }
+      .case-title-rule span { font-size: 8px; letter-spacing: .08em; white-space: normal; text-align: center; }
+      .case-setting { font-size: 15px; line-height: 1.75; }
+      .puzzle-left, .puzzle-right { padding-top: 26px; padding-bottom: 32px; }
+      .exhibit-header { padding: 14px 12px; gap: 10px; }
+      .exhibit-name { font-size: 14px; }
+      .exhibit-content, .statement-text, .verdict-body, .reveal-text { font-size: 16px; line-height: 1.8; }
+      .statement-name { font-size: 13px; }
+      .accuse-select { font-size: 16px; padding: 14px 16px; }
+      .accuse-btn { width: 100%; font-size: 13px; padding: 17px 12px; }
+      #verdict { padding: 18px; }
+      .nb-exhibit-tag { min-width: 52px; padding: 10px 8px; }
+      .nb-center { padding: 10px; }
+      .nb-relation-btn, .nb-suspect-btn { font-size: 11px; padding: 6px 8px; }
+      .rules-grid { grid-template-columns: minmax(0, 1fr); }
+      .foot { padding: 20px 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="bar-left">
+      <a class="bar-logo" href="./index.html">The Case<em>Room</em></a>
+      <span class="bar-label">Case No. 002</span>
     </div>
-    <div class="dossier-row">
-      <span class="dossier-key">Location</span>
-      <span class="dossier-val">Film City<br>Goregaon, Mumbai</span>
+    <div class="bar-center">The Last Shot</div>
+    <div class="bar-right">
+      <span class="bar-location">Mumbai · Film Set</span>
+      <span class="bar-stamp" id="case-stamp">Open</span>
     </div>
-    <div class="dossier-divider"></div>
-    <div class="dossier-row">
-      <span class="dossier-key">Incident</span>
-      <span class="dossier-val">Deliberate incapacitation</span>
+  </header>
+
+  <section class="case-header">
+    <div class="case-header-text">
+      <div class="case-number" id="case-number">Case 002 · Open Investigation</div>
+      <h1 class="case-title">The Last Shot</h1>
+      <div class="case-title-rule"><span>Mumbai · Film Set · 2026</span></div>
+      <p class="case-setting">5:47 AM, Film City, Mumbai. Lead actor Veer Kapoor is found unconscious in his trailer minutes before the final shot of <em>Raat Ka Darwaza</em>. He survives but the shoot is suspended. Investigators determine his morning energy drink contained a sedative. The bottle came through the production’s catering service. Someone on the crew switched it before it reached him.</p>
     </div>
-    <div class="dossier-row">
-      <span class="dossier-key">Window</span>
-      <span class="dossier-val">04:38 &ndash; 05:30 hrs</span>
+    <aside class="case-dossier">
+      <div class="dossier-label">Case File</div>
+      <div class="dossier-row"><span class="dossier-key">File No.</span><span class="dossier-val">CR-002-2026</span></div>
+      <div class="dossier-row"><span class="dossier-key">Location</span><span class="dossier-val">Film City<br>Mumbai</span></div>
+      <div class="dossier-divider"></div>
+      <div class="dossier-row"><span class="dossier-key">Incident</span><span class="dossier-val">Deliberate incapacitation</span></div>
+      <div class="dossier-row"><span class="dossier-key">Window</span><span class="dossier-val">04:38–05:30 hrs</span></div>
+      <div class="dossier-row"><span class="dossier-key">Persons of interest</span><span class="dossier-val">4 suspects</span></div>
+      <div class="dossier-stamp" id="case-stamp-2">Open</div>
+    </aside>
+  </section>
+
+  <section class="case-rules" aria-label="Case rules">
+    <div class="rules-label">Case Rules</div>
+    <div class="rules-grid">
+      <div class="rule-item">This is a fictional case.</div>
+      <div class="rule-item">Records described as verified are reliable for this puzzle.</div>
+      <div class="rule-item">Suspect statements may be inaccurate.</div>
+      <div class="rule-item">There was one perpetrator. No accomplice.</div>
+      <div class="rule-item">All evidence needed to identify the culprit is present.</div>
+      <div class="rule-item">No specialist forensic or medical knowledge is required.</div>
     </div>
-    <div class="dossier-row">
-      <span class="dossier-key">Persons of interest</span>
-      <span class="dossier-val">4 suspects</span>
-    </div>
-    <div class="dossier-stamp" id="case-stamp-2">Open</div>
-  </div>
-</div>
+  </section>
 
-<!-- CASE RULES -->
-<div class="case-rules">
-  <div class="rules-label">Case Rules</div>
-  <div class="rules-grid">
-    <div class="rule-item">This is a fictional case.</div>
-    <div class="rule-item">Records described as verified are reliable for this puzzle.</div>
-    <div class="rule-item">Suspect statements may be inaccurate.</div>
-    <div class="rule-item">There was one perpetrator. No accomplice.</div>
-    <div class="rule-item">All evidence needed to identify the culprit is present.</div>
-    <div class="rule-item">No specialist forensic or medical knowledge is required.</div>
-  </div>
-</div>
-
-<!-- MAIN LAYOUT -->
-<div class="puzzle-layout">
-  <!-- LEFT: EXHIBITS + STATEMENTS -->
-  <div class="puzzle-left">
-    <div class="section-label">Exhibits</div>
-    <div class="exhibit-list" id="exhibit-list"></div>
-
-    <div class="section-label">Suspect Statements</div>
-    <div class="statement-list" id="statement-list"></div>
-  </div>
-
-  <!-- RIGHT: NOTEBOOK + ACCUSATION -->
-  <div class="puzzle-right">
-    <div class="section-label">Your Notebook</div>
-    <div class="notebook">
-      <div class="notebook-hint">Open an exhibit, then tag it. Link it to a suspect if it implicates one.</div>
-      <div id="notebook-rows"></div>
-    </div>
-
-    <div class="section-label">Accusation</div>
-    <div class="accuse-form">
-      <div class="accuse-row">
-        <div class="accuse-label">Who substituted the drink?</div>
-        <select class="accuse-select" id="sel-suspect">
-          <option value="">-- Select a suspect --</option>
-          <option value="priya">Priya Sinha</option>
-          <option value="ronit">Ronit Malhotra</option>
-          <option value="tara">Tara Iyer</option>
-          <option value="danish">Danish Khan</option>
-        </select>
+  <main class="puzzle-layout">
+    <section class="puzzle-left" aria-label="Evidence">
+      <h2 class="section-label">Exhibits</h2>
+      <div class="exhibit-list" id="exhibit-list"></div>
+      <h2 class="section-label">Suspect Statements</h2>
+      <div class="statement-list" id="statement-list"></div>
+    </section>
+    <section class="puzzle-right" aria-label="Notebook and accusation">
+      <h2 class="section-label">Your Notebook</h2>
+      <div class="notebook">
+        <p class="notebook-hint">Open an exhibit, then tag it. Link it to a suspect if it implicates one.</p>
+        <div id="notebook-rows"></div>
       </div>
-
-      <div class="accuse-row">
-        <div class="accuse-label">Select two exhibits</div>
-        <div class="accuse-sublabel">Choose the two that directly establish your accusation.</div>
-        <div class="exhibit-checkboxes" id="exhibit-checkboxes"></div>
-      </div>
-
-      <div class="accuse-note" id="accuse-note">Select two exhibits that directly support your accusation.</div>
-
-      <button class="accuse-btn" id="accuse-btn" onclick="submitAccusation()">
-        <span>File Accusation</span>
-      </button>
-
-      <!-- VERDICT -->
-      <div id="verdict">
-        <div class="verdict-headline" id="verdict-headline"></div>
-        <div class="verdict-body" id="verdict-body"></div>
-        <div class="verdict-reveal" id="verdict-reveal">
-          <button class="reveal-btn" id="reveal-btn" onclick="revealSolution()">Reveal Full Solution</button>
-          <div class="reveal-text" id="reveal-text"></div>
+      <h2 class="section-label">Accusation</h2>
+      <div class="accuse-form">
+        <div class="accuse-row">
+          <label class="accuse-label" for="sel-suspect">Who substituted the drink?</label>
+          <select class="accuse-select" id="sel-suspect">
+            <option value="">— Select a suspect —</option>
+            <option value="priya">Priya Sinha</option>
+            <option value="ronit">Ronit Malhotra</option>
+            <option value="tara">Tara Iyer</option>
+            <option value="danish">Danish Khan</option>
+          </select>
+        </div>
+        <div class="accuse-row">
+          <div class="accuse-label">Select two exhibits</div>
+          <p class="accuse-sublabel">Choose two exhibits: one that establishes the substitution and one that confirms the replacement bottle reached Veer.</p>
+          <div class="exhibit-checkboxes" id="exhibit-checkboxes"></div>
+        </div>
+        <p class="accuse-note" id="accuse-note" aria-live="polite">Select two exhibits that directly support your accusation.</p>
+        <button class="accuse-btn" id="accuse-btn" type="button"><span>File Accusation</span></button>
+        <div id="verdict" tabindex="-1" role="status" aria-live="polite" aria-atomic="true">
+          <div class="verdict-headline" id="verdict-headline"></div>
+          <div class="verdict-body" id="verdict-body"></div>
+          <div class="verdict-reveal" id="verdict-reveal">
+            <button class="reveal-btn" id="reveal-btn" type="button">Reveal Full Solution</button>
+            <div class="reveal-text" id="reveal-text"></div>
+          </div>
+        </div>
+        <div class="case-actions"><button type="button" class="reveal-btn" id="restart-btn">Restart case</button></div>
+        <div class="share-block" id="share-block">
+          <div class="stamp-card" id="stamp-card"></div>
+          <div class="share-actions"><button class="share-btn" id="copy-btn" type="button">Copy Result</button><span class="share-confirm" id="share-confirm" aria-live="polite">Copied</span></div>
         </div>
       </div>
+    </section>
+  </main>
 
-      <!-- ALWAYS-AVAILABLE REVEAL -->
-      <div id="spoiler-block" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--fg-low);display:none;">
-        <div class="reveal-text" id="spoiler-text"></div>
-      </div>
+  <footer class="foot"><span class="foot-text">The Case Room · A Pixel &amp; Ink Product</span><span class="foot-num">Case 002 · thecaseroom.pixelandink.in</span></footer>
 
-      <!-- RESET -->
-      <div style="margin-top:16px;">
-        <button type="button" class="reveal-btn" onclick="resetCase()">Restart case</button>
-      </div>
+  <script>
+    'use strict';
 
-      <!-- SHARE -->
-      <div class="share-block" id="share-block">
-        <div class="stamp-card" id="stamp-card"></div>
-        <div style="display:flex;align-items:center;">
-          <button class="share-btn" onclick="copyStamp()">Copy Result</button>
-          <span class="share-confirm" id="share-confirm">Copied</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+    const EXHIBITS = [
+      { id: 'A', name: 'Catering Preparation Record', content: `Verified preparation record.\n\nAt 4:38 AM, catering assistant Leela Shah selected Veer’s usual blue-label energy drink from the approved stock.\n\nShe marked its cap with a yellow dot and photographed the bottle. The photographed bottle has a visible diagonal crease across its front label.\n\nLeela handed it directly to Danish Khan.\n\nA supervisor later finds that same marked, creased bottle — unopened — in the catering returns tray.` },
+      { id: 'B', name: 'Packing-Counter Camera Recording', content: `Verified, continuous recording from 4:39 to 4:43 AM.\n\nDanish places the yellow-marked, creased bottle into the actor-delivery bag. He leaves the bag open on the packing counter and walks into the adjacent supply room.\n\nRonit remains at the counter. No other person enters the counter area.\n\nAt 4:41 AM, Ronit removes the marked bottle, puts it into the returns tray and places another bottle into the bag. He then seals the bag with security seal S-184.\n\nDanish returns at 4:43 AM and takes the sealed bag to the catering runner.\n\nThe camera shows these actions clearly. It does not show the contents of the replacement bottle.` },
+      { id: 'C', name: 'Delivery Chain and Recovered Bottle', content: `Verified delivery records and trailer-entry recording.\n\nDanish hands the bag to runner Ajay at 4:44 AM. Both record seal S-184.\n\nAjay delivers the bag to Veer’s trailer at 5:30 AM. Seal S-184 is intact on arrival.\n\nVeer opens the bag, removes the blue-label bottle and drinks from it. No other person touches the bottle between delivery and consumption.\n\nThe recovered bottle:\n- Has no yellow dot.\n- Has no diagonal label crease.\n- Contains the sedative identified in the investigation.\n\nFor this fictional case, the investigation confirms the drink caused Veer’s collapse.` },
+      { id: 'D', name: 'Other Suspects’ Movements', content: `Verified records.\n\nPriya leaves the catering counter at 4:35 AM and is continuously visible in the technical-rehearsal recording from 4:37 to 4:48 AM.\n\nTara enters the lot at 4:50 AM and goes to wardrobe. She arrives after the bag was sealed and handed to the runner.\n\nDanish is visible in the adjacent supply-room recording from 4:40 to 4:43 AM. He does not return to the packing counter during Ronit’s substitution.\n\nRonit is the only person at the packing counter during the substitution window.` },
+      { id: 'E', name: 'Veer’s Message to Ronit', content: `Authenticated message sent at 10:18 PM the previous evening.\n\nVeer to Ronit:\n“We finish the shot tomorrow. Then I’m taking the duplicate vendor invoices to the studio. I want the originals and your explanation before noon.”\n\nRonit replies:\n“Let’s discuss this privately before you involve anyone else.”\n\nThis exhibit establishes a possible motive to prevent Veer from proceeding with the meeting. It does not independently establish guilt.` },
+      { id: 'F', name: 'Bag Handover Record', content: `Verified catering locker and handover records.\n\nPriya collects the empty actor-delivery bag at 4:30 AM.\nPriya hands it to Ronit at 4:35 AM.\nThe bag contains no drinks at either point.\n\nDanish first places Veer’s original drink inside at 4:39 AM.\n\nThis record explains why Priya initially appears connected to the bag. She handled it before the drink was packed. She had no contact with the drink itself.` }
+    ];
 
-<!-- FOOTER -->
-<div class="foot">
-  <span class="foot-text">The Case Room &middot; A Pixel &amp; Ink Product</span>
-  <span class="foot-num">Case 002 &middot; thecaseroom.pixelandink.in</span>
-</div>
+    const SUSPECTS = [
+      { id: 'priya', name: 'Priya Sinha', role: 'Director' },
+      { id: 'ronit', name: 'Ronit Malhotra', role: 'Co-producer' },
+      { id: 'tara', name: 'Tara Iyer', role: 'Actor' },
+      { id: 'danish', name: 'Danish Khan', role: 'Assistant Director' }
+    ];
+    const STATEMENTS = [
+      { id: 'priya', name: 'Priya Sinha', role: 'Director', text: 'I collected the empty actor-delivery bag from the catering locker. I passed it to Ronit when I left for the technical rehearsal.', note: 'Statement not verified.' },
+      { id: 'ronit', name: 'Ronit Malhotra', role: 'Co-producer', text: 'Priya handed me the bag. I put it on the secondary shelf and left. Danish packed Veer’s drink. I never handled it.', note: 'Statement not verified.' },
+      { id: 'tara', name: 'Tara Iyer', role: 'Actor', text: 'I arrived for a costume pickup. I argued with Veer yesterday, but I did not go near catering this morning.', note: 'Statement not verified.' },
+      { id: 'danish', name: 'Danish Khan', role: 'Assistant Director', text: 'I put Veer’s normal drink in the delivery bag. When I returned, the bag was already sealed. I handed it to the runner without opening it.', note: 'Statement not verified.' }
+    ];
+    const RELATIONS = ['Establishes access', 'Establishes motive', 'Supports accusation', 'Contradicts', 'Eliminates'];
+    const ANSWER = { suspect: 'ronit' };
+    const DECISIVE_EXHIBITS = ['B', 'C'];
+    const FEEDBACK = {
+      correct: { headline: 'Case closed.', body: 'Ronit Malhotra substituted the contaminated drink. The packing-counter recording establishes the act. The delivery chain and recovered bottle confirm nothing changed afterward.' },
+      wrong_exhibits: { headline: 'Suspect identified. Evidence incomplete.', body: 'You have identified the responsible suspect, but your selected exhibits do not establish both the substitution and the delivery chain. Which exhibit shows the act, and which proves the bottle reached Veer unchanged?' },
+      wrong_suspect_priya: { headline: 'Theory unsupported.', body: 'Priya handled the empty bag before the drink was packed. She was in a continuous technical-rehearsal recording from 4:37 AM. The packing-counter camera does not place her at the substitution.' },
+      wrong_suspect_tara: { headline: 'Theory unsupported.', body: 'Tara arrived at the lot at 4:50 AM. The bag was sealed and handed to the runner by 4:44 AM. She could not have reached the drink.' },
+      wrong_suspect_danish: { headline: 'Theory unsupported.', body: 'Danish placed the original marked bottle in the bag and is visible in the supply-room recording from 4:40 to 4:43 AM. The camera shows who made the substitution while he was away.' }
+    };
+    const SOLUTION_REVEAL = `Ronit Malhotra substituted the contaminated drink.\n\nThe packing-counter recording shows Danish placing Veer’s marked original bottle in the bag at 4:39 AM. While Danish is in the supply room, Ronit removes that bottle, replaces it with another and seals the bag with seal S-184.\n\nThe delivery records confirm the same seal is intact when the bag reaches Veer’s trailer at 5:30 AM. The recovered bottle has no yellow dot and no diagonal label crease. The investigation confirms it contains the sedative.\n\nRonit’s statement — “I never handled it” — is directly contradicted by the recording.\n\nPriya handled the empty bag before the drink was packed and was in a rehearsal recording throughout the substitution window. Tara arrived after the bag was already sealed. Danish packed the original and later carried the already sealed bag.\n\nVeer’s message to Ronit supplies a possible motive. The accusation rests on the substitution and delivery evidence, not the motive alone.`;
 
-<script>
-// âââ DATA âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    let nbState = {};
+    let caseStatus = 'investigating';
+    let checkedExhibits = new Set();
+    let attempts = 0;
+    let completedAt = null;
+    let lastFeedback = null;
+    const STORAGE_KEY = 'cr002v4';
 
-const EXHIBITS = [
-  {
-    id: 'A',
-    name: 'Catering Preparation Record',
-    content: `Verified preparation record.
+    const $ = id => document.getElementById(id);
+    const isCaseOver = () => caseStatus === 'solved';
 
-At 4:38 AM, catering assistant Leela Shah selected Veer's usual blue-label energy drink from the approved stock.
-
-She marked its cap with a yellow dot and photographed the bottle. The photographed bottle has a visible diagonal crease across its front label.
-
-Leela handed it directly to Danish Khan.
-
-A supervisor later finds that same marked, creased bottle â unopened â in the catering returns tray.`
-  },
-  {
-    id: 'B',
-    name: 'Packing-Counter Camera Recording',
-    content: `Verified, continuous recording from 4:39 to 4:43 AM.
-
-Danish places the yellow-marked, creased bottle into the actor-delivery bag. He leaves the bag open on the packing counter and walks into the adjacent supply room.
-
-Ronit remains at the counter. No other person enters the counter area.
-
-At 4:41 AM, Ronit removes the marked bottle, puts it into the returns tray and places another bottle into the bag. He then seals the bag with security seal S-184.
-
-Danish returns at 4:43 AM and takes the sealed bag to the catering runner.
-
-The camera shows these actions clearly. It does not show the contents of the replacement bottle.`
-  },
-  {
-    id: 'C',
-    name: 'Delivery Chain and Recovered Bottle',
-    content: `Verified delivery records and trailer-entry recording.
-
-Danish hands the bag to runner Ajay at 4:44 AM. Both record seal S-184.
-
-Ajay delivers the bag to Veer's trailer at 5:30 AM. Seal S-184 is intact on arrival.
-
-Veer opens the bag, removes the blue-label bottle and drinks from it. No other person touches the bottle between delivery and consumption.
-
-The recovered bottle:
-- Has no yellow dot.
-- Has no diagonal label crease.
-- Contains the sedative identified in the investigation.
-
-For this fictional case, the investigation confirms the drink caused Veer's collapse.`
-  },
-  {
-    id: 'D',
-    name: "Other Suspects' Movements",
-    content: `Verified records.
-
-Priya leaves the catering counter at 4:35 AM and is continuously visible in the technical-rehearsal recording from 4:37 to 4:48 AM.
-
-Tara enters the lot at 4:50 AM and goes to wardrobe. She arrives after the bag was sealed and handed to the runner.
-
-Danish is visible in the adjacent supply-room recording from 4:40 to 4:43 AM. He does not return to the packing counter during Ronit's substitution.
-
-Ronit is the only person at the packing counter during the substitution window.`
-  },
-  {
-    id: 'E',
-    name: "Veer's Message to Ronit",
-    content: `Authenticated message sent at 10:18 PM the previous evening.
-
-Veer to Ronit:
-"We finish the shot tomorrow. Then I'm taking the duplicate vendor invoices to the studio. I want the originals and your explanation before noon."
-
-Ronit replies:
-"Let's discuss this privately before you involve anyone else."
-
-This exhibit establishes a possible motive to prevent Veer from proceeding with the meeting. It does not independently establish guilt.`
-  },
-  {
-    id: 'F',
-    name: 'Bag Handover Record',
-    content: `Verified catering locker and handover records.
-
-Priya collects the empty actor-delivery bag at 4:30 AM.
-Priya hands it to Ronit at 4:35 AM.
-The bag contains no drinks at either point.
-
-Danish first places Veer's original drink inside at 4:39 AM.
-
-This record explains why Priya initially appears connected to the bag. She handled it before the drink was packed. She had no contact with the drink itself.`
-  }
-];
-
-const SUSPECTS = [
-  { id: 'priya',  name: 'Priya Sinha',    role: 'Director',            bg: 'The film\'s release is important to her career.' },
-  { id: 'ronit',  name: 'Ronit Malhotra', role: 'Co-producer',         bg: 'Veer intends to raise questions about production spending.' },
-  { id: 'tara',   name: 'Tara Iyer',      role: 'Actor',               bg: 'Veer supported replacing her earlier in the shoot.' },
-  { id: 'danish', name: 'Danish Khan',    role: 'Assistant Director',  bg: 'Veer opposed his promotion.' }
-];
-
-const STATEMENTS = [
-  {
-    id: 'priya',
-    name: 'Priya Sinha',
-    role: 'Director',
-    text: 'I collected the empty actor-delivery bag from the catering locker. I passed it to Ronit when I left for the technical rehearsal.',
-    note: 'Statement not verified.'
-  },
-  {
-    id: 'ronit',
-    name: 'Ronit Malhotra',
-    role: 'Co-producer',
-    text: 'Priya handed me the bag. I put it on the secondary shelf and left. Danish packed Veer\'s drink. I never handled it.',
-    note: 'Statement not verified.'
-  },
-  {
-    id: 'tara',
-    name: 'Tara Iyer',
-    role: 'Actor',
-    text: 'I arrived for a costume pickup. I argued with Veer yesterday, but I did not go near catering this morning.',
-    note: 'Statement not verified.'
-  },
-  {
-    id: 'danish',
-    name: 'Danish Khan',
-    role: 'Assistant Director',
-    text: 'I put Veer\'s normal drink in the delivery bag. When I returned, the bag was already sealed. I handed it to the runner without opening it.',
-    note: 'Statement not verified.'
-  }
-];
-
-const RELATIONS = ['Establishes access', 'Establishes motive', 'Supports accusation', 'Contradicts', 'Eliminates'];
-
-const ANSWER = { suspect: 'ronit' };
-const DECISIVE_EXHIBITS = ['B', 'C'];
-
-const FEEDBACK = {
-  correct: {
-    headline: 'Case closed.',
-    body: 'Ronit Malhotra substituted the contaminated drink. The packing-counter recording establishes the act. The delivery chain and recovered bottle confirm nothing changed afterward.'
-  },
-  wrong_exhibits: {
-    headline: 'Suspect identified. Evidence incomplete.',
-    body: 'You have identified the responsible suspect, but your selected exhibits do not establish both the substitution and the delivery chain. Which exhibit shows the act, and which proves the bottle reached Veer unchanged?'
-  },
-  wrong_suspect_priya: {
-    headline: 'Theory unsupported.',
-    body: 'Priya handled the empty bag before the drink was packed. She was in a continuous technical-rehearsal recording from 4:37 AM. The packing-counter camera does not place her at the substitution.'
-  },
-  wrong_suspect_tara: {
-    headline: 'Theory unsupported.',
-    body: 'Tara arrived at the lot at 4:50 AM. The bag was sealed and handed to the runner by 4:44 AM. She could not have reached the drink.'
-  },
-  wrong_suspect_danish: {
-    headline: 'Theory unsupported.',
-    body: 'Danish placed the original marked bottle in the bag and is visible in the supply-room recording from 4:40 to 4:43 AM. The camera shows who made the substitution while he was away.'
-  }
-};
-
-const SOLUTION_REVEAL = `Ronit Malhotra substituted the contaminated drink.
-
-The packing-counter recording shows Danish placing Veer's marked original bottle in the bag at 4:39 AM. While Danish is in the supply room, Ronit removes that bottle, replaces it with another and seals the bag with seal S-184.
-
-The delivery records confirm the same seal is intact when the bag reaches Veer's trailer at 5:30 AM. The recovered bottle has no yellow dot and no diagonal label crease. The investigation confirms it contains the sedative.
-
-Ronit's statement â "I never handled it" â is directly contradicted by the recording.
-
-Priya handled the empty bag before the drink was packed and was in a rehearsal recording throughout the substitution window. Tara arrived after the bag was already sealed. Danish packed the original and later carried the already sealed bag.
-
-Veer's message to Ronit supplies a possible motive. The accusation rests on the substitution and delivery evidence, not the motive alone.`;
-
-// âââ STATE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
-let nbState       = {};   // { exId: { relation, suspect } }
-let caseStatus    = 'investigating'; // 'investigating' | 'solved' | 'revealed'
-let savedSuspect  = '';
-let savedExhibits = [];   // array of exhibit ids
-let completedAt   = null; // ISO date string
-
-const STORAGE_KEY = 'cr002v3';
-
-function isCaseOver() { return caseStatus !== 'investigating'; }
-
-function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      v: 3,
-      nbState,
-      status:     caseStatus,
-      suspect:    document.getElementById('sel-suspect')?.value || '',
-      exhibits:   [...checkedExhibits],
-      completedAt
-    }));
-  } catch(error) {}
-}
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const data = JSON.parse(raw);
-    if (data.v !== 3) return;
-    if (data.nbState) {
-      const validIds = new Set(EXHIBITS.map(e => e.id));
-      Object.keys(data.nbState).forEach(k => { if (validIds.has(k)) nbState[k] = data.nbState[k]; });
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          v: 4, nbState, status: caseStatus, suspect: $('sel-suspect').value,
+          exhibits: [...checkedExhibits], attempts, completedAt, lastFeedback
+        }));
+      } catch (_) { /* Private browsing or storage restrictions should not stop play. */ }
     }
-    if (['investigating','solved','revealed'].includes(data.status)) caseStatus = data.status;
-    const suspectIds = new Set(SUSPECTS.map(s => s.id));
-    if (data.suspect && suspectIds.has(data.suspect)) savedSuspect = data.suspect;
-    if (Array.isArray(data.exhibits)) {
-      const validIds = new Set(EXHIBITS.map(e => e.id));
-      savedExhibits = data.exhibits.filter(id => validIds.has(id)).slice(0, 2);
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (data.v !== 4) return;
+        const validExhibits = new Set(EXHIBITS.map(ex => ex.id));
+        if (data.nbState && typeof data.nbState === 'object') {
+          Object.keys(data.nbState).forEach(id => {
+            if (validExhibits.has(id) && data.nbState[id] && typeof data.nbState[id] === 'object') nbState[id] = data.nbState[id];
+          });
+        }
+        if (data.status === 'solved') caseStatus = 'solved';
+        if (Array.isArray(data.exhibits)) data.exhibits.filter(id => validExhibits.has(id)).slice(0, 2).forEach(id => checkedExhibits.add(id));
+        attempts = Number.isInteger(data.attempts) && data.attempts >= 0 ? data.attempts : 0;
+        completedAt = typeof data.completedAt === 'string' ? data.completedAt : null;
+        lastFeedback = data.lastFeedback && typeof data.lastFeedback === 'object' ? data.lastFeedback : null;
+        if (typeof data.suspect === 'string' && SUSPECTS.some(s => s.id === data.suspect)) $('sel-suspect').value = data.suspect;
+      } catch (_) { /* Ignore invalid or unavailable saved state. */ }
     }
-    if (data.completedAt) completedAt = data.completedAt;
-  } catch(e) {}
-}
 
-// âââ RENDER EXHIBITS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    function renderExhibits(openId = null) {
+      const list = $('exhibit-list');
+      list.replaceChildren();
+      EXHIBITS.forEach(ex => {
+        const card = document.createElement('article');
+        card.className = 'exhibit' + (openId === ex.id ? ' open' : '');
+        card.id = `exhibit-${ex.id}`;
 
-function renderExhibits() {
-  const el = document.getElementById('exhibit-list');
-  el.innerHTML = '';
-  EXHIBITS.forEach(ex => {
-    const div = document.createElement('div');
-    div.className = 'exhibit';
-    div.id = 'exhibit-' + ex.id;
-    div.innerHTML = `
-      <div class="exhibit-header" onclick="toggleExhibit('${ex.id}')">
-        <span class="exhibit-tag">Exh. ${ex.id}</span>
-        <span class="exhibit-name">${ex.name}</span>
-        <span class="exhibit-arrow">&#9660;</span>
-      </div>
-      <div class="exhibit-body">
-        <div class="exhibit-content">${ex.content}</div>
-      </div>`;
-    el.appendChild(div);
-  });
-}
+        const heading = document.createElement('h3');
+        heading.style.margin = '0';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'exhibit-header';
+        button.id = `exhibit-heading-${ex.id}`;
+        button.setAttribute('aria-expanded', String(openId === ex.id));
+        button.setAttribute('aria-controls', `exhibit-body-${ex.id}`);
+        const tag = document.createElement('span'); tag.className = 'exhibit-tag'; tag.textContent = `Exh. ${ex.id}`;
+        const name = document.createElement('span'); name.className = 'exhibit-name'; name.textContent = ex.name;
+        const arrow = document.createElement('span'); arrow.className = 'exhibit-arrow'; arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '▼';
+        button.append(tag, name, arrow);
+        button.addEventListener('click', () => toggleExhibit(ex.id));
+        heading.appendChild(button);
 
-function toggleExhibit(id) {
-  const el = document.getElementById('exhibit-' + id);
-  const wasOpen = el.classList.contains('open');
-  document.querySelectorAll('.exhibit').forEach(e => e.classList.remove('open'));
-  if (!wasOpen) {
-    el.classList.add('open');
-    addToNotebook(id);
-  }
-}
+        const body = document.createElement('div');
+        body.className = 'exhibit-body'; body.id = `exhibit-body-${ex.id}`; body.hidden = openId !== ex.id;
+        const content = document.createElement('div'); content.className = 'exhibit-content'; content.textContent = ex.content;
+        body.appendChild(content);
+        card.append(heading, body);
+        list.appendChild(card);
+      });
+    }
 
-// âââ RENDER STATEMENTS ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    function toggleExhibit(id) {
+      const current = $(`exhibit-heading-${id}`);
+      const willOpen = current?.getAttribute('aria-expanded') !== 'true';
+      renderExhibits(willOpen ? id : null);
+      if (willOpen) addToNotebook(id);
+      $( `exhibit-heading-${id}` )?.focus({ preventScroll: true });
+    }
 
-function renderStatements() {
-  const el = document.getElementById('statement-list');
-  el.innerHTML = STATEMENTS.map(s => `
-    <div class="statement">
-      <div class="statement-name">${s.name}</div>
-      <div class="statement-role">${s.role}</div>
-      <div class="statement-text">${s.text}</div>
-      <div class="statement-note">${s.note}</div>
-    </div>`).join('');
-}
+    function renderStatements() {
+      const list = $('statement-list'); list.replaceChildren();
+      STATEMENTS.forEach(s => {
+        const card = document.createElement('article'); card.className = 'statement';
+        const name = document.createElement('h3'); name.className = 'statement-name'; name.textContent = s.name;
+        const role = document.createElement('p'); role.className = 'statement-role'; role.textContent = s.role;
+        const quote = document.createElement('p'); quote.className = 'statement-text'; quote.textContent = s.text;
+        const note = document.createElement('p'); note.className = 'statement-note'; note.textContent = s.note;
+        card.append(name, role, quote, note); list.appendChild(card);
+      });
+    }
 
-// âââ NOTEBOOK âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    function addToNotebook(id) {
+      if (!nbState[id]) nbState[id] = {};
+      saveState(); renderNotebook();
+    }
 
-function addToNotebook(exId) {
-  if (!nbState[exId]) nbState[exId] = {};
-  saveState();
-  renderNotebook();
-}
+    function renderNotebook(focusKey = null) {
+      const list = $('notebook-rows'); list.replaceChildren();
+      const ids = Object.keys(nbState).filter(id => EXHIBITS.some(ex => ex.id === id));
+      if (!ids.length) {
+        const empty = document.createElement('p'); empty.className = 'notebook-empty'; empty.textContent = 'No exhibits opened yet.'; list.appendChild(empty); return;
+      }
+      ids.forEach(id => {
+        const ex = EXHIBITS.find(item => item.id === id); const state = nbState[id] || {};
+        const linked = Boolean(state.relation || state.suspect);
+        const row = document.createElement('div'); row.className = 'nb-row' + (linked ? ' linked' : '');
+        const tag = document.createElement('div'); tag.className = 'nb-exhibit-tag'; tag.textContent = `Exh. ${ex.id}`;
+        const center = document.createElement('div'); center.className = 'nb-center';
+        const title = document.createElement('div'); title.className = 'nb-exhibit-name'; title.textContent = ex.name;
+        const relationWrap = document.createElement('div'); relationWrap.className = 'nb-relation-wrap';
+        RELATIONS.forEach(relation => {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'nb-relation-btn' + (state.relation === relation ? ' active' : '');
+          b.textContent = relation; b.dataset.focusKey = `${id}-rel-${relation}`; b.disabled = isCaseOver();
+          b.setAttribute('aria-pressed', String(state.relation === relation));
+          b.addEventListener('click', () => {
+            if (isCaseOver()) return;
+            nbState[id].relation = state.relation === relation ? null : relation;
+            saveState(); renderNotebook(b.dataset.focusKey);
+          });
+          relationWrap.appendChild(b);
+        });
+        const suspectWrap = document.createElement('div'); suspectWrap.className = 'nb-suspect-wrap';
+        SUSPECTS.forEach(suspect => {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'nb-suspect-btn' + (state.suspect === suspect.id ? ' active' : '');
+          b.textContent = suspect.name.split(' ')[0]; b.dataset.focusKey = `${id}-sus-${suspect.id}`; b.disabled = isCaseOver();
+          b.setAttribute('aria-pressed', String(state.suspect === suspect.id));
+          b.addEventListener('click', () => {
+            if (isCaseOver()) return;
+            nbState[id].suspect = state.suspect === suspect.id ? null : suspect.id;
+            saveState(); renderNotebook(b.dataset.focusKey);
+          });
+          suspectWrap.appendChild(b);
+        });
+        center.append(title, relationWrap, suspectWrap);
+        const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'nb-remove'; remove.textContent = '×'; remove.setAttribute('aria-label', `Clear notes for exhibit ${id}`); remove.disabled = isCaseOver();
+        remove.addEventListener('click', () => { if (isCaseOver()) return; nbState[id] = {}; saveState(); renderNotebook(`${id}-remove`); });
+        row.append(tag, center, remove); list.appendChild(row);
+      });
+      if (focusKey) list.querySelector(`[data-focus-key="${CSS.escape(focusKey)}"]`)?.focus({ preventScroll: true });
+    }
 
-function renderNotebook() {
-  const el = document.getElementById('notebook-rows');
-  const openIds = Object.keys(nbState);
-  if (openIds.length === 0) {
-    el.innerHTML = '<div style="font-size:12px;color:var(--fg-low);padding:8px 0;">No exhibits opened yet.</div>';
-    return;
-  }
-  el.innerHTML = '';
-  openIds.forEach(exId => {
-    const ex    = EXHIBITS.find(e => e.id === exId);
-    if (!ex) return;
-    const state = nbState[exId] || {};
-    const isLinked = state.relation || state.suspect;
+    function renderExhibitCheckboxes() {
+      const container = $('exhibit-checkboxes'); container.replaceChildren();
+      EXHIBITS.forEach(ex => {
+        const label = document.createElement('label'); label.className = 'exhibit-checkbox' + (checkedExhibits.has(ex.id) ? ' checked' : ''); label.id = `chk-${ex.id}`;
+        const input = document.createElement('input'); input.type = 'checkbox'; input.dataset.id = ex.id; input.checked = checkedExhibits.has(ex.id); input.disabled = isCaseOver();
+        const box = document.createElement('span'); box.className = 'checkbox-box'; box.setAttribute('aria-hidden', 'true');
+        const text = document.createElement('span'); text.className = 'checkbox-label';
+        const title = document.createElement('strong'); title.textContent = `Exhibit ${ex.id}`;
+        text.append(title, document.createTextNode(ex.name)); label.append(input, box, text);
+        input.addEventListener('change', () => {
+          if (input.checked && checkedExhibits.size >= 2) {
+            input.checked = false; $('accuse-note').textContent = 'Two exhibits are already selected. Deselect one first.'; return;
+          }
+          if (input.checked) checkedExhibits.add(ex.id); else checkedExhibits.delete(ex.id);
+          label.classList.toggle('checked', input.checked); updateNote(); saveState();
+        });
+        container.appendChild(label);
+      });
+    }
 
-    const relButtons = RELATIONS.map(r =>
-      `<button class="nb-relation-btn${state.relation === r ? ' active' : ''}" onclick="nbSetRelation('${exId}','${r}');event.stopPropagation()">${r}</button>`
-    ).join('');
+    function updateNote() {
+      const count = checkedExhibits.size;
+      $('accuse-note').textContent = count === 0 ? 'Select two exhibits that directly support your accusation.' : count === 1 ? 'Select one more exhibit.' : `Exhibits ${[...checkedExhibits].join(' and ')} selected.`;
+    }
 
-    const suspButtons = SUSPECTS.map(s =>
-      `<button class="nb-suspect-btn${state.suspect === s.id ? ' active' : ''}" onclick="nbSetSuspect('${exId}','${s.id}');event.stopPropagation()">${s.name.split(' ')[0]}</button>`
-    ).join('');
+    function updateStatus(status) {
+      const solved = status === 'Solved';
+      ['case-stamp', 'case-stamp-2'].forEach(id => {
+        const stamp = $(id); stamp.textContent = status; stamp.classList.toggle('solved', solved);
+      });
+      $('case-number').textContent = `Case 002 · ${status === 'Open' ? 'Open Investigation' : status}`;
+    }
 
-    const row = document.createElement('div');
-    row.className = 'nb-row' + (isLinked ? ' linked' : '');
+    function submitAccusation() {
+      if (isCaseOver()) return;
+      const suspectSelect = $('sel-suspect'); const suspect = suspectSelect.value; const selected = [...checkedExhibits];
+      let valid = true;
+      if (!suspect) { suspectSelect.classList.add('error'); valid = false; }
+      if (selected.length !== 2) { updateNote(); valid = false; }
+      if (!valid) { if (!suspect) suspectSelect.focus(); else $('exhibit-checkboxes').querySelector('input:not(:checked)')?.focus(); return; }
+      suspectSelect.classList.remove('error'); attempts += 1;
+      const verdict = $('verdict'); verdict.style.display = 'block'; verdict.className = 'wrong';
+      if (suspect === ANSWER.suspect && DECISIVE_EXHIBITS.every(id => selected.includes(id))) {
+        caseStatus = 'solved'; completedAt = new Date().toISOString(); lastFeedback = null;
+        renderOutcome(); saveState();
+      } else {
+        const feedback = suspect === ANSWER.suspect ? FEEDBACK.wrong_exhibits : (FEEDBACK[`wrong_suspect_${suspect}`] || { headline: 'Theory unsupported.', body: 'The evidence does not uniquely establish this suspect. Review the exhibits.' });
+        $('verdict-headline').textContent = feedback.headline; $('verdict-body').textContent = feedback.body;
+        $('verdict-reveal').classList.remove('show'); $('share-block').classList.remove('visible');
+        lastFeedback = { headline: feedback.headline, body: feedback.body };
+        saveState();
+      }
+      verdict.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      verdict.focus({ preventScroll: true });
+    }
 
-    row.innerHTML = `
-      <div class="nb-exhibit-tag">Exh. ${ex.id}</div>
-      <div class="nb-center">
-        <div class="nb-exhibit-name">${ex.name}</div>
-        <div class="nb-relation-wrap">${relButtons}</div>
-        <div class="nb-suspect-wrap">${suspButtons}</div>
-      </div>
-      <button class="nb-remove" onclick="nbClear('${exId}');event.stopPropagation()" aria-label="Clear">&#10005;</button>`;
+    function revealSolution() {
+      if (!isCaseOver()) return;
+      $('reveal-text').textContent = SOLUTION_REVEAL; $('reveal-text').classList.add('show'); $('reveal-btn').hidden = true;
+    }
 
-    el.appendChild(row);
-  });
-}
+    function lockForm() {
+      $('sel-suspect').disabled = true;
+      $('exhibit-checkboxes').querySelectorAll('input[type="checkbox"]').forEach(input => { input.disabled = true; });
+      $('accuse-btn').disabled = true;
+    }
 
-function nbSetRelation(exId, rel) {
-  if (isCaseOver()) return;
-  if (!nbState[exId]) nbState[exId] = {};
-  nbState[exId].relation = nbState[exId].relation === rel ? null : rel;
-  saveState();
-  renderNotebook();
-}
+    function showShare() {
+      const block = $('share-block'); block.classList.add('visible');
+      const date = completedAt ? new Date(completedAt) : new Date();
+      const dateText = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      $('stamp-card').textContent = `THE CASE ROOM\nCase 002 — The Last Shot\n${dateText}\n\nSOLVED — ${attempts} accusation${attempts === 1 ? '' : 's'}\n\nthecaseroom.pixelandink.in`;
+    }
 
-function nbSetSuspect(exId, suspId) {
-  if (isCaseOver()) return;
-  if (!nbState[exId]) nbState[exId] = {};
-  nbState[exId].suspect = nbState[exId].suspect === suspId ? null : suspId;
-  saveState();
-  renderNotebook();
-}
+    async function copyStamp() {
+      const text = $('stamp-card').textContent; const message = $('share-confirm');
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(text); message.textContent = 'Copied';
+      } catch (_) {
+        const textarea = document.createElement('textarea'); textarea.value = text; textarea.rows = 6; textarea.setAttribute('aria-label', 'Select and copy result text');
+        textarea.style.cssText = 'display:block;width:100%;margin-top:8px;padding:10px;background:var(--card-bg);color:var(--fg);font:inherit;border:1px solid var(--gold-dim);';
+        $('share-block').appendChild(textarea); textarea.focus(); textarea.select(); message.textContent = 'Select and copy the text above';
+      }
+      message.classList.add('show');
+    }
 
-function nbClear(exId) {
-  if (isCaseOver()) return;
-  nbState[exId] = {};
-  saveState();
-  renderNotebook();
-}
-
-// âââ EXHIBIT CHECKBOXES âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
-let checkedExhibits = new Set();
-
-function renderExhibitCheckboxes() {
-  const container = document.getElementById('exhibit-checkboxes');
-  container.innerHTML = '';
-
-  EXHIBITS.forEach(ex => {
-    const label = document.createElement('label');
-    label.className = 'exhibit-checkbox';
-    label.id = 'chk-' + ex.id;
-
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.dataset.id = ex.id;
-    input.checked = checkedExhibits.has(ex.id);
-    input.disabled = isCaseOver();
-
-    const box = document.createElement('div');
-    box.className = 'checkbox-box';
-
-    const text = document.createElement('div');
-    text.className = 'checkbox-label';
-    const title = document.createElement('strong');
-    title.textContent = 'Exhibit ' + ex.id;
-    text.appendChild(title);
-    text.appendChild(document.createTextNode(ex.name));
-
-    label.appendChild(input);
-    label.appendChild(box);
-    label.appendChild(text);
-    label.classList.toggle('checked', input.checked);
-
-    input.addEventListener('change', () => {
-      if (input.checked && checkedExhibits.size >= 2) {
-        input.checked = false;
-        document.getElementById('accuse-note').textContent =
-          'Two exhibits are already selected. Deselect one first.';
+    function renderOutcome() {
+      const verdict = $('verdict');
+      if (caseStatus !== 'solved') {
+        updateStatus('Open'); $('share-block').classList.remove('visible'); $('verdict-reveal').classList.remove('show');
+        if (lastFeedback) {
+          verdict.style.display = 'block'; verdict.className = 'wrong'; $('verdict-headline').textContent = lastFeedback.headline; $('verdict-body').textContent = lastFeedback.body;
+        } else { verdict.style.display = 'none'; }
         return;
       }
-      if (input.checked) checkedExhibits.add(ex.id);
-      else checkedExhibits.delete(ex.id);
-      label.classList.toggle('checked', input.checked);
-      updateNote();
-      saveState();
-    });
-
-    container.appendChild(label);
-  });
-}
-
-function updateNote() {
-  const note = document.getElementById('accuse-note');
-  const n = checkedExhibits.size;
-  if (n === 0)      note.textContent = 'Select two exhibits that directly support your accusation.';
-  else if (n === 1) note.textContent = 'Select one more exhibit.';
-  else              note.textContent = `Exhibits ${[...checkedExhibits].join(' and ')} selected.`;
-}
-
-// âââ ACCUSATION âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
-function submitAccusation() {
-  if (isCaseOver()) return;
-
-  const suspect = document.getElementById('sel-suspect').value;
-  const exArr   = [...checkedExhibits];
-
-  let valid = true;
-  if (!suspect) { document.getElementById('sel-suspect').classList.add('error'); valid = false; }
-  if (exArr.length < 2) { updateNote(); valid = false; }
-  if (!valid) return;
-
-  document.getElementById('sel-suspect').classList.remove('error');
-
-  const correctSuspect = suspect === ANSWER.suspect;
-  const exhibitsOk     = DECISIVE_EXHIBITS.every(e => exArr.includes(e));
-
-  if (correctSuspect && exhibitsOk) {
-    caseStatus = 'solved';
-    completedAt = new Date().toISOString();
-    saveState();
-    renderOutcome();
-  } else {
-    const vEl      = document.getElementById('verdict');
-    const headline = document.getElementById('verdict-headline');
-    const body     = document.getElementById('verdict-body');
-    vEl.style.display = 'block';
-    vEl.className = 'wrong';
-    if (correctSuspect && !exhibitsOk) {
-      headline.textContent = FEEDBACK.wrong_exhibits.headline;
-      body.textContent     = FEEDBACK.wrong_exhibits.body;
-    } else {
-      const key = 'wrong_suspect_' + suspect;
-      const fb  = FEEDBACK[key] || { headline: 'Theory unsupported.', body: 'The evidence does not uniquely establish this suspect. Review the exhibits.' };
-      headline.textContent = fb.headline;
-      body.textContent     = fb.body;
+      lockForm(); updateStatus('Solved'); verdict.style.display = 'block'; verdict.className = 'correct';
+      $('verdict-headline').textContent = FEEDBACK.correct.headline; $('verdict-body').textContent = FEEDBACK.correct.body;
+      $('verdict-reveal').classList.add('show'); $('reveal-btn').hidden = false; $('reveal-text').classList.remove('show'); $('reveal-text').textContent = '';
+      showShare();
     }
-    saveState();
-  }
 
-  document.getElementById('verdict').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+    function resetCase() {
+      if (!window.confirm('Clear your notes and restart this case?')) return;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+      nbState = {}; caseStatus = 'investigating'; checkedExhibits = new Set(); attempts = 0; completedAt = null; lastFeedback = null;
+      $('sel-suspect').value = ''; $('sel-suspect').disabled = false; $('sel-suspect').classList.remove('error'); $('accuse-btn').disabled = false;
+      $('verdict').style.display = 'none'; $('verdict').className = ''; $('verdict-headline').textContent = ''; $('verdict-body').textContent = '';
+      $('verdict-reveal').classList.remove('show'); $('reveal-btn').hidden = false; $('reveal-text').classList.remove('show'); $('reveal-text').textContent = '';
+      $('stamp-card').textContent = ''; $('share-block').classList.remove('visible'); $('share-confirm').classList.remove('show'); $('share-confirm').textContent = 'Copied';
+      $('share-block').querySelectorAll('textarea').forEach(el => el.remove());
+      renderExhibits(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); updateStatus('Open'); saveState();
+    }
 
-function revealSolution() {
-  const revText = document.getElementById('reveal-text');
-  const revBtn  = document.getElementById('reveal-btn');
-  revText.textContent = SOLUTION_REVEAL;
-  revText.classList.add('show');
-  revBtn.style.display = 'none';
-}
+    $('accuse-btn').addEventListener('click', submitAccusation);
+    $('reveal-btn').addEventListener('click', revealSolution);
+    $('restart-btn').addEventListener('click', resetCase);
+    $('copy-btn').addEventListener('click', copyStamp);
+    $('sel-suspect').addEventListener('change', () => { $('sel-suspect').classList.remove('error'); saveState(); });
 
-function lockForm() {
-  document.getElementById('sel-suspect').disabled = true;
-  document.querySelectorAll('#exhibit-checkboxes input[type="checkbox"]').forEach(inp => {
-    inp.disabled = true;
-  });
-  document.querySelectorAll('.exhibit-checkbox').forEach(el => el.style.pointerEvents = 'none');
-  document.getElementById('accuse-btn').disabled = true;
-}
-
-function showShare(solved) {
-  if (solved && !completedAt) completedAt = new Date().toISOString();
-  const block = document.getElementById('share-block');
-  block.classList.add('visible');
-  const stamp = document.getElementById('stamp-card');
-  const dateStr = completedAt
-    ? new Date(completedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
-    : new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-  const outcomeLabel = solved ? 'SOLVED' : 'SOLUTION REVEALED';
-  stamp.textContent =
-`THE CASE ROOM
-Case 002 - The Last Shot
-${dateStr}
-
-${outcomeLabel}
-
-thecaseroom.pixelandink.in`;
-}
-
-function copyStamp() {
-  const text = document.getElementById('stamp-card').textContent;
-  const conf = document.getElementById('share-confirm');
-  const showMsg = (msg) => {
-    conf.textContent = msg;
-    conf.classList.add('show');
-    setTimeout(() => conf.classList.remove('show'), 2000);
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text)
-      .then(() => showMsg('Copied'))
-      .catch(() => { selectStamp(); showMsg('Text selected -- copy manually'); });
-  } else {
-    selectStamp();
-    showMsg('Text selected -- copy manually');
-  }
-}
-
-function selectStamp() {
-  const el    = document.getElementById('stamp-card');
-  const range = document.createRange();
-  range.selectNodeContents(el);
-  const sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-}
-
-// âââ OUTCOME RENDER âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
-function renderOutcome() {
-  const verdict = document.getElementById('verdict');
-  const spoilerBlock = document.getElementById('spoiler-block');
-  const revealSection = document.getElementById('verdict-reveal');
-  const revealText = document.getElementById('reveal-text');
-  const revealButton = document.getElementById('reveal-btn');
-
-  if (caseStatus === 'investigating') {
-    spoilerBlock.style.display = 'block';
-    return;
-  }
-
-  lockForm();
-
-  const solved = caseStatus === 'solved';
-
-  verdict.style.display = 'block';
-  verdict.className = solved ? 'correct' : '';
-
-  document.getElementById('verdict-headline').textContent =
-    solved ? FEEDBACK.correct.headline : 'Solution revealed.';
-
-  document.getElementById('verdict-body').textContent =
-    solved
-      ? FEEDBACK.correct.body
-      : 'You chose to reveal the solution. This case is recorded as revealed, not solved.';
-
-  spoilerBlock.style.display = 'none';
-  revealSection.classList.add('show');
-
-  if (solved) {
-    revealText.classList.remove('show');
-    revealButton.style.display = '';
-  } else {
-    revealSolution();
-  }
-
-  const statusText = solved ? 'Solved' : 'Revealed';
-  const statusColor = solved ? 'var(--green-bright)' : 'var(--gold)';
-
-  ['case-stamp', 'case-stamp-2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = statusText;
-    el.style.borderColor = statusColor;
-    el.style.color = statusColor;
-  });
-
-  const heading = document.querySelector('.case-number');
-  if (heading) heading.textContent = `Case 002 - ${statusText}`;
-
-  showShare(solved);
-}
-
-function resetCase() {
-  const confirmed = window.confirm('Clear your notes and restart this case?');
-  if (!confirmed) return;
-
-  try { localStorage.removeItem(STORAGE_KEY); } catch (error) {}
-
-  nbState = {};
-  caseStatus = 'investigating';
-  savedSuspect = '';
-  savedExhibits = [];
-  checkedExhibits = new Set();
-  completedAt = null;
-
-  const suspectSelect = document.getElementById('sel-suspect');
-  suspectSelect.disabled = false;
-  suspectSelect.value = '';
-  suspectSelect.classList.remove('error');
-
-  document.getElementById('accuse-btn').disabled = false;
-
-  const verdict = document.getElementById('verdict');
-  verdict.style.display = 'none';
-  verdict.className = '';
-
-  document.getElementById('verdict-headline').textContent = '';
-  document.getElementById('verdict-body').textContent = '';
-  document.getElementById('verdict-reveal').classList.remove('show');
-  document.getElementById('reveal-text').classList.remove('show');
-  document.getElementById('reveal-text').textContent = '';
-  document.getElementById('reveal-btn').style.display = '';
-  document.getElementById('spoiler-text').classList.remove('show');
-  document.getElementById('spoiler-text').textContent = '';
-  document.getElementById('spoiler-btn').style.display = '';
-  document.getElementById('share-block').classList.remove('visible');
-  document.getElementById('stamp-card').textContent = '';
-  document.getElementById('share-confirm').classList.remove('show');
-
-  ['case-stamp', 'case-stamp-2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = 'Open';
-    el.style.borderColor = '';
-    el.style.color = '';
-  });
-
-  const heading = document.querySelector('.case-number');
-  if (heading) heading.textContent = 'Case 002 - Open Investigation';
-
-  renderExhibits();
-  renderNotebook();
-  renderExhibitCheckboxes();
-  updateNote();
-  renderOutcome();
-  saveState();
-}
-
-// âââ INIT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-
-loadState();
-
-savedExhibits.forEach(id => checkedExhibits.add(id));
-
-renderExhibits();
-renderStatements();
-renderNotebook();
-renderExhibitCheckboxes();
-updateNote();
-
-const suspectSelect = document.getElementById('sel-suspect');
-
-if (savedSuspect) {
-  suspectSelect.value = savedSuspect;
-}
-
-suspectSelect.addEventListener('change', () => {
-  suspectSelect.classList.remove('error');
-  saveState();
-});
-
-renderOutcome();
-</script>
+    loadState();
+    renderExhibits(); renderStatements(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); renderOutcome();
+  </script>
+</body>
+</html>
