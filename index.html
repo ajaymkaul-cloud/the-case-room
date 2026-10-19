@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>The Case Room</title>
@@ -42,6 +46,7 @@
     transition: opacity 1.2s ease;
   }
   #gate.out { opacity: 0; pointer-events: none; }
+  #gate:focus-visible { outline: 2px solid var(--gold); outline-offset: -8px; }
 
   .gate-pulse {
     width: 56px; height: 56px;
@@ -91,7 +96,38 @@
     pointer-events: none; opacity: 0; overflow: hidden;
   }
   #intro.show { opacity: 1; }
-  #intro.out  { opacity: 0; transition: opacity 1.5s ease; }
+  #intro.out  { opacity: 0; transition: opacity 0.9s ease; }
+
+  /* Skip control remains interactive while the rest of the intro is decorative. */
+  #skip-intro {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top, 0px));
+    right: max(16px, env(safe-area-inset-right, 0px));
+    z-index: 70;
+    pointer-events: auto;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid var(--gold-dim);
+    background: rgba(0, 0, 0, 0.78);
+    color: var(--fg-mid);
+    font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  #skip-intro:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+    background: rgba(0, 0, 0, 0.92);
+  }
+  #skip-intro:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .cap-line { transition: opacity 0.65s ease; }
 
   #thief-wrap {
     position: absolute; bottom: 0; right: 8vw;
@@ -139,7 +175,7 @@
     position: relative; z-index: 10;
     display: flex; flex-direction: column;
     opacity: 0; pointer-events: none;
-    transition: opacity 1.2s ease; overflow-y: auto; overflow-x: hidden;
+    transition: opacity 0.9s ease; overflow-y: auto; overflow-x: hidden;
   }
   #landing.show { opacity: 1; pointer-events: auto; }
 
@@ -149,7 +185,7 @@
     background: radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(0,0,0,0.55) 100%);
     z-index: 1;
   }
-  .top-bar, .hero-band, .cases-band, .foot { position: relative; z-index: 2; }
+  .top-bar, .hero-band, .how-band, .cases-band, .foot { position: relative; z-index: 2; }
 
   .top-bar {
     padding: 18px max(40px, env(safe-area-inset-left, 16px));
@@ -215,7 +251,7 @@
     position: relative; z-index: 1;
   }
   .eyebrow::before, .eyebrow::after {
-    content: 'â';
+    content: '—';
     margin: 0 12px;
     opacity: 0.4;
   }
@@ -268,6 +304,44 @@
     position: relative; z-index: 1;
   }
 
+  /* How It Works */
+  .how-band {
+    padding: 28px max(40px, env(safe-area-inset-left, 16px)) 32px;
+    border-bottom: 1px solid var(--fg-low);
+    position: relative;
+    z-index: 2;
+  }
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .how-step {
+    min-width: 0;
+    background: #0e0c08;
+    border: 1px solid var(--fg-low);
+    padding: 20px;
+  }
+  .how-num {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .how-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 21px;
+    line-height: 1.3;
+    margin-bottom: 9px;
+  }
+  .how-text {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--fg-mid);
+  }
+
   /* Case files grid */
   .cases-band {
     padding: 28px max(40px, env(safe-area-inset-left, 16px)) 32px;
@@ -300,7 +374,7 @@
     cursor: pointer;
     box-shadow: 0 4px 24px rgba(0,0,0,0.5);
   }
-  /* Atmospheric top band â overridden per card */
+  /* Atmospheric top band — overridden per card */
   .case-card-band {
     height: 72px;
     position: relative; overflow: hidden;
@@ -384,7 +458,7 @@
     text-transform: uppercase; display: flex; align-items: center; gap: 6px;
   }
   .case-setting-text::before {
-    content: 'â';
+    content: '◈';
     font-size: 7px; opacity: 0.5;
   }
   .case-divider {
@@ -402,7 +476,7 @@
     text-transform: uppercase; display: flex; align-items: center; gap: 8px;
     opacity: 0.7; transition: opacity 0.2s;
   }
-  .case-cta::after { content: 'â'; transition: transform 0.2s; }
+  .case-cta::after { content: '→'; transition: transform 0.2s; }
   .case-card:hover .case-cta { opacity: 1; }
   .case-card:hover .case-cta::after { transform: translateX(5px); }
 
@@ -455,12 +529,69 @@
     .case-title-text { font-size: 20px; }
     .case-brief-text { -webkit-line-clamp: 2; }
   }
-</style>
 
+
+  /* READABILITY OVERRIDES */
+  body { font-size: 17px; line-height: 1.75; }
+  .gate-label { font-size: clamp(15px, 3.4vw, 18px); letter-spacing: 0.16em; text-align: center; padding: 0 24px; }
+  .gate-silent { font-size: 14px; letter-spacing: 0.08em; color: var(--fg-mid); }
+  .bar-label { font-size: 12px; letter-spacing: 0.1em; }
+  .bar-stamp { font-size: 12px; letter-spacing: 0.08em; padding: 5px 10px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.2em; }
+  .tagline { font-size: clamp(16px, 2.4vw, 20px); line-height: 1.8; max-width: 480px; }
+  .cases-label { font-size: 14px; letter-spacing: 0.12em; margin-bottom: 20px; }
+  .case-num { font-size: 12px; letter-spacing: 0.08em; }
+  .case-status { font-size: 12px; letter-spacing: 0.06em; padding: 4px 8px; }
+  .case-title-text { font-size: clamp(22px, 2.8vw, 27px); line-height: 1.2; }
+  .case-setting-text { font-size: 13px; letter-spacing: 0.04em; line-height: 1.6; flex-wrap: wrap; }
+  .case-brief-text { font-size: 16px; line-height: 1.8; display: block; overflow: visible; }
+  .case-cta { font-size: 13px; letter-spacing: 0.08em; opacity: 1; line-height: 1.5; }
+  .foot-text, .foot-num { font-size: 12px; letter-spacing: 0.06em; line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .how-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 600px) {
+    .top-bar, .foot { padding-left: 16px; padding-right: 16px; }
+    .top-bar { gap: 10px; }
+    .bar-label { font-size: 11px; line-height: 1.5; max-width: 75%; }
+    .bar-stamp { font-size: 11px; padding: 5px 8px; }
+    .hero-band { padding: 30px 18px 24px; }
+    h1 { font-size: clamp(48px, 13.5vw, 64px); line-height: 0.95; margin-bottom: 18px; }
+    .eyebrow { font-size: 11px; letter-spacing: 0.1em; margin-bottom: 20px; }
+    .tagline { font-size: 16px; line-height: 1.8; padding: 0 8px; }
+    .rule { margin-bottom: 18px; }
+    .how-band { padding: 22px 16px 28px; }
+    .how-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .how-step { padding: 18px; }
+    .how-title { font-size: 22px; }
+    .how-text { font-size: 16px; line-height: 1.8; }
+    .cases-band { padding: 22px 16px 28px; }
+    .cases-label { font-size: 13px; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .cases-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .case-card-band { height: 54px; }
+    .case-card-body { padding: 17px 16px; gap: 10px; }
+    .case-num { font-size: 12px; }
+    .case-status { font-size: 11px; }
+    .case-title-text { font-size: 23px; }
+    .case-setting-text { font-size: 13px; }
+    .case-brief-text { font-size: 16px; line-height: 1.8; -webkit-line-clamp: unset; }
+    .case-cta { font-size: 13px; }
+    .foot { align-items: flex-start; gap: 8px; }
+    .foot-text, .foot-num { font-size: 11px; letter-spacing: 0.04em; }
+    #caption { padding-left: 22px; padding-right: 22px; }
+    .cap-line { font-size: clamp(23px, 6vw, 34px); line-height: 1.35; }
+    #thief-wrap { right: 5vw; width: 80px; }
+  }
+
+</style>
+</head>
+<body>
 <!-- GATE -->
-<div id="gate">
+<div id="gate" tabindex="0" role="group" aria-label="Choose how to enter The Case Room">
   <div class="gate-pulse"></div>
-  <div class="gate-label" id="gate-label">Tap to enter Â· sound on</div>
+  <div class="gate-label" id="gate-label">Enter The Case Room</div>
   <button class="gate-silent" id="gate-silent" aria-label="Enter without sound">Enter silently</button>
 </div>
 
@@ -474,6 +605,7 @@
     <div class="cap-line" id="cap2">Everyone had a reason. One had the nerve.</div>
     <div class="cap-line" id="cap3">The truth is already in the room.</div>
   </div>
+  <button id="skip-intro" type="button" aria-label="Skip intro and show the case files">Skip intro →</button>
   <div id="thief-wrap">
     <svg id="thief-group" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
       <g fill="#c8a45a">
@@ -499,7 +631,7 @@
 <!-- LANDING PAGE -->
 <div id="landing">
   <div class="top-bar">
-    <span class="bar-label">Pixel &amp; Ink Â· Investigation Series</span>
+    <span class="bar-label">Pixel &amp; Ink · Investigation Series</span>
     <span class="bar-stamp">Classified</span>
   </div>
 
@@ -509,6 +641,32 @@
     <div class="rule"><span class="rule-diamond"></span></div>
     <p class="tagline">The truth is already here.<br>Whether you find it depends<br>on what you choose to look at.</p>
   </div>
+
+  <section class="how-band" aria-labelledby="how-heading">
+    <h2 class="cases-label" id="how-heading">How It Works</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <div class="how-title">Read the brief</div>
+        <p class="how-text">Start with the crime, location, and people involved.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <div class="how-title">Examine evidence</div>
+        <p class="how-text">Open records, clues, and witness statements.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <div class="how-title">Rule things out</div>
+        <p class="how-text">Use the elimination grid to test possibilities.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num">04</div>
+        <div class="how-title">Close the case</div>
+        <p class="how-text">Accuse the culprit, method, and location. Two attempts.</p>
+      </div>
+    </div>
+  </section>
 
   <div class="cases-band">
     <div class="cases-label">Active Case Files</div>
@@ -523,10 +681,10 @@
             <span class="case-status open">Open</span>
           </div>
           <div class="case-title-text">The Missing Envelope</div>
-          <div class="case-setting-text">Mehta &amp; Iyer Associates Â· Bengaluru</div>
+          <div class="case-setting-text">Bengaluru · Law Firm · Free · 10–20 min</div>
           <div class="case-divider"></div>
           <div class="case-brief-text">A confidential settlement offer vanished from a senior partner's office overnight. Three people had access. The deal closes in 24 hours.</div>
-          <div class="case-cta">Open Case File</div>
+          <div class="case-cta">Investigate Case 001</div>
         </div>
       </a>
 
@@ -539,99 +697,62 @@
             <span class="case-status new">New</span>
           </div>
           <div class="case-title-text">The Last Shot</div>
-          <div class="case-setting-text">Film City Â· Mumbai</div>
+          <div class="case-setting-text">Mumbai · Film Set · Free · 15–25 min</div>
           <div class="case-divider"></div>
           <div class="case-brief-text">The lead actor was found unconscious in his trailer 13 minutes before the final scene. Someone had tampered with his drink. The production insurance pays triple if it's sabotage.</div>
-          <div class="case-cta">Open Case File</div>
+          <div class="case-cta">Investigate Case 002</div>
         </div>
       </a>
-
-      <!-- Case 003 placeholder -->
-      <div class="case-card locked-card">
-        <div class="case-card-band band-003" data-num="003"></div>
-        <div class="case-card-body">
-          <div class="case-card-top">
-            <span class="case-num">Case No. 003</span>
-            <span class="case-status locked">Sealed</span>
-          </div>
-          <div class="case-title-text">âââ</div>
-          <div class="case-setting-text">Location Unknown</div>
-          <div class="case-divider"></div>
-          <div class="case-brief-text">This file is sealed pending investigation.</div>
-          <div class="case-cta" style="color:var(--fg-low)">Unavailable</div>
-        </div>
-      </div>
 
     </div>
   </div>
 
   <div class="foot">
-    <span class="foot-text">Â© 2026 Pixel &amp; Ink Â· The Case Room</span>
-    <span class="foot-num">002 / ???</span>
+    <span class="foot-text">© 2026 Pixel &amp; Ink · The Case Room</span>
+    <span class="foot-num">Case Files 001–002</span>
   </div>
 </div>
 
 <script>
 // ââ BG + RAIN ââ
+// ATMOSPHERIC BACKGROUND — static glow, no rain animation
 const canvas = document.getElementById('bg');
 const ctx = canvas.getContext('2d');
 
 function resize() {
-  canvas.width  = window.innerWidth;
+  canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-resize();
-window.addEventListener('resize', resize);
 
 function drawBg() {
   const w = canvas.width, h = canvas.height;
-  const g = ctx.createRadialGradient(w*.5, 0, 0, w*.5, h*.5, Math.max(w,h));
-  g.addColorStop(0,   '#181410');
+  const g = ctx.createRadialGradient(w * 0.5, 0, 0, w * 0.5, h * 0.5, Math.max(w, h));
+  g.addColorStop(0, '#181410');
   g.addColorStop(0.3, '#0e0c09');
-  g.addColorStop(1,   '#060503');
+  g.addColorStop(1, '#060503');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, w, h);
-  const c = ctx.createRadialGradient(w*.5, -60, 0, w*.5, h*.6, h*.8);
-  c.addColorStop(0,   'rgba(200,164,90,0.09)');
+  const c = ctx.createRadialGradient(w * 0.5, -60, 0, w * 0.5, h * 0.6, h * 0.8);
+  c.addColorStop(0, 'rgba(200,164,90,0.09)');
   c.addColorStop(0.5, 'rgba(200,164,90,0.02)');
-  c.addColorStop(1,   'rgba(0,0,0,0)');
+  c.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = c;
   ctx.fillRect(0, 0, w, h);
 }
 
-const drops = Array.from({length:110}, () => ({
-  x: Math.random() * window.innerWidth,
-  y: Math.random() * window.innerHeight,
-  len: Math.random() * 22 + 8,
-  spd: Math.random() * 3 + 1.8,
-  a:   Math.random() * 0.16 + 0.04,
-}));
+resize();
+drawBg();
+window.addEventListener('resize', () => { resize(); drawBg(); });
 
-function rainFrame() {
-  drawBg();
-  drops.forEach(d => {
-    ctx.save();
-    ctx.globalAlpha = d.a;
-    ctx.strokeStyle = '#c8a45a';
-    ctx.lineWidth   = 0.55;
-    ctx.beginPath();
-    ctx.moveTo(d.x, d.y);
-    ctx.lineTo(d.x - d.len*.14, d.y + d.len);
-    ctx.stroke();
-    ctx.restore();
-    d.y += d.spd;
-    d.x -= d.spd * .12;
-    if (d.y > canvas.height + 20) { d.y = -20; d.x = Math.random() * canvas.width; }
-  });
-  requestAnimationFrame(rainFrame);
-}
-rainFrame();
-
-// ââ AUDIO ââ
+// AUDIO — generated in Web Audio API; no external audio file required
 let audioCtx = null;
 
-function buildSuspenseAudio() {
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+async function buildSuspenseAudio() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) throw new Error('Web Audio API is not supported in this browser.');
+  audioCtx = new AudioContextClass();
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
+  if (audioCancelled || audioCtx.state === 'closed') return;
   const now = audioCtx.currentTime;
 
   function drone(freq, detune, gain, startT, durT) {
@@ -642,9 +763,12 @@ function buildSuspenseAudio() {
     osc.frequency.value = freq;
     osc.detune.value = detune;
     filt.type = 'lowpass'; filt.frequency.value = 320; filt.Q.value = 1.2;
+    // Keep envelope events in chronological order, including short final tones.
+    const attack = Math.min(1.2, durT * 0.25);
+    const releaseStart = Math.max(startT + attack, startT + durT - Math.min(1.5, durT * 0.35));
     g.gain.setValueAtTime(0, startT);
-    g.gain.linearRampToValueAtTime(gain, startT + 1.2);
-    g.gain.linearRampToValueAtTime(gain * .7, startT + durT - 1.5);
+    g.gain.linearRampToValueAtTime(gain, startT + attack);
+    g.gain.linearRampToValueAtTime(gain * 0.7, releaseStart);
     g.gain.linearRampToValueAtTime(0, startT + durT);
     osc.connect(filt); filt.connect(g); g.connect(audioCtx.destination);
     osc.start(startT); osc.stop(startT + durT);
@@ -669,61 +793,115 @@ function buildSuspenseAudio() {
     });
   }
 
-  drone(55, 0,   0.18, now,     8);
-  drone(55, 8,   0.10, now,     8);
-  drone(82, -5,  0.08, now + 1, 7);
-  drone(110, 0,  0.06, now + 3, 4);
-  drone(146, 0,  0.04, now + 5, 3);
-  [0.8, 2.0, 3.1, 4.0, 4.8, 5.5, 6.1, 6.6].forEach(t => heartbeat(now + t));
-  drone(138, 0,  0.11, now + 6.8, 2.5);
-  drone(165, 0,  0.07, now + 6.8, 2.5);
-  drone(220, 3,  0.05, now + 6.8, 2);
+  // About 5.6 seconds total, finishing alongside the homepage reveal.
+  drone(55, 0,   0.18, now,       4.8);
+  drone(55, 8,   0.10, now,       4.8);
+  drone(82, -5,  0.08, now + 0.6, 4.2);
+  drone(110, 0,  0.06, now + 1.8, 2.4);
+  drone(146, 0,  0.04, now + 3.0, 1.8);
+  [0.45, 1.2, 1.86, 2.4, 2.88, 3.3, 3.66, 3.96].forEach(t => heartbeat(now + t));
+  drone(138, 0,  0.11, now + 4.1, 1.5);
+  drone(165, 0,  0.07, now + 4.1, 1.5);
+  drone(220, 3,  0.05, now + 4.1, 1.2);
 }
 
 // ââ INTRO CONTROLLER ââ
 let started = false;
+let introFinished = false;
+let audioCancelled = false;
+const introTimers = [];
+
+function scheduleIntro(callback, delay) {
+  introTimers.push(window.setTimeout(callback, delay));
+}
+
+function clearIntroTimers() {
+  introTimers.forEach(timer => window.clearTimeout(timer));
+  introTimers.length = 0;
+}
+
+function finishIntro(skip = false) {
+  if (introFinished) return;
+  introFinished = true;
+  clearIntroTimers();
+
+  const gate  = document.getElementById('gate');
+  const intro = document.getElementById('intro');
+  const land  = document.getElementById('landing');
+  ['cap1', 'cap2', 'cap3'].forEach(id => {
+    document.getElementById(id).classList.remove('show');
+  });
+
+  gate.classList.add('out');
+  intro.classList.add('out');
+  land.classList.add('show');
+
+  if (skip) {
+    audioCancelled = true;
+    if (audioCtx && audioCtx.state !== 'closed') {
+      audioCtx.close().catch(() => {});
+    }
+  }
+
+  // Let the overlays fade naturally, then remove them from hit-testing.
+  window.setTimeout(() => {
+    gate.hidden = true;
+    intro.hidden = true;
+  }, 1250);
+}
 
 function startExperience(withSound) {
   if (started) return;
   started = true;
 
   if (withSound) {
-    try { buildSuspenseAudio(); } catch(e) {}
+    buildSuspenseAudio().catch(e => console.warn('The Case Room audio could not start:', e));
   }
 
   const gate  = document.getElementById('gate');
   const intro = document.getElementById('intro');
-  const land  = document.getElementById('landing');
   const cap1  = document.getElementById('cap1');
   const cap2  = document.getElementById('cap2');
   const cap3  = document.getElementById('cap3');
 
   gate.classList.add('out');
-  setTimeout(() => { intro.classList.add('show'); }, 800);
+  scheduleIntro(() => { intro.classList.add('show'); }, 250);
 
-  setTimeout(() => { cap1.classList.add('show'); },    800);
-  setTimeout(() => { cap1.classList.remove('show'); }, 2400);
-  setTimeout(() => { cap2.classList.add('show'); },    2900);
-  setTimeout(() => { cap2.classList.remove('show'); }, 4800);
-  setTimeout(() => { cap3.classList.add('show'); },    5200);
-  setTimeout(() => { cap3.classList.remove('show'); }, 6800);
-
-  setTimeout(() => { intro.classList.add('out'); }, 6900);
-  setTimeout(() => { land.classList.add('show'); },  7600);
+  // Each caption gets time to be read; the case list is fully visible at ~6 seconds.
+  scheduleIntro(() => { cap1.classList.add('show'); },    450);
+  scheduleIntro(() => { cap1.classList.remove('show'); }, 1650);
+  scheduleIntro(() => { cap2.classList.add('show'); },    1900);
+  scheduleIntro(() => { cap2.classList.remove('show'); }, 3100);
+  scheduleIntro(() => { cap3.classList.add('show'); },    3350);
+  scheduleIntro(() => { cap3.classList.remove('show'); }, 4700);
+  scheduleIntro(() => finishIntro(false), 5100);
 }
 
 const gateEl     = document.getElementById('gate');
 const silentBtn  = document.getElementById('gate-silent');
+const skipIntro  = document.getElementById('skip-intro');
 
 gateEl.addEventListener('click', e => {
   if (e.target === silentBtn) return; // handled below
   startExperience(true);
 });
 gateEl.addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' ') startExperience(true);
+  // Only keyboard activation of the gate itself starts sound.
+  // Do not let Enter/Space on the silent button accidentally enable audio.
+  if (e.target !== gateEl) return;
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    startExperience(true);
+  }
 });
 silentBtn.addEventListener('click', e => {
   e.stopPropagation();
   startExperience(false);
 });
+skipIntro.addEventListener('click', () => finishIntro(true));
+document.addEventListener('keydown', e => {
+  if (started && !introFinished && e.key === 'Escape') finishIntro(true);
+});
 </script>
+</body>
+</html>
