@@ -103,8 +103,18 @@
     .section-label::after { content: ''; flex: 1; height: 1px; background: var(--fg-low); }
 
     .exhibit-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 36px; }
-    .exhibit { background: var(--card-bg); border: 1px solid var(--card-border); transition: border-color .2s, background .2s; }
-    .exhibit:hover, .exhibit.open { border-color: var(--gold-dim); background: #161209; }
+    .exhibit {
+      background: linear-gradient(180deg, rgba(255, 244, 214, .03), rgba(0, 0, 0, .18)), var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 1px 0 rgba(255, 244, 214, .04) inset, 0 8px 18px rgba(0, 0, 0, .22);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .exhibit:hover, .exhibit:focus-within {
+      transform: translateY(-2px);
+      border-color: var(--gold-dim);
+      box-shadow: 0 1px 0 rgba(255, 244, 214, .05) inset, 0 14px 26px rgba(0, 0, 0, .32);
+    }
+    .exhibit.open { transform: none; border-color: var(--gold-dim); background: linear-gradient(180deg, rgba(255, 244, 214, .035), rgba(0, 0, 0, .2)), #161209; }
     .exhibit-header {
       width: 100%; text-align: left; display: flex; align-items: center; gap: 14px; padding: 14px 18px;
       border: 0; color: inherit; background: transparent; cursor: pointer; font-family: inherit;
@@ -117,7 +127,12 @@
     .exhibit-content { padding: 16px 18px; font-size: 16px; color: var(--fg-mid); line-height: 1.8; white-space: pre-line; }
 
     .statement-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
-    .statement { padding: 14px 18px; border: 1px solid var(--card-border); background: var(--card-bg); }
+    .statement {
+      padding: 14px 18px;
+      border: 1px solid var(--card-border);
+      background: linear-gradient(180deg, rgba(255, 244, 214, .025), rgba(0, 0, 0, .14)), var(--card-bg);
+      box-shadow: 0 1px 0 rgba(255, 244, 214, .035) inset, 0 6px 16px rgba(0, 0, 0, .18);
+    }
     .statement-name { font-size: 14px; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
     .statement-role { font-size: 10px; color: var(--fg-mid); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
     .statement-text { font-size: 16px; color: var(--fg-mid); line-height: 1.8; font-style: italic; }
@@ -133,9 +148,11 @@
     .nb-center { flex: 1; min-width: 0; padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; }
     .nb-exhibit-name { font-size: 15px; color: var(--fg); font-weight: 700; }
     .nb-relation-wrap, .nb-suspect-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
-    .nb-relation-btn, .nb-suspect-btn { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 9px; border: 1px solid var(--fg-low); background: transparent; color: var(--fg-mid); cursor: pointer; transition: all .15s; font-family: inherit; }
+    .nb-relation-btn, .nb-suspect-btn { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 9px; border: 1px solid var(--fg-low); background: transparent; color: var(--fg-mid); cursor: pointer; transition: transform .12s ease, color .15s ease, border-color .15s ease, background .15s ease; font-family: inherit; }
+    .nb-relation-btn:active, .nb-suspect-btn:active, .exhibit-checkbox:active { transform: scale(.985); }
     .nb-relation-btn:hover, .nb-suspect-btn:hover { border-color: var(--gold-dim); color: var(--fg); }
-    .nb-relation-btn.active, .nb-suspect-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,.08); }
+    .nb-relation-btn.active, .nb-suspect-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(200,164,90,.11); animation: tagPulse .18s ease-out; }
+    @keyframes tagPulse { from { transform: scale(.96); box-shadow: 0 0 0 2px rgba(200,164,90,.12); } to { transform: scale(1); box-shadow: 0 0 0 0 rgba(200,164,90,0); } }
     .nb-remove { padding: 0 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--fg-mid); border-left: 1px solid var(--card-border); flex-shrink: 0; background: none; border-top: 0; border-right: 0; border-bottom: 0; font-family: inherit; cursor: pointer; }
     .nb-remove:hover { color: var(--red); }
     .nb-row:not(.linked) .nb-remove { opacity: .55; }
@@ -148,8 +165,10 @@
     .accuse-select:focus { border-color: var(--gold); }
     .accuse-select.error { border-color: var(--red); }
     .exhibit-checkboxes { display: flex; flex-direction: column; gap: 8px; }
-    .exhibit-checkbox { position: relative; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 10px 14px; border: 1px solid var(--card-border); background: var(--card-bg); transition: border-color .2s; }
+    .exhibit-checkbox { position: relative; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 10px 14px; border: 1px solid var(--card-border); background: linear-gradient(180deg, rgba(255,244,214,.02), rgba(0,0,0,.12)), var(--card-bg); box-shadow: 0 1px 0 rgba(255,244,214,.025) inset; transition: transform .12s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease; }
     .exhibit-checkbox:hover { border-color: var(--gold-dim); }
+    .exhibit-checkbox.checked { border-color: var(--gold-dim); background: linear-gradient(180deg, rgba(200,164,90,.08), rgba(0,0,0,.12)), var(--card-bg); }
+    .exhibit-checkbox.checked { animation: tagPulse .18s ease-out; }
     .exhibit-checkbox input[type="checkbox"] { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
     .exhibit-checkbox:focus-within { outline: 2px solid var(--gold); outline-offset: 3px; }
     .checkbox-box { width: 16px; height: 16px; border: 1px solid var(--gold-dim); flex-shrink: 0; margin-top: 1px; position: relative; background: transparent; }
@@ -320,7 +339,7 @@
         <div class="case-actions"><button type="button" class="reveal-btn" id="restart-btn">Restart case</button></div>
         <div class="share-block" id="share-block">
           <div class="stamp-card" id="stamp-card"></div>
-          <div class="share-actions"><button class="share-btn" id="copy-btn" type="button">Copy Result</button><span class="share-confirm" id="share-confirm" aria-live="polite">Copied</span></div>
+          <div class="share-actions"><button class="share-btn" id="copy-btn" type="button">Copy Share Text</button><span class="share-confirm" id="share-confirm" aria-live="polite">Copied</span></div>
         </div>
       </div>
     </section>
@@ -576,16 +595,27 @@
 
     function showShare() {
       const block = $('share-block'); block.classList.add('visible');
-      const date = completedAt ? new Date(completedAt) : new Date();
-      const dateText = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-      $('stamp-card').textContent = `THE CASE ROOM\nCase 002 — The Last Shot\n${dateText}\n\nSOLVED — ${attempts} accusation${attempts === 1 ? '' : 's'}\n\nthecaseroom.pixelandink.in`;
+      const attemptLabel = `🔎 Solved in ${attempts} accusation${attempts === 1 ? '' : 's'}`;
+      const shareLines = [
+        '🕵️ The Case Room · Case #002',
+        'The Last Shot',
+        '',
+        attemptLabel,
+        '',
+        '🟩🟩🟩',
+        'Suspect · Substitution · Delivery chain',
+        '',
+        'Can you spot the contradiction?',
+        '→ https://thecaseroom.pixelandink.in/case-002.html'
+      ];
+      $('stamp-card').textContent = shareLines.join('\n');
     }
 
     async function copyStamp() {
       const text = $('stamp-card').textContent; const message = $('share-confirm');
       try {
         if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-        await navigator.clipboard.writeText(text); message.textContent = 'Copied';
+        await navigator.clipboard.writeText(text); message.textContent = 'Copied — ready to share';
       } catch (_) {
         const textarea = document.createElement('textarea'); textarea.value = text; textarea.rows = 6; textarea.setAttribute('aria-label', 'Select and copy result text');
         textarea.style.cssText = 'display:block;width:100%;margin-top:8px;padding:10px;background:var(--card-bg);color:var(--fg);font:inherit;border:1px solid var(--gold-dim);';
@@ -616,7 +646,7 @@
       $('sel-suspect').value = ''; $('sel-suspect').disabled = false; $('sel-suspect').classList.remove('error'); $('accuse-btn').disabled = false;
       $('verdict').style.display = 'none'; $('verdict').className = ''; $('verdict-headline').textContent = ''; $('verdict-body').textContent = '';
       $('verdict-reveal').classList.remove('show'); $('reveal-btn').hidden = false; $('reveal-text').classList.remove('show'); $('reveal-text').textContent = '';
-      $('stamp-card').textContent = ''; $('share-block').classList.remove('visible'); $('share-confirm').classList.remove('show'); $('share-confirm').textContent = 'Copied';
+      $('stamp-card').textContent = ''; $('share-block').classList.remove('visible'); $('share-confirm').classList.remove('show'); $('share-confirm').textContent = 'Copied — ready to share';
       $('share-block').querySelectorAll('textarea').forEach(el => el.remove());
       renderExhibits(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); updateStatus('Open'); saveState();
     }
