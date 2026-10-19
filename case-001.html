@@ -1,7 +1,12 @@
-<meta charset="utf-8">
-<meta name="claude:viewport-fit-sides" content="cover">
-<title>The Case Room</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Investigate The Missing Envelope. Examine evidence, compare statements, and identify who substituted the contract envelope.">
+  <meta name="theme-color" content="#080604">
+  <title>The Case Room — Case 001: The Missing Envelope</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
 
 <style>
   :root {
@@ -11,17 +16,39 @@
     --fg-low: #221e16;
     --gold: #c8a45a;
     --gold-dim: #6a5228;
-    --red: #7a1a1a;
+    --red: #e06a5b;
     --card-bg: #110f0a;
     --card-border: #2a2418;
     color-scheme: dark;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  select:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
 
   body {
     background: var(--bg);
     color: var(--fg);
     font-family: 'Courier Prime', 'Courier New', monospace;
+    line-height: 1.65;
     min-height: 100vh;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -66,6 +93,8 @@
     text-transform: uppercase; border: 1px solid var(--red);
     padding: 3px 10px; transform: rotate(2deg); display: inline-block; opacity: 0.8;
   }
+  .bar-stamp[data-state="solved"], .dossier-stamp[data-state="solved"] { color: var(--gold); border-color: var(--gold-dim); }
+  .bar-stamp[data-state="closed"], .dossier-stamp[data-state="closed"] { color: var(--red); border-color: var(--red); }
 
   /* CASE HEADER */
   .case-header {
@@ -193,16 +222,20 @@
   /* MAIN LAYOUT */
   .puzzle-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 0;
+    width: 100%;
     max-width: 1100px;
+    margin: 0 auto;
   }
   .puzzle-left {
     border-right: 1px solid var(--fg-low);
-    padding: 32px max(40px, 16px) 32px;
+    min-width: 0;
+    padding: 32px clamp(18px, 3vw, 40px);
   }
   .puzzle-right {
-    padding: 32px max(40px, 16px) 32px;
+    min-width: 0;
+    padding: 32px clamp(18px, 3vw, 40px);
   }
 
   /* SECTION LABELS */
@@ -231,6 +264,11 @@
   }
   .cards { display: flex; flex-direction: column; gap: 8px; }
   .card {
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     padding: 14px 18px;
@@ -242,19 +280,21 @@
   }
   .card:hover { border-color: var(--gold-dim); background: #161209; }
   .card.open  { border-color: var(--gold-dim); background: #161209; }
-  .card-icon  { font-size: 22px; flex-shrink: 0; line-height: 1.3; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif !important; }
-  .card-body  { flex: 1; min-width: 0; }
+  .card-icon  { display: block; font-size: 22px; flex-shrink: 0; line-height: 1.3; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif !important; }
+  .card-body  { display: block; flex: 1; min-width: 0; }
   .card-name  {
+    display: block;
     font-size: 15px; font-weight: 700; color: var(--fg);
     letter-spacing: 0.02em; margin-bottom: 3px;
   }
-  .card-role  { font-size: 12px; color: var(--gold); letter-spacing: 0.06em; margin-bottom: 8px; }
+  .card-role  { display: block; font-size: 12px; color: var(--gold); letter-spacing: 0.06em; margin-bottom: 8px; }
   .card-detail {
+    display: block;
     font-size: 14px; color: var(--fg-mid); line-height: 1.65;
     max-height: 0; overflow: hidden;
     transition: max-height 0.35s ease;
   }
-  .card.open .card-detail { max-height: 100px; }
+  .card.open .card-detail { max-height: 480px; }
 
   /* CLUES */
   .clue-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
@@ -279,45 +319,108 @@
   .statement-text::after  { content: '\201D'; color: var(--gold-dim); }
 
   /* ELIMINATION GRID */
-  .grid-wrap { overflow-x: auto; margin-bottom: 36px; }
+  .grid-guide {
+    background: #151109;
+    border: 1px solid var(--gold-dim);
+    border-left: 3px solid var(--gold);
+    padding: 14px 16px;
+    margin: -6px 0 20px;
+    color: var(--fg-mid);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .grid-guide strong { color: var(--fg); }
+  .grid-legend { margin-top: 8px; color: var(--fg); }
+  .grid-legend .cross { color: var(--red); font-weight: 700; }
+  .grid-legend .tick { color: var(--gold); font-weight: 700; }
+  .grid-help { margin-top: 10px; }
+  .grid-help summary { color: var(--gold); cursor: pointer; width: fit-content; }
+  .grid-help p { margin-top: 8px; }
+  .elim-grids { display: flex; flex-direction: column; gap: 22px; margin-bottom: 36px; }
+  .grid-panel { min-width: 0; }
+  .grid-panel-title {
+    font-size: 13px;
+    color: var(--fg);
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+  .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .elim-grid {
     border-collapse: collapse;
+    font-size: 13px;
+    min-width: 440px;
+    width: 100%;
+    table-layout: fixed;
+  }
+  .elim-grid caption {
+    text-align: left;
+    color: var(--fg-mid);
     font-size: 12px;
-    letter-spacing: 0.04em;
-    min-width: 340px;
+    margin-bottom: 8px;
   }
   .elim-grid th, .elim-grid td {
     border: 1px solid var(--fg-low);
-    padding: 10px 12px;
+    padding: 7px 6px;
     text-align: center;
     vertical-align: middle;
+    overflow-wrap: anywhere;
   }
   .elim-grid th {
     color: var(--gold);
     font-weight: 700;
     text-transform: uppercase;
     background: var(--card-bg);
-    font-size: 11px;
-    letter-spacing: 0.12em;
+    font-size: 12px;
+    letter-spacing: 0.04em;
   }
-  .elim-grid td.row-label {
+  .elim-grid th[scope="row"] {
     text-align: left;
     color: var(--fg-mid);
-    font-size: 12px;
-    background: var(--card-bg);
-    white-space: nowrap;
+    width: 38%;
+    text-transform: none;
+    letter-spacing: 0;
   }
-  .elim-grid td.cell {
+  .grid-cell {
+    appearance: none;
+    display: block;
+    width: 100%;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: var(--fg-mid);
+    font: 700 20px/1 'Courier Prime', monospace;
     cursor: pointer;
-    width: 44px;
-    font-size: 18px;
-    transition: background 0.15s;
   }
-  .elim-grid td.cell:hover { background: #1a1610; }
-  .elim-grid td.cell[data-state="0"]::after { content: ''; }
-  .elim-grid td.cell[data-state="1"]::after { content: '\2715'; color: var(--red); }
-  .elim-grid td.cell[data-state="2"]::after { content: '\2713'; color: var(--gold); }
-  .grid-hint { font-size: 11px; color: var(--fg-low); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+  .grid-cell:hover { background: #1a1610; }
+  .grid-cell[data-state="1"] { color: var(--red); }
+  .grid-cell[data-state="2"] { color: var(--gold); }
+  .grid-cell:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
+
+  /* INVESTIGATOR NOTES */
+  #investigator-notes {
+    display: block;
+    width: 100%;
+    min-height: 160px;
+    margin: 0 0 36px;
+    padding: 14px 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 0;
+    color: var(--fg);
+    font: inherit;
+    line-height: 1.7;
+    resize: vertical;
+  }
+  #investigator-notes::placeholder { color: var(--fg-mid); opacity: 0.85; }
+  #investigator-notes:focus { border-color: var(--gold); outline: 2px solid var(--gold-dim); outline-offset: 2px; }
+  .notes-status {
+    margin: -26px 0 32px;
+    color: var(--fg-mid);
+    font-size: 12px;
+    line-height: 1.5;
+  }
 
   /* ACCUSATION FORM */
   .accuse-form { display: flex; flex-direction: column; gap: 16px; }
@@ -423,7 +526,8 @@
     letter-spacing: 0.08em;
     color: var(--fg-mid);
     line-height: 1.9;
-    white-space: pre;
+    white-space: normal;
+    min-height: 112px;
     margin-bottom: 12px;
     user-select: all;
     position: relative;
@@ -446,7 +550,7 @@
     align-items: center;
     justify-content: center;
     padding: 7px 16px 6px;
-    border: 3px solid #c0281a;
+    border: 3px solid #e06a5b;
     border-radius: 2px;
     position: relative;
     opacity: 0;
@@ -457,7 +561,7 @@
     content: '';
     position: absolute;
     inset: 3px;
-    border: 1.5px solid rgba(192,40,26,0.55);
+    border: 1.5px solid rgba(224,106,91,0.7);
     border-radius: 1px;
     pointer-events: none;
   }
@@ -467,7 +571,7 @@
     font-weight: 900;
     font-style: italic;
     font-size: 22px;
-    color: #c0281a;
+    color: #e06a5b;
     letter-spacing: 0.1em;
     line-height: 1.05;
     text-shadow: 1px 1px 0 #8b1a10;
@@ -475,7 +579,7 @@
   .outcome-stamp-inner .ssub {
     font-size: 7px;
     letter-spacing: 0.45em;
-    color: rgba(192,40,26,0.7);
+    color: rgba(224,106,91,0.9);
     text-transform: uppercase;
     margin-top: 3px;
   }
@@ -508,7 +612,7 @@
   .ostamp-ring {
     position: absolute;
     inset: -6px;
-    border: 2px solid rgba(192,40,26,0.5);
+    border: 2px solid rgba(224,106,91,0.65);
     border-radius: 2px;
     opacity: 0;
     pointer-events: none;
@@ -525,19 +629,19 @@
     display: inline-flex; flex-direction: column;
     align-items: center; justify-content: center;
     padding: 7px 18px 6px;
-    border: 3px dashed #c0281a; border-radius: 2px;
+    border: 3px dashed #e06a5b; border-radius: 2px;
     position: relative; opacity: 0;
     transform: scale(2.2) rotateX(-25deg) translateY(-20px);
     filter: url(#stamp-worn);
   }
   .wrong-stamp-inner .sl1 {
     font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic;
-    font-size: 22px; color: #c0281a; letter-spacing: 0.12em; line-height: 1.05;
+    font-size: 22px; color: #e06a5b; letter-spacing: 0.12em; line-height: 1.05;
     text-shadow: 1px 1px 0 #8b1a10;
   }
   .wrong-stamp-inner .ssub {
     font-size: 7px; letter-spacing: 0.45em;
-    color: rgba(192,40,26,0.7); text-transform: uppercase; margin-top: 3px;
+    color: rgba(224,106,91,0.9); text-transform: uppercase; margin-top: 3px;
   }
   @keyframes wstamp-slam {
     0%   { opacity: 0;    transform: scale(2.2) rotateX(-25deg) translateY(-20px); }
@@ -562,7 +666,9 @@
       transform: rotate(var(--end-rot, 0deg)) !important;
     }
     .wrong-stamp-inner, .wrong-stamp-inner.slam {
-      animation: none !important; opacity: 0 !important;
+      animation: none !important;
+      opacity: 0.92 !important;
+      transform: none !important;
     }
   }
   .share-btn {
@@ -591,19 +697,36 @@
   .foot-text { font-size: 11px; letter-spacing: 0.22em; color: var(--fg-mid); text-transform: uppercase; }
   .foot-num  { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
 
+  /* Tablet: use one reading column before the two-panel layout becomes cramped. */
+  @media (max-width: 850px) {
+    .case-header { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .case-dossier { width: 100%; max-width: 100%; }
+    .puzzle-layout { grid-template-columns: minmax(0, 1fr); }
+    .puzzle-left { border-right: 0; border-bottom: 1px solid var(--fg-low); }
+  }
+
   /* RESPONSIVE */
   @media (max-width: 700px) {
+    body { padding-left: 0; padding-right: 0; }
     /* Layout */
     .puzzle-layout { grid-template-columns: 1fr; }
     .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); padding-bottom: 36px; }
     .case-header, .puzzle-left, .puzzle-right { padding-left: 20px; padding-right: 20px; }
 
     /* Top bar */
-    .top-bar { padding-left: 20px; padding-right: 20px; grid-template-columns: auto 1fr; }
-    .top-bar > *:last-child { display: none; }
-    .top-bar-center { text-align: left; }
-    .bar-label { font-size: 13px; }
-    .bar-case  { font-size: 12px; }
+    .top-bar {
+      padding: 14px 18px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "left right" "center center";
+      gap: 8px 12px;
+      position: relative;
+    }
+    .bar-left { grid-area: left; min-width: 0; flex-wrap: wrap; gap: 6px 12px; }
+    .bar-center { grid-area: center; text-align: left; white-space: normal; }
+    .bar-right { grid-area: right; gap: 0; }
+    .bar-right > span:first-child { display: none; }
+    .bar-stamp { font-size: 10px; letter-spacing: 0.06em; padding: 3px 7px; }
+    .bar-label { font-size: 11px; letter-spacing: 0.12em; }
 
     /* Case header text */
     .case-title-rule span { font-size: 12px; letter-spacing: 0.2em; }
@@ -631,10 +754,10 @@
     .statement-name { font-size: 13px; }
 
     /* Elimination grid — horizontal scroll so nothing truncates */
-    .grid-hint { font-size: 13px; letter-spacing: 0.1em; }
-    .elim-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    #elim-grid { font-size: 13px; min-width: 480px; }
-    #elim-grid th, #elim-grid td { font-size: 13px; padding: 7px 6px; }
+    .grid-guide { font-size: 14px; padding: 13px; }
+    .grid-panel-title { font-size: 14px; }
+    .elim-grid { min-width: 440px; }
+    .elim-grid th { font-size: 12px; }
 
     /* Accusation section */
     .tries-label    { font-size: 13px; }
@@ -643,12 +766,15 @@
     .accuse-btn     { font-size: 15px; padding: 18px; letter-spacing: 0.14em; }
 
     /* Verdict + share */
+    #investigator-notes { font-size: 16px; } /* Prevent iOS Safari focus zoom */
     .verdict-headline { font-size: 20px; }
     .verdict-body     { font-size: 16px; line-height: 1.8; }
     .share-label      { font-size: 13px; }
     .stamp-card       { font-size: 14px; }
   }
 </style>
+</head>
+<body>
 
 <!-- TOP BAR -->
 <div class="top-bar">
@@ -658,7 +784,7 @@
   </div>
   <div class="bar-center">The Missing Envelope</div>
   <div class="bar-right">
-    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Bengaluru &middot; Law Firm</span>
+    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Bengaluru · Law Firm</span>
     <span class="bar-stamp" id="case-stamp">Open</span>
   </div>
 </div>
@@ -666,9 +792,9 @@
 <!-- CASE HEADER -->
 <div class="case-header">
   <div class="case-header-text">
-    <div class="case-number" id="case-number">Case 001 &middot; Open Investigation</div>
+    <div class="case-number" id="case-number">Case 001 · Open Investigation</div>
     <h1 class="case-title" id="case-title">The Missing Envelope</h1>
-    <div class="case-title-rule"><span>Bengaluru &middot; Law Firm &middot; 2026</span></div>
+    <div class="case-title-rule"><span>Bengaluru · Law Firm · 2026</span></div>
     <p class="case-setting" id="case-setting"></p>
   </div>
   <div class="case-dossier">
@@ -694,7 +820,7 @@
       <span class="dossier-key">Persons of interest</span>
       <span class="dossier-val">3 suspects</span>
     </div>
-    <div class="dossier-stamp">Open</div>
+    <div class="dossier-stamp" id="dossier-stamp" data-state="open">Open</div>
   </div>
 </div>
 
@@ -733,10 +859,25 @@
   <div class="puzzle-right">
 
     <div class="section-label">Elimination Grid</div>
-    <p class="grid-hint">Click a cell to cross off &middot; Click again to confirm &middot; Click once more to clear</p>
-    <div class="grid-wrap elim-scroll-wrap">
-      <table class="elim-grid" id="elim-grid"></table>
-    </div>
+    <aside class="grid-guide" aria-labelledby="grid-guide-title">
+      <p id="grid-guide-title"><strong>Use the grid to test each possibility.</strong> Each table compares two categories. Mark relationships the evidence rules out, then confirm the links you believe are true.</p>
+      <p class="grid-legend" id="grid-legend"><span class="cross">×</span> Ruled out &nbsp; <span class="tick">✓</span> Confirmed &nbsp; · Undecided. Activate a cell to cycle through the three states.</p>
+      <details class="grid-help">
+        <summary>How do I use this to solve the case?</summary>
+        <p>Start with direct evidence. For example, a verified alibi can rule out a suspect at a location. Use the three tables to compare suspect–method, suspect–location and method–location pairs. The grid does not solve the case for you; use it to track your deductions, then base your accusation on the clues.</p>
+      </details>
+    </aside>
+    <div class="elim-grids" id="elim-grids" aria-describedby="grid-legend"></div>
+
+    <div class="section-label">Your Notes</div>
+    <label class="visually-hidden" for="investigator-notes">Investigator notes</label>
+    <textarea
+      id="investigator-notes"
+      rows="7"
+      placeholder="Record contradictions, timelines, and suspicions..."
+      aria-describedby="notes-status"
+    ></textarea>
+    <p class="notes-status" id="notes-status" role="status" aria-live="polite">Notes save automatically in this browser on this device.</p>
 
     <div class="section-label">Make Your Accusation</div>
     <div class="tries-row">
@@ -748,29 +889,29 @@
     </div>
     <div class="accuse-form">
       <div class="accuse-row">
-        <div class="accuse-label">Who?</div>
+        <label class="accuse-label" for="acc-who">Who?</label>
         <select class="accuse-select" id="acc-who">
-          <option value="">&mdash; Select suspect &mdash;</option>
+          <option value="">— Select suspect —</option>
         </select>
       </div>
       <div class="accuse-row">
-        <div class="accuse-label">How?</div>
+        <label class="accuse-label" for="acc-how">How?</label>
         <select class="accuse-select" id="acc-how">
-          <option value="">&mdash; Select method &mdash;</option>
+          <option value="">— Select method —</option>
         </select>
       </div>
       <div class="accuse-row">
-        <div class="accuse-label">Where?</div>
+        <label class="accuse-label" for="acc-where">Where did the substitution happen?</label>
         <select class="accuse-select" id="acc-where">
-          <option value="">&mdash; Select location &mdash;</option>
+          <option value="">— Select location —</option>
         </select>
       </div>
-      <button class="accuse-btn" id="accuse-btn" onclick="makeAccusation()">
+      <button class="accuse-btn" id="accuse-btn" type="button">
         <span>Make Your Accusation</span>
       </button>
     </div>
 
-    <div id="verdict">
+    <div id="verdict" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">
       <div class="verdict-headline" id="verdict-headline"></div>
       <div class="verdict-body" id="verdict-body"></div>
       <div class="wrong-stamp-wrap" id="wrong-stamp-wrap" hidden>
@@ -789,6 +930,7 @@
           </defs>
         </svg>
         <div class="stamp-card" id="stamp-card">
+          <span id="stamp-copy" hidden></span>
           <div class="outcome-stamp" id="outcome-stamp" hidden>
             <div class="outcome-stamp-inner" id="outcome-stamp-inner">
               <div class="ostamp-ring" id="ostamp-ring"></div>
@@ -798,7 +940,7 @@
             </div>
           </div>
         </div>
-        <button class="share-btn" onclick="copyStamp()">Copy Result</button>
+        <button class="share-btn" id="copy-result-btn" type="button">Copy Result</button>
         <span class="share-confirm" id="share-confirm">Copied</span>
       </div>
     </div>
@@ -807,7 +949,7 @@
 </div>
 
 <div class="foot">
-  <span class="foot-text">The Case Room &middot; Pixel &amp; Ink &middot; 2026</span>
+  <span class="foot-text">The Case Room · Pixel &amp; Ink · 2026</span>
   <span class="foot-num" id="foot-num">Case 001</span>
 </div>
 
@@ -817,55 +959,83 @@ const CASE = {
   "id": "001",
   "title": "The Missing Envelope",
   "date": "2026-10-14",
-  "series": "Pixel & Ink &middot; Investigation Series",
+  "series": "Pixel & Ink · Investigation Series",
   "setting": "Meridian House, Bengaluru. A sealed envelope containing a signed acquisition contract vanished from the partners' office sometime between 7 and 9 pm. Three people were in the building.",
   "answerHash": "5b4b656c",
   "suspects": [
-    { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Bilingual. Has access to every floor. Was seen near the partners' office at 7:45 pm.", "icon": "&#9878;&#65039;" },
-    { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. Was logged into the security system until 8:30 pm.", "icon": "&#128273;" },
-    { "id": "priya",  "name": "Priya Nair",  "role": "Legal Intern",      "detail": "Worked late to file documents. Left the building at 7:55 pm.", "icon": "&#128203;" }
+    { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Bilingual. Has access to every floor. Was seen near the partners' office at 7:45 pm.", "icon": "⚖️" },
+    { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. Was logged into the security system until 8:30 pm.", "icon": "🔑" },
+    { "id": "priya",  "name": "Priya Nair",  "role": "Legal Intern",      "detail": "Worked late to file documents. Left the building at 7:55 pm.", "icon": "📋" }
   ],
   "methods": [
-    { "id": "lifted", "name": "Lifted from the desk",    "detail": "Taken directly &mdash; no substitution. The absence would be noticed immediately.", "icon": "&#9995;" },
-    { "id": "fake",   "name": "Swapped with a fake",     "detail": "A replica envelope placed in its spot. Discovered only when opened the next morning.", "icon": "&#128196;" },
-    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes. Window of opportunity.", "icon": "&#128680;" }
+    { "id": "lifted", "name": "Lifted from the desk",    "detail": "Taken directly — no substitution. The absence would be noticed immediately.", "icon": "✋" },
+    { "id": "fake",   "name": "Swapped with a fake",     "detail": "A replica envelope placed in its spot. Discovered only when opened the next morning.", "icon": "📄" },
+    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes. Window of opportunity.", "icon": "🚨" }
   ],
   "locations": [
-    { "id": "partners", "name": "The partners' office", "detail": "Third floor. Keycard access only. The envelope was last confirmed here at 7:30 pm.", "icon": "&#127963;&#65039;" },
-    { "id": "mailroom", "name": "The mail room",        "detail": "Ground floor. Open access. Outgoing post collected at 9 pm sharp.", "icon": "&#128236;" },
-    { "id": "rooftop",  "name": "The rooftop terrace",  "detail": "Accessible via stairwell only. One person was seen up there around 8:20 pm.", "icon": "&#127750;" }
+    { "id": "partners", "name": "The partners' office", "detail": "Third floor. Keycard access only. The envelope was last confirmed here at 7:30 pm.", "icon": "🏛️" },
+    { "id": "mailroom", "name": "The mail room",        "detail": "Ground floor. Open access. Outgoing post collected at 9 pm sharp.", "icon": "📬" },
+    { "id": "rooftop",  "name": "The rooftop terrace",  "detail": "Accessible via stairwell only. One person was seen up there around 8:20 pm.", "icon": "🌆" }
   ],
   "clues": [
     "The security camera on the third floor shows Reena Sood entering the partners' office alone at 7:48 pm. Marcus Vaz and Priya Nair are not seen on that floor after 7:30 pm.",
     "Priya Nair left the building at 7:55 pm — ten minutes before the fire alarm. Her exit is confirmed by the ground-floor turnstile log.",
-    "The building's security log records Reena Sood's keycard accessing the mail room at 7:50 pm. Her statement claims she never went there.",
-    "The envelope on the desk was not missing — it was still present the next morning. It was a replica. The original was substituted, not stolen outright, which rules out any method that would leave an empty desk."
+    "The building's keycard log records Reena Sood entering the mail room at 7:45 pm. Her statement says she never went there.",
+    "The envelope on the desk was not missing — it was still present the next morning. It was a replica, so the original was substituted rather than simply lifted.",
+    "A torn paper sleeve with the same paper-stock code as the replica was found in the mail-room bin. Fresh adhesive is visible along its inner seam."
   ],
   "statements": [
-    { "suspect": "Reena Sood",  "text": "I was in the partners' office reviewing documents. I never went to the mail room." },
-    { "suspect": "Marcus Vaz",  "text": "I checked the rooftop at 8:20 pm as part of my rounds. I had no reason to touch that envelope." },
-    { "suspect": "Priya Nair",  "text": "I filed some documents and left before eight. I never went up to the third floor after 7." }
+    { "suspect": "Reena Sood",  "text": "I stayed on the third floor reviewing the acquisition papers. I did not go down to the mail room at any point tonight." },
+    { "suspect": "Marcus Vaz",  "text": "My round took me to the rooftop at 8:20. I finished my third-floor sweep before 7:30 and did not return to the partners' office." },
+    { "suspect": "Priya Nair",  "text": "I finished the closing bundle and badged out through the ground-floor turnstile at 7:55. I was not on the third floor after 7." }
   ],
-  "solution": "Reena Sood swapped the envelope with a fake she had prepared in advance. At 7:50 pm her keycard accessed the mail room — where she had stored the replica — directly contradicting her claim that she never went there. Two minutes later the camera places her alone in the partners' office at 7:48 pm, before Priya left the building at 7:55 pm and before Marcus reached the rooftop at 8:20 pm. Neither Priya nor Marcus was on the third floor after 7:30 pm. The envelope was not missing the next morning — it was a fake, which rules out lifting it from the desk or taking it during the fire alarm. The substitution required access to the partners' office and a pre-staged replica: only Reena had both."
+  "solution": "Reena Sood made the substitution in the partners' office. The camera places her entering that office alone at 7:48 pm, and the keycard log records her in the mail room at 7:45 pm — directly contradicting her statement that she never went there. The matching torn sleeve and fresh adhesive in the mail-room bin link that room to the replica. The next morning, the envelope was still on the desk but was a fake, so the original was substituted rather than simply lifted or taken during the later fire alarm. Priya's turnstile record confirms she left at 7:55 pm, and the third-floor footage places neither Priya nor Marcus there after 7:30 pm. Taken together, the access log, camera timing, physical sleeve and false denial point to Reena, the method was swapping with a fake, and the substitution happened in the partners' office."
 };
 
 // &#9472;&#9472; RENDER &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 document.getElementById('case-setting').textContent = CASE.setting;
 
 function makeCards(containerId, items) {
-  const el = document.getElementById(containerId);
+  const container = document.getElementById(containerId);
   items.forEach(item => {
-    const card = document.createElement('div');
+    const card = document.createElement('button');
+    card.type = 'button';
     card.className = 'card';
-    card.innerHTML = `
-      <div class="card-icon" style="font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif">${item.icon}</div>
-      <div class="card-body">
-        <div class="card-name">${item.name}</div>
-        ${item.role ? `<div class="card-role">${item.role}</div>` : ''}
-        <div class="card-detail">${item.detail}</div>
-      </div>`;
-    card.addEventListener('click', () => card.classList.toggle('open'));
-    el.appendChild(card);
+    card.setAttribute('aria-expanded', 'false');
+    const detailId = `detail-${item.id}`;
+    card.setAttribute('aria-controls', detailId);
+
+    const icon = document.createElement('span');
+    icon.className = 'card-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = item.icon;
+
+    const body = document.createElement('span');
+    body.className = 'card-body';
+    const name = document.createElement('span');
+    name.className = 'card-name';
+    name.textContent = item.name;
+    body.appendChild(name);
+
+    if (item.role) {
+      const role = document.createElement('span');
+      role.className = 'card-role';
+      role.textContent = item.role;
+      body.appendChild(role);
+    }
+
+    const detail = document.createElement('span');
+    detail.className = 'card-detail';
+    detail.id = detailId;
+    detail.textContent = item.detail;
+    body.appendChild(detail);
+    card.append(icon, body);
+
+    card.addEventListener('click', () => {
+      const open = card.classList.toggle('open');
+      card.setAttribute('aria-expanded', String(open));
+    });
+    container.appendChild(card);
   });
 }
 
@@ -878,7 +1048,10 @@ const clueList = document.getElementById('clue-list');
 CASE.clues.forEach((c, i) => {
   const d = document.createElement('div');
   d.className = 'clue';
-  d.innerHTML = `<span class="clue-num">${i + 1}.</span>${c}`;
+  const number = document.createElement('span');
+  number.className = 'clue-num';
+  number.textContent = `${i + 1}.`;
+  d.append(number, document.createTextNode(c));
   clueList.appendChild(d);
 });
 
@@ -887,85 +1060,101 @@ const stmtList = document.getElementById('statement-list');
 CASE.statements.forEach(s => {
   const d = document.createElement('div');
   d.className = 'statement';
-  d.innerHTML = `<div class="statement-name">${s.suspect}</div><div class="statement-text">${s.text}</div>`;
+  const name = document.createElement('div');
+  name.className = 'statement-name';
+  name.textContent = s.suspect;
+  const quote = document.createElement('div');
+  quote.className = 'statement-text';
+  quote.textContent = s.text;
+  d.append(name, quote);
   stmtList.appendChild(d);
 });
 
-// &#9472;&#9472; ELIMINATION GRID &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
-// Rows: methods + locations  |  Cols: suspects + locations
-const rowGroups = [
-  { label: 'Methods',   items: CASE.methods },
-  { label: 'Locations', items: CASE.locations }
+// ELIMINATION GRID — three meaningful category pairings, no location-vs-location block.
+const gridState = Object.create(null);
+const gridContainer = document.getElementById('elim-grids');
+const gridPairs = [
+  { id: 'suspect-method', title: 'Suspect × Method', rowsLabel: 'Suspect', rows: CASE.suspects, colsLabel: 'Method', cols: CASE.methods },
+  { id: 'suspect-location', title: 'Suspect × Location', rowsLabel: 'Suspect', rows: CASE.suspects, colsLabel: 'Location', cols: CASE.locations },
+  { id: 'method-location', title: 'Method × Location', rowsLabel: 'Method', rows: CASE.methods, colsLabel: 'Location', cols: CASE.locations }
 ];
-const colGroups = [
-  { label: 'Suspects',  items: CASE.suspects },
-  { label: 'Locations', items: CASE.locations }
-];
+const stateNames = ['undecided', 'ruled out', 'confirmed'];
+const stateSymbols = ['·', '×', '✓'];
 
-const grid = document.getElementById('elim-grid');
-const gridState = {};
+function updateGridCell(button, pair, row, col) {
+  const key = `${pair.id}__${row.id}__${col.id}`;
+  const state = (gridState[key] + 1) % 3;
+  gridState[key] = state;
+  button.dataset.state = String(state);
+  button.textContent = stateSymbols[state];
+  button.setAttribute('aria-label', `${row.name} × ${col.name}: ${stateNames[state]}. Activate to change state.`);
+  button.setAttribute('title', `${row.name} × ${col.name}: ${stateNames[state]}`);
+}
 
-// Header rows
-const headRow1 = grid.insertRow();
-headRow1.insertCell().outerHTML = '<th></th>';
-colGroups.forEach(g => {
-  const th = document.createElement('th');
-  th.colSpan = g.items.length;
-  th.textContent = g.label;
-  headRow1.appendChild(th);
-});
+function renderGridPair(pair) {
+  const panel = document.createElement('section');
+  panel.className = 'grid-panel';
+  panel.setAttribute('aria-labelledby', `grid-title-${pair.id}`);
+  const title = document.createElement('h3');
+  title.className = 'grid-panel-title';
+  title.id = `grid-title-${pair.id}`;
+  title.textContent = pair.title;
 
-const headRow2 = grid.insertRow();
-headRow2.insertCell().outerHTML = '<th></th>';
-colGroups.forEach(g => {
-  g.items.forEach(item => {
+  const wrap = document.createElement('div');
+  wrap.className = 'grid-wrap';
+  const table = document.createElement('table');
+  table.className = 'elim-grid';
+  table.setAttribute('aria-label', pair.title);
+  const caption = document.createElement('caption');
+  caption.textContent = `Compare each ${pair.rowsLabel.toLowerCase()} with each ${pair.colsLabel.toLowerCase()}.`;
+  table.appendChild(caption);
+
+  const thead = document.createElement('thead');
+  const headRow = document.createElement('tr');
+  const corner = document.createElement('th');
+  corner.scope = 'col';
+  corner.textContent = pair.rowsLabel;
+  headRow.appendChild(corner);
+  pair.cols.forEach(col => {
     const th = document.createElement('th');
-    // Smart abbreviation: skip leading "The" / "A" articles, take next word
-    const words = item.name.split(' ');
-    const skip = ['the','a','an'];
-    const meaningful = words.find(w => !skip.includes(w.toLowerCase())) || words[0];
-    th.textContent = meaningful.replace(/['']/g, '').replace(/,$/, '');
-    headRow2.appendChild(th);
+    th.scope = 'col';
+    th.textContent = col.name;
+    headRow.appendChild(th);
   });
-});
+  thead.appendChild(headRow);
+  table.appendChild(thead);
 
-// Data rows
-rowGroups.forEach(rg => {
-  const sepRow = grid.insertRow();
-  const sepTh = document.createElement('th');
-  sepTh.colSpan = 1 + colGroups.reduce((a, g) => a + g.items.length, 0);
-  sepTh.textContent = rg.label;
-  sepTh.style.textAlign = 'left';
-  sepTh.style.paddingLeft = '10px';
-  sepRow.appendChild(sepTh);
-
-  rg.items.forEach(row => {
-    const tr = grid.insertRow();
-    const labelTd = tr.insertCell();
-    labelTd.className = 'row-label';
-    // Row label: use full name, truncate only if very long
-    const rName = row.name;
-    labelTd.textContent = rName.length > 22 ? rName.slice(0, 20) + '...' : rName;
-
-    colGroups.forEach(cg => {
-      cg.items.forEach(col => {
-        const key = `${row.id}__${col.id}`;
-        gridState[key] = 0;
-        const td = tr.insertCell();
-        td.className = 'cell';
-        td.dataset.state = '0';
-        td.dataset.key = key;
-        td.dataset.row = row.id;
-        td.dataset.col = col.id;
-        td.addEventListener('click', () => {
-          const s = (parseInt(td.dataset.state) + 1) % 3;
-          td.dataset.state = s;
-          gridState[key] = s;
-        });
-      });
+  const tbody = document.createElement('tbody');
+  pair.rows.forEach(row => {
+    const tr = document.createElement('tr');
+    const rowHeader = document.createElement('th');
+    rowHeader.scope = 'row';
+    rowHeader.textContent = row.name;
+    tr.appendChild(rowHeader);
+    pair.cols.forEach(col => {
+      const td = document.createElement('td');
+      const button = document.createElement('button');
+      const key = `${pair.id}__${row.id}__${col.id}`;
+      gridState[key] = 0;
+      button.type = 'button';
+      button.className = 'grid-cell';
+      button.dataset.state = '0';
+      button.textContent = stateSymbols[0];
+      button.setAttribute('aria-describedby', 'grid-legend');
+      button.setAttribute('aria-label', `${row.name} × ${col.name}: undecided. Activate to change state.`);
+      button.setAttribute('title', `${row.name} × ${col.name}: undecided`);
+      button.addEventListener('click', () => updateGridCell(button, pair, row, col));
+      td.appendChild(button);
+      tr.appendChild(td);
     });
+    tbody.appendChild(tr);
   });
-});
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  panel.append(title, wrap);
+  gridContainer.appendChild(panel);
+}
+gridPairs.forEach(renderGridPair);
 
 // &#9472;&#9472; ACCUSATION DROPDOWNS (independent of grid) &#9472;&#9472;&#9472;&#9472;
 const whoSel   = document.getElementById('acc-who');
@@ -975,6 +1164,26 @@ const whereSel = document.getElementById('acc-where');
 CASE.suspects.forEach(s  => { const o = document.createElement('option'); o.value = s.name; o.textContent = s.name; whoSel.appendChild(o); });
 CASE.methods.forEach(m   => { const o = document.createElement('option'); o.value = m.name; o.textContent = m.name; howSel.appendChild(o); });
 CASE.locations.forEach(l => { const o = document.createElement('option'); o.value = l.name; o.textContent = l.name; whereSel.appendChild(o); });
+
+// ── INVESTIGATOR NOTES ─────────────────────────────────────────────────
+const notesInput = document.getElementById('investigator-notes');
+const notesStatus = document.getElementById('notes-status');
+const NOTES_KEY = 'caseroom_case001_notes_v1';
+
+try {
+  notesInput.value = localStorage.getItem(NOTES_KEY) || '';
+} catch (error) {
+  notesStatus.textContent = 'Browser storage is unavailable. Your notes may not persist after this page is closed.';
+}
+
+notesInput.addEventListener('input', () => {
+  try {
+    localStorage.setItem(NOTES_KEY, notesInput.value);
+    notesStatus.textContent = 'Saved automatically in this browser.';
+  } catch (error) {
+    notesStatus.textContent = 'Could not save notes in this browser. Keep a separate copy before leaving.';
+  }
+});
 
 // &#9472;&#9472; ACCUSATION LOGIC &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const MAX_TRIES = 2;
@@ -992,6 +1201,25 @@ function lockForm() {
   document.getElementById('accuse-btn').style.cursor = 'default';
 }
 
+function updateCaseStatus(state) {
+  const topStamp = document.getElementById('case-stamp');
+  const dossierStamp = document.getElementById('dossier-stamp');
+  const caseNumber = document.getElementById('case-number');
+  const footerNumber = document.getElementById('foot-num');
+  const states = {
+    open: { stamp: 'Open', dossier: 'Open', heading: 'Case 001 · Open Investigation', footer: 'Case 001' },
+    retry: { stamp: '1 Try Left', dossier: 'Open · 1 left', heading: 'Case 001 · One attempt remaining', footer: 'Case 001 · 1 try left' },
+    solved: { stamp: 'Solved', dossier: 'Solved', heading: 'Case 001 · Investigation solved', footer: 'Case 001 · Solved' },
+    closed: { stamp: 'Closed', dossier: 'Closed', heading: 'Case 001 · Case gone cold', footer: 'Case 001 · Closed' }
+  };
+  const next = states[state] || states.open;
+  [topStamp, dossierStamp].forEach(el => el.dataset.state = state === 'retry' ? 'open' : state);
+  topStamp.textContent = next.stamp;
+  dossierStamp.textContent = next.dossier;
+  caseNumber.textContent = next.heading;
+  footerNumber.textContent = next.footer;
+}
+
 function showStamp(solved) {
   const block = document.getElementById('share-block');
   const card  = document.getElementById('stamp-card');
@@ -999,25 +1227,15 @@ function showStamp(solved) {
     ? (triesUsed === 1 ? '[S] [OK]' : '[M] [OK]')
     : '[M] [M]';
   const status = solved
-    ? `Solved in ${triesUsed} of ${MAX_TRIES} attempt${triesUsed > 1 ? 's' : ''}`
+    ? `Solved on attempt ${triesUsed} of ${MAX_TRIES}`
     : 'Case went cold';
-  // set copyable text as a text node before the stamp overlay
-  card.childNodes[0] && card.childNodes[0].nodeType === 3
-    ? (card.childNodes[0].textContent = `THE CASE ROOM · CASE 001\n` +
-        `The Missing Envelope\n\n` +
-        `${dots}\n\n` +
-        `${status}\n` +
-        `thecaseroom.pixelandink.in`)
-    : card.insertBefore(
-        document.createTextNode(
-          `THE CASE ROOM · CASE 001\n` +
-          `The Missing Envelope\n\n` +
-          `${dots}\n\n` +
-          `${status}\n` +
-          `thecaseroom.pixelandink.in`
-        ),
-        card.firstChild
-      );
+  const copyNode = document.getElementById('stamp-copy');
+  copyNode.textContent =
+    `THE CASE ROOM · CASE 001\n` +
+    `The Missing Envelope\n\n` +
+    `${dots}\n\n` +
+    `${status}\n` +
+    `thecaseroom.pixelandink.in`;
   block.classList.add('visible');
 
   // stamp animation
@@ -1043,20 +1261,30 @@ function showStamp(solved) {
   ring.classList.add('pulse');
 }
 
-function copyStamp() {
-  const text = document.getElementById('stamp-card').textContent;
-  const confirm = document.getElementById('share-confirm');
-  navigator.clipboard.writeText(text).then(() => {
-    confirm.classList.add('show');
-    setTimeout(() => confirm.classList.remove('show'), 2000);
-  }).catch(() => {
-    // fallback: select the text
-    const el = document.getElementById('stamp-card');
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-  });
+async function copyStamp() {
+  const text = document.getElementById('stamp-copy').textContent;
+  const confirmation = document.getElementById('share-confirm');
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      throw new Error('Clipboard API unavailable');
+    }
+    confirmation.textContent = 'Copied';
+    confirmation.classList.add('show');
+    setTimeout(() => confirmation.classList.remove('show'), 2200);
+  } catch (error) {
+    const fallback = document.createElement('textarea');
+    fallback.value = text;
+    fallback.setAttribute('aria-label', 'Copyable case result text');
+    fallback.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;width:calc(100% - 24px);min-height:120px;z-index:1000;background:#110f0a;color:#f0e6d0;border:2px solid #c8a45a;padding:12px;font:16px monospace;';
+    document.body.appendChild(fallback);
+    fallback.focus();
+    fallback.select();
+    confirmation.textContent = 'Select the text above and copy it';
+    confirmation.classList.add('show');
+    setTimeout(() => { fallback.remove(); confirmation.classList.remove('show'); }, 8000);
+  }
 }
 
 function showWrongStamp() {
@@ -1096,6 +1324,8 @@ function makeAccusation() {
     if (!hint) {
       hint = document.createElement('p');
       hint.id = 'accuse-hint';
+      hint.setAttribute('role', 'alert');
+      hint.setAttribute('aria-live', 'polite');
       hint.style.cssText = 'color:var(--red);font-size:13px;letter-spacing:0.04em;margin-top:8px;';
       document.getElementById('accuse-btn').insertAdjacentElement('afterend', hint);
     }
@@ -1117,11 +1347,12 @@ function makeAccusation() {
 
   if (correct) {
     caseOver = true;
-    pips.forEach((p, i) => { p.className = 'pip' + (i < triesUsed - 1 ? ' used' : ''); });
+    pips.forEach((p, i) => { p.className = 'pip' + (i < triesUsed ? ' used' : ''); });
     lockForm();
     verdict.className = 'correct';
     headline.textContent = 'Case closed.';
     body.textContent = CASE.solution;
+    updateCaseStatus('solved');
     showStamp(true);
   } else if (triesUsed >= MAX_TRIES) {
     caseOver = true;
@@ -1130,14 +1361,22 @@ function makeAccusation() {
     verdict.className = 'cold';
     headline.textContent = 'The case goes cold.';
     body.textContent = 'Both attempts exhausted. ' + CASE.solution;
+    updateCaseStatus('closed');
     showStamp(false);
   } else {
     pips[triesUsed - 1].classList.add('used');
     verdict.className = 'wrong';
     headline.textContent = 'Not quite.';
-    body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining — review your notes.';
+    body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining — review the evidence and your notes.';
+    updateCaseStatus('retry');
     showWrongStamp();
   }
-  verdict.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  verdict.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+  verdict.focus({ preventScroll: true });
 }
+
+document.getElementById('accuse-btn').addEventListener('click', makeAccusation);
+document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
 </script>
+</body>
+</html>
