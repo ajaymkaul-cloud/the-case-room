@@ -547,6 +547,8 @@
   .case-brief-text { font-size: 16px; line-height: 1.8; display: block; overflow: visible; }
   .case-cta { font-size: 13px; letter-spacing: 0.08em; opacity: 1; line-height: 1.5; }
   .foot-text, .foot-num { font-size: 12px; letter-spacing: 0.06em; line-height: 1.6; }
+  .foot-text { color: var(--fg-mid); }
+  .foot-num { color: var(--gold); }
 
   @media (max-width: 900px) {
     .how-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -562,11 +564,14 @@
     .eyebrow { font-size: 11px; letter-spacing: 0.1em; margin-bottom: 20px; }
     .tagline { font-size: 16px; line-height: 1.8; padding: 0 8px; }
     .rule { margin-bottom: 18px; }
-    .how-band { padding: 22px 16px 28px; }
-    .how-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-    .how-step { padding: 18px; }
-    .how-title { font-size: 22px; }
-    .how-text { font-size: 16px; line-height: 1.8; }
+    /* Compact How It Works on phones: two columns, smaller cards */
+    .how-band { padding: 20px 16px 22px; }
+    .how-band .cases-label { margin-bottom: 14px; }
+    .how-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .how-step { padding: 14px; }
+    .how-num { font-size: 11px; margin-bottom: 6px; }
+    .how-title { font-size: 18px; line-height: 1.25; margin-bottom: 6px; }
+    .how-text { font-size: 14px; line-height: 1.6; }
     .cases-band { padding: 22px 16px 28px; }
     .cases-label { font-size: 13px; letter-spacing: 0.08em; margin-bottom: 16px; }
     .cases-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
@@ -578,8 +583,19 @@
     .case-setting-text { font-size: 13px; }
     .case-brief-text { font-size: 16px; line-height: 1.8; -webkit-line-clamp: unset; }
     .case-cta { font-size: 13px; }
-    .foot { align-items: flex-start; gap: 8px; }
-    .foot-text, .foot-num { font-size: 11px; letter-spacing: 0.04em; }
+    .foot {
+      align-items: flex-start;
+      gap: 8px;
+      padding-top: 18px;
+      padding-bottom: 20px;
+    }
+    .foot-text, .foot-num {
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      line-height: 1.6;
+    }
+    .foot-text { color: var(--fg-mid); }
+    .foot-num { color: var(--gold); }
     #caption { padding-left: 22px; padding-right: 22px; }
     .cap-line { font-size: clamp(23px, 6vw, 34px); line-height: 1.35; }
     #thief-wrap { right: 5vw; width: 80px; }
@@ -708,8 +724,8 @@
   </div>
 
   <div class="foot">
-    <span class="foot-text">© 2026 Pixel &amp; Ink · The Case Room</span>
-    <span class="foot-num">Case Files 001–002</span>
+    <span class="foot-text">© 2026 Pixel &amp; Ink. All rights reserved.</span>
+    <span class="foot-num">The Case Room · Case Files 001–002</span>
   </div>
 </div>
 
