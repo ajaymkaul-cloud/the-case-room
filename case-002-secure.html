@@ -716,7 +716,7 @@
   }
   function endpointReady() {
     return /^https:\/\/[^/]+\/functions\/v1\/case-game\/?$/.test(GAME_ENDPOINT)
-      && !GAME_ENDPOINT.includes('hqibmotqlomwjlmpnchb')
+      
       && SUPABASE_PUBLISHABLE_KEY.trim().length > 0
       && !SUPABASE_PUBLISHABLE_KEY.startsWith('YOUR_');
   }
