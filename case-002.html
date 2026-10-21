@@ -372,16 +372,6 @@
       { id: 'danish', name: 'Danish Khan', role: 'Assistant Director', text: 'I put Veer’s normal drink in the delivery bag. When I returned, the bag was already sealed. I handed it to the runner without opening it.', note: 'Statement not verified.' }
     ];
     const RELATIONS = ['Establishes access', 'Establishes motive', 'Supports accusation', 'Contradicts', 'Eliminates'];
-    const ANSWER = { suspect: 'ronit' };
-    const DECISIVE_EXHIBITS = ['B', 'C'];
-    const FEEDBACK = {
-      correct: { headline: 'Case closed.', body: 'Ronit Malhotra substituted the contaminated drink. The packing-counter recording establishes the act. The delivery chain and recovered bottle confirm nothing changed afterward.' },
-      wrong_exhibits: { headline: 'Suspect identified. Evidence incomplete.', body: 'You have identified the responsible suspect, but your selected exhibits do not establish both the substitution and the delivery chain. Which exhibit shows the act, and which proves the bottle reached Veer unchanged?' },
-      wrong_suspect_priya: { headline: 'Theory unsupported.', body: 'Priya handled the empty bag before the drink was packed. She was in a continuous technical-rehearsal recording from 4:37 AM. The packing-counter camera does not place her at the substitution.' },
-      wrong_suspect_tara: { headline: 'Theory unsupported.', body: 'Tara arrived at the lot at 4:50 AM. The bag was sealed and handed to the runner by 4:44 AM. She could not have reached the drink.' },
-      wrong_suspect_danish: { headline: 'Theory unsupported.', body: 'Danish placed the original marked bottle in the bag and is visible in the supply-room recording from 4:40 to 4:43 AM. The camera shows who made the substitution while he was away.' }
-    };
-    const SOLUTION_REVEAL = `Ronit Malhotra substituted the contaminated drink.\n\nThe packing-counter recording shows Danish placing Veer’s marked original bottle in the bag at 4:39 AM. While Danish is in the supply room, Ronit removes that bottle, replaces it with another and seals the bag with seal S-184.\n\nThe delivery records confirm the same seal is intact when the bag reaches Veer’s trailer at 5:30 AM. The recovered bottle has no yellow dot and no diagonal label crease. The investigation confirms it contains the sedative.\n\nRonit’s statement — “I never handled it” — is directly contradicted by the recording.\n\nPriya handled the empty bag before the drink was packed and was in a rehearsal recording throughout the substitution window. Tara arrived after the bag was already sealed. Danish packed the original and later carried the already sealed bag.\n\nVeer’s message to Ronit supplies a possible motive. The accusation rests on the substitution and delivery evidence, not the motive alone.`;
 
     let nbState = {};
     let caseStatus = 'investigating';
@@ -389,7 +379,8 @@
     let attempts = 0;
     let completedAt = null;
     let lastFeedback = null;
-    const STORAGE_KEY = 'cr002v4';
+    const STORAGE_KEY = 'cr002v5_secure';
+    const LEGACY_STORAGE_KEY = 'cr002v4';
 
     const $ = id => document.getElementById(id);
     const isCaseOver = () => caseStatus === 'solved';
@@ -397,29 +388,25 @@
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          v: 4, nbState, status: caseStatus, suspect: $('sel-suspect').value,
-          exhibits: [...checkedExhibits], attempts, completedAt, lastFeedback
+          v: 5, nbState, suspect: $('sel-suspect').value,
+          exhibits: [...checkedExhibits]
         }));
       } catch (_) { /* Private browsing or storage restrictions should not stop play. */ }
     }
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
         if (!raw) return;
         const data = JSON.parse(raw);
-        if (data.v !== 4) return;
+        if (![4, 5].includes(data.v)) return;
         const validExhibits = new Set(EXHIBITS.map(ex => ex.id));
         if (data.nbState && typeof data.nbState === 'object') {
           Object.keys(data.nbState).forEach(id => {
             if (validExhibits.has(id) && data.nbState[id] && typeof data.nbState[id] === 'object') nbState[id] = data.nbState[id];
           });
         }
-        if (data.status === 'solved') caseStatus = 'solved';
         if (Array.isArray(data.exhibits)) data.exhibits.filter(id => validExhibits.has(id)).slice(0, 2).forEach(id => checkedExhibits.add(id));
-        attempts = Number.isInteger(data.attempts) && data.attempts >= 0 ? data.attempts : 0;
-        completedAt = typeof data.completedAt === 'string' ? data.completedAt : null;
-        lastFeedback = data.lastFeedback && typeof data.lastFeedback === 'object' ? data.lastFeedback : null;
         if (typeof data.suspect === 'string' && SUSPECTS.some(s => s.id === data.suspect)) $('sel-suspect').value = data.suspect;
       } catch (_) { /* Ignore invalid or unavailable saved state. */ }
     }
@@ -559,33 +546,60 @@
       $('case-number').textContent = `Case 002 · ${status === 'Open' ? 'Open Investigation' : status}`;
     }
 
-    function submitAccusation() {
+    async function submitAccusation() {
       if (isCaseOver()) return;
       const suspectSelect = $('sel-suspect'); const suspect = suspectSelect.value; const selected = [...checkedExhibits];
       let valid = true;
       if (!suspect) { suspectSelect.classList.add('error'); valid = false; }
       if (selected.length !== 2) { updateNote(); valid = false; }
       if (!valid) { if (!suspect) suspectSelect.focus(); else $('exhibit-checkboxes').querySelector('input:not(:checked)')?.focus(); return; }
-      suspectSelect.classList.remove('error'); attempts += 1;
-      const verdict = $('verdict'); verdict.style.display = 'block'; verdict.className = 'wrong';
-      if (suspect === ANSWER.suspect && DECISIVE_EXHIBITS.every(id => selected.includes(id))) {
-        caseStatus = 'solved'; completedAt = new Date().toISOString(); lastFeedback = null;
-        renderOutcome(); saveState();
-      } else {
-        const feedback = suspect === ANSWER.suspect ? FEEDBACK.wrong_exhibits : (FEEDBACK[`wrong_suspect_${suspect}`] || { headline: 'Theory unsupported.', body: 'The evidence does not uniquely establish this suspect. Review the exhibits.' });
-        $('verdict-headline').textContent = feedback.headline; $('verdict-body').textContent = feedback.body;
-        $('verdict-reveal').classList.remove('show'); $('share-block').classList.remove('visible');
-        lastFeedback = { headline: feedback.headline, body: feedback.body };
-        saveState();
+      suspectSelect.classList.remove('error'); const button = $('accuse-btn'); button.disabled = true;
+      $('verdict').style.display = 'block'; $('verdict').className = 'wrong'; $('verdict-headline').textContent = 'Checking the evidence…'; $('verdict-body').textContent = 'Your accusation is being verified securely.';
+      try {
+        const secure = window.CaseRoomSecureGame;
+        if (!secure) throw new Error('Secure case validation is not available.');
+        await secure.ready;
+        const result = await secure.accuse({ suspect, exhibits: selected });
+        attempts = Number(result.attempts) || 0;
+        caseStatus = result.status === 'solved' ? 'solved' : 'investigating';
+        if (result.status === 'solved') {
+          lastFeedback = null; renderOutcome(); saveState();
+        } else {
+          const feedback = { headline: 'Theory unsupported.', body: 'The evidence does not yet support that accusation. Revisit the timeline, the substitution, and the delivery chain before trying again.' };
+          $('verdict').className = 'wrong'; $('verdict-headline').textContent = feedback.headline; $('verdict-body').textContent = feedback.body;
+          $('verdict-reveal').classList.remove('show'); $('share-block').classList.remove('visible'); lastFeedback = feedback; saveState();
+        }
+      } catch (error) {
+        try { const state = await window.CaseRoomSecureGame?.refresh(); if (state) applySecureState(state); } catch (_) {}
+        $('verdict').style.display = 'block'; $('verdict').className = 'wrong'; $('verdict-headline').textContent = 'Accusation not confirmed.';
+        $('verdict-body').textContent = 'The secure case server could not confirm the result. Check your connection and retry only after the case status refreshes.';
+      } finally {
+        if (!isCaseOver()) button.disabled = false;
+        $('verdict').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+        $('verdict').focus({ preventScroll: true });
       }
-      verdict.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-      verdict.focus({ preventScroll: true });
     }
 
-    function revealSolution() {
+    async function revealSolution() {
       if (!isCaseOver()) return;
-      $('reveal-text').textContent = SOLUTION_REVEAL; $('reveal-text').classList.add('show'); $('reveal-btn').hidden = true;
+      const button = $('reveal-btn'); button.disabled = true; button.textContent = 'Loading solution…';
+      try {
+        const response = await window.CaseRoomSecureGame.reveal();
+        $('reveal-text').textContent = response.solution; $('reveal-text').classList.add('show'); button.hidden = true;
+      } catch (_) {
+        $('reveal-text').textContent = 'The solution could not be loaded. Check your connection and try again.';
+        $('reveal-text').classList.add('show'); button.textContent = 'Retry solution';
+      } finally { button.disabled = false; }
     }
+
+    function applySecureState(state) {
+      if (!state) return;
+      attempts = Number(state.attempts) || 0;
+      caseStatus = state.status === 'solved' ? 'solved' : 'investigating';
+      if (caseStatus === 'solved') lastFeedback = null;
+      renderOutcome();
+    }
+    window.addEventListener('case-room-secure-ready', event => { applySecureState(event.detail); });
 
     function lockForm() {
       $('sel-suspect').disabled = true;
@@ -631,17 +645,20 @@
         if (lastFeedback) {
           verdict.style.display = 'block'; verdict.className = 'wrong'; $('verdict-headline').textContent = lastFeedback.headline; $('verdict-body').textContent = lastFeedback.body;
         } else { verdict.style.display = 'none'; }
+        $('reveal-btn').hidden = true;
         return;
       }
       lockForm(); updateStatus('Solved'); verdict.style.display = 'block'; verdict.className = 'correct';
-      $('verdict-headline').textContent = FEEDBACK.correct.headline; $('verdict-body').textContent = FEEDBACK.correct.body;
-      $('verdict-reveal').classList.add('show'); $('reveal-btn').hidden = false; $('reveal-text').classList.remove('show'); $('reveal-text').textContent = '';
+      $('verdict-headline').textContent = 'Case closed.';
+      $('verdict-body').textContent = 'Your accusation has been verified. You can reveal the full solution when you are ready.';
+      $('verdict-reveal').classList.add('show'); $('reveal-btn').hidden = false; $('reveal-btn').disabled = false; $('reveal-btn').textContent = 'Reveal Full Solution';
+      $('reveal-text').classList.remove('show'); $('reveal-text').textContent = '';
       showShare();
     }
 
-    function resetCase() {
-      if (!window.confirm('Clear your notes and restart this case?')) return;
-      try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    async function resetCase() {
+      if (!window.confirm('Clear your notes and start a new case session?')) return;
+      try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(LEGACY_STORAGE_KEY); } catch (_) {}
       nbState = {}; caseStatus = 'investigating'; checkedExhibits = new Set(); attempts = 0; completedAt = null; lastFeedback = null;
       $('sel-suspect').value = ''; $('sel-suspect').disabled = false; $('sel-suspect').classList.remove('error'); $('accuse-btn').disabled = false;
       $('verdict').style.display = 'none'; $('verdict').className = ''; $('verdict-headline').textContent = ''; $('verdict-body').textContent = '';
@@ -649,6 +666,8 @@
       $('stamp-card').textContent = ''; $('share-block').classList.remove('visible'); $('share-confirm').classList.remove('show'); $('share-confirm').textContent = 'Copied — ready to share';
       $('share-block').querySelectorAll('textarea').forEach(el => el.remove());
       renderExhibits(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); updateStatus('Open'); saveState();
+      try { const state = await window.CaseRoomSecureGame.resetSession(); applySecureState(state); }
+      catch (_) { $('verdict').style.display = 'block'; $('verdict-headline').textContent = 'Could not start a new secure session.'; $('verdict-body').textContent = 'Reconnect to the case server and reload this page.'; }
     }
 
     $('accuse-btn').addEventListener('click', submitAccusation);
@@ -660,5 +679,207 @@
     loadState();
     renderExhibits(); renderStatements(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); renderOutcome();
   </script>
+<script>
+/* Secure guest gameplay + optional, consent-gated analytics.
+   The browser contains no answer key or solution narrative. Configure endpoint/key before deployment. */
+(() => {
+  'use strict';
+  const CASE_ID = '002';
+  const MECHANIC = 'dossier';
+  const GAME_ENDPOINT = 'https://hqibmotqlomwjlmpnchb.supabase.co/functions/v1/case-game';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_zep3M9z7xF-n476w_8kvMQ_AqEzH1xj';
+  const CONSENT_KEY = 'caseroom_analytics_consent_v1';
+  const GAME_SESSION_KEY = `caseroom_game_session_${CASE_ID}_v1`;
+  const ANALYTICS_SESSION_KEY = `caseroom_analytics_session_${CASE_ID}_v1`;
+  let memoryConsent = null;
+  let latestState = null;
+
+  function safeGet(store, key) { try { return window[store].getItem(key); } catch (_) { return null; } }
+  function safeSet(store, key, value) { try { window[store].setItem(key, value); return true; } catch (_) { return false; } }
+  function safeRemove(store, key) { try { window[store].removeItem(key); } catch (_) {} }
+  function consent() {
+    const saved = safeGet('localStorage', CONSENT_KEY);
+    return saved === 'accepted' || saved === 'declined' ? saved : memoryConsent;
+  }
+  function uuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    const bytes = new Uint8Array(16); window.crypto.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40; bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const h = [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
+    return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+  }
+  function analyticsSession(create) {
+    if (consent() !== 'accepted') return null;
+    let id = safeGet('sessionStorage', ANALYTICS_SESSION_KEY);
+    if (!id && create) { id = uuid(); safeSet('sessionStorage', ANALYTICS_SESSION_KEY, id); }
+    return id || null;
+  }
+  function endpointReady() {
+    return /^https:\/\/[^/]+\/functions\/v1\/case-game\/?$/.test(GAME_ENDPOINT)
+      && SUPABASE_PUBLISHABLE_KEY.trim().length > 0
+      && !SUPABASE_PUBLISHABLE_KEY.startsWith('YOUR_');
+  }
+  function serverMessage(text) {
+    let el = document.getElementById('cr-game-server-warning');
+    if (!el) {
+      el = document.createElement('div'); el.id = 'cr-game-server-warning'; el.setAttribute('role', 'status');
+      el.style.cssText = 'box-sizing:border-box;width:min(760px,calc(100% - 24px));margin:10px auto;padding:12px 14px;border:1px solid #8a4a43;border-radius:8px;background:#261715;color:#f4d9d4;font:13px/1.5 system-ui,sans-serif;';
+      const anchor = document.querySelector('main') || document.body.firstElementChild || document.body;
+      anchor.parentNode.insertBefore(el, anchor);
+    }
+    el.textContent = text; el.hidden = !text;
+  }
+  async function request(payload) {
+    if (!endpointReady()) throw new Error('The secure case server is not configured yet. Configure the Supabase case-game endpoint and publishable key before deploying this page.');
+    const response = await fetch(GAME_ENDPOINT, {
+      method: 'POST', mode: 'cors', cache: 'no-store',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_PUBLISHABLE_KEY },
+      body: JSON.stringify(payload)
+    });
+    let data = {};
+    try { data = await response.json(); } catch (_) {}
+    if (!response.ok) {
+      const error = new Error(typeof data.error === 'string' ? data.error : `Secure case request failed (${response.status}).`);
+      error.status = response.status; throw error;
+    }
+    return data;
+  }
+  function trackingFields() {
+    const enabled = consent() === 'accepted';
+    return {
+      analytics_opt_in: enabled,
+      analytics_session_id: enabled ? analyticsSession(true) : null,
+      user_agent_class: window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop'
+    };
+  }
+  async function startSession(fresh = false) {
+    if (fresh) safeRemove('localStorage', GAME_SESSION_KEY);
+    let sessionId = fresh ? null : safeGet('localStorage', GAME_SESSION_KEY);
+    const payload = {
+      action: 'start', case_id: CASE_ID, mechanic: MECHANIC, session_id: sessionId,
+      ...trackingFields()
+    };
+    let data;
+    try {
+      data = await request(payload);
+    } catch (error) {
+      if (sessionId && error.status === 410) {
+        safeRemove('localStorage', GAME_SESSION_KEY);
+        return startSession(true);
+      }
+      throw error;
+    }
+    if (!data || !data.session_id) throw new Error('The secure case server returned an invalid session.');
+    safeSet('localStorage', GAME_SESSION_KEY, data.session_id);
+    latestState = data;
+    serverMessage('');
+    window.dispatchEvent(new CustomEvent('case-room-secure-ready', { detail: data }));
+    return data;
+  }
+  const ready = startSession(false).catch(error => {
+    serverMessage(error.message || 'The case server is unavailable. Your accusation has not been submitted.');
+    return null;
+  });
+  async function needSession() {
+    let state = latestState || await ready;
+    if (!state) {
+      state = await startSession(false);
+      latestState = state;
+    }
+    if (!state) throw new Error('Could not connect to the secure case server. Please retry.');
+    return state;
+  }
+  async function accuse(options) {
+    const state = await needSession();
+    const result = await request({
+      action: 'accuse', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+      ...options, ...trackingFields()
+    });
+    latestState = { ...state, ...result };
+    return result;
+  }
+  async function reveal() {
+    const state = await needSession();
+    const result = await request({
+      action: 'reveal', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+      ...trackingFields()
+    });
+    return result;
+  }
+  async function refresh() {
+    const state = await needSession();
+    const result = await request({
+      action: 'start', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+      ...trackingFields()
+    });
+    latestState = result;
+    window.dispatchEvent(new CustomEvent('case-room-secure-ready', { detail: result }));
+    return result;
+  }
+  async function resetSession() {
+    const state = await startSession(true);
+    latestState = state;
+    return state;
+  }
+
+  const css = document.createElement('style');
+  css.textContent = `
+    #cr-analytics-consent[hidden], #cr-game-server-warning[hidden] { display:none !important; }
+    #cr-analytics-consent { position:relative; z-index:2; margin:12px auto 16px; width:min(420px,calc(100% - 24px)); box-sizing:border-box; padding:12px; border:1px solid rgba(200,164,90,.72); border-radius:10px; background:#171611; color:#f0e6d0; box-shadow:0 8px 24px rgba(0,0,0,.4); font:12px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    #cr-analytics-consent * { box-sizing:border-box; }
+    #cr-analytics-consent h2 { margin:0 0 5px; color:#f4e7c9; font:600 13px/1.3 Georgia,serif; }
+    #cr-analytics-consent p { margin:0 0 12px; color:#d0c8b7; }
+    #cr-analytics-consent .cr-analytics-actions { display:flex; flex-wrap:wrap; gap:8px; }
+    #cr-analytics-consent button { flex:1 1 160px; min-height:40px; padding:9px 13px; border-radius:6px; border:1px solid #75633b; cursor:pointer; font:600 12px/1.2 system-ui,-apple-system,sans-serif; }
+    #cr-analytics-consent .cr-accept { background:#c8a45a; color:#17130b; border-color:#c8a45a; }
+    #cr-analytics-consent .cr-decline { background:transparent; color:#f0e6d0; }
+    #cr-analytics-consent .cr-status { display:block; margin-top:10px; color:#aaa18e; font-size:11px; }
+    #cr-privacy-settings { margin:8px 0 0; padding:4px 0; border:0; background:transparent; color:#c8a45a; font:600 11px/1.4 system-ui,-apple-system,sans-serif; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+    #cr-privacy-settings:focus-visible, #cr-analytics-consent button:focus-visible { outline:2px solid #f0d68b; outline-offset:3px; }
+    @media(max-width:480px) { #cr-analytics-consent { margin:8px auto 12px; padding:14px; } }
+    @media(max-width:360px) { #cr-analytics-consent .cr-analytics-actions { flex-direction:column; } #cr-analytics-consent button { width:100%; flex-basis:auto; } }
+    @media(prefers-reduced-motion:reduce) { #cr-analytics-consent *, #cr-privacy-settings { animation:none !important; transition:none !important; } }
+  `;
+  document.head.appendChild(css);
+  const panel = document.createElement('section');
+  panel.id = 'cr-analytics-consent'; panel.hidden = true; panel.setAttribute('role', 'region'); panel.setAttribute('aria-labelledby', 'cr-analytics-title');
+  panel.innerHTML = `
+    <h2 id="cr-analytics-title">Help improve The Case Room</h2>
+    <p>To verify an accusation, your selected options and a temporary case token are sent to The Case Room server. Separately, you can opt in to gameplay analytics linked to a random session ID to help improve case difficulty and clarity. We do not send notebook contents or free-text accusation notes. The case token is stored on this device for up to 24 hours. Declining analytics does not affect play.</p>
+    <div class="cr-analytics-actions"><button type="button" class="cr-accept">Accept analytics</button><button type="button" class="cr-decline">Play without analytics</button></div>
+    <span class="cr-status" id="cr-analytics-status">Optional. Change this choice anytime in Privacy &amp; analytics.</span>
+  `;
+  document.body.insertBefore(panel, document.body.firstChild);
+  const settings = document.createElement('button'); settings.type = 'button'; settings.id = 'cr-privacy-settings';
+  settings.textContent = 'Privacy & analytics'; settings.setAttribute('aria-controls', panel.id); settings.setAttribute('aria-expanded', 'false');
+  const footer = document.querySelector('.foot, footer'); if (footer) footer.appendChild(settings);
+  function setConsent(value) {
+    memoryConsent = value; safeSet('localStorage', CONSENT_KEY, value);
+    if (value === 'accepted') analyticsSession(true);
+    else safeRemove('sessionStorage', ANALYTICS_SESSION_KEY);
+    panel.hidden = true; settings.setAttribute('aria-expanded', 'false');
+    const status = document.getElementById('cr-analytics-status');
+    if (status) status.textContent = value === 'accepted'
+      ? 'Analytics enabled for this browser session. Choose “Play without analytics” to stop future events.'
+      : 'Analytics disabled. Gameplay is unchanged.';
+  }
+  panel.querySelector('.cr-accept').addEventListener('click', () => setConsent('accepted'));
+  panel.querySelector('.cr-decline').addEventListener('click', () => setConsent('declined'));
+  settings.addEventListener('click', () => {
+    const open = panel.hidden; panel.hidden = !open; settings.setAttribute('aria-expanded', String(open));
+    if (open) { panel.scrollIntoView({ behavior: 'auto', block: 'nearest' }); panel.querySelector(consent() === 'accepted' ? '.cr-accept' : '.cr-decline').focus({ preventScroll: true }); }
+  });
+  const savedConsent = consent();
+  if (savedConsent === 'accepted') { panel.hidden = true; analyticsSession(true); }
+  else if (savedConsent === 'declined') panel.hidden = true;
+  else panel.hidden = false;
+
+  window.CaseRoomSecureGame = {
+    caseId: CASE_ID, ready, accuse, reveal, refresh, resetSession,
+    getState: () => latestState,
+    getAnalyticsConsent: () => consent()
+  };
+})();
+</script>
 </body>
 </html>
