@@ -844,7 +844,8 @@
     #cr-analytics-consent p { margin:0 0 12px; color:#d0c8b7; }
     #cr-analytics-consent .cr-analytics-actions { display:flex; flex-wrap:wrap; gap:8px; }
     #cr-analytics-consent button { flex:1 1 160px; min-height:40px; padding:9px 13px; border-radius:6px; border:1px solid #75633b; cursor:pointer; font:600 12px/1.2 system-ui,-apple-system,sans-serif; }
-    #cr-analytics-consent .cr-accept { background:#c8a45a; color:#17130b; border-color:#c8a45a; }
+    #cr-analytics-consent .cr-accept { background:transparent; color:#f0e6d0; border-color:#75633b; }
+    #cr-analytics-consent .cr-decline { background:transparent; color:#f0e6d0; border-color:#75633b; }
     #cr-analytics-consent .cr-decline { background:transparent; color:#f0e6d0; }
     #cr-analytics-consent .cr-status { display:block; margin-top:10px; color:#aaa18e; font-size:11px; }
     #cr-privacy-settings { margin:8px 0 0; padding:4px 0; border:0; background:transparent; color:#c8a45a; font:600 11px/1.4 system-ui,-apple-system,sans-serif; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
@@ -856,13 +857,13 @@
   document.head.appendChild(css);
   const panel = document.createElement('section');
   panel.id = 'cr-analytics-consent'; panel.hidden = true; panel.setAttribute('role', 'region'); panel.setAttribute('aria-labelledby', 'cr-analytics-title');
-  panel.innerHTML = `
-    <h2 id="cr-analytics-title">Help improve The Case Room</h2>
-    <p>To verify an accusation, your selected options and a temporary case token are sent to The Case Room server. Separately, you can opt in to gameplay analytics linked to a random session ID to help improve case difficulty and clarity. We do not send notebook contents or free-text accusation notes. The case token is stored on this device for up to 24 hours. Declining analytics does not affect play.</p>
-    <div class="cr-analytics-actions"><button type="button" class="cr-accept">Accept analytics</button><button type="button" class="cr-decline">Play without analytics</button></div>
-    <span class="cr-status" id="cr-analytics-status">Optional. Change this choice anytime in Privacy &amp; analytics.</span>
+    panel.innerHTML = `
+    <h2 id="cr-analytics-title">Help improve future cases?</h2>
+    <p>Allow optional gameplay analytics linked to a random session ID. We never collect your notebook contents.</p>
+    <div class="cr-analytics-actions"><button type="button" class="cr-accept">Allow analytics</button><button type="button" class="cr-decline">No thanks</button></div>
+    <span class="cr-status" id="cr-analytics-status">Optional. Change your choice in Privacy &amp; analytics.</span>
   `;
-  document.body.insertBefore(panel, document.body.firstChild);
+  document.body.appendChild(panel);
   const settings = document.createElement('button'); settings.type = 'button'; settings.id = 'cr-privacy-settings';
   settings.textContent = 'Privacy & analytics'; settings.setAttribute('aria-controls', panel.id); settings.setAttribute('aria-expanded', 'false');
   const footer = document.querySelector('.foot, footer'); if (footer) footer.appendChild(settings);
