@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d0c0a"/>
+      <stop offset="100%" stop-color="#1a1710"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8a45a" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#c8a45a" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)" opacity="0.4"/>
+  <rect x="0" y="0" width="1200" height="2" fill="#c8a45a" opacity="0.6"/>
+  <rect x="0" y="628" width="1200" height="2" fill="#c8a45a" opacity="0.6"/>
+  <rect x="72" y="0" width="1" height="630" fill="#c8a45a" opacity="0.2"/>
+  <rect x="1128" y="0" width="1" height="630" fill="#c8a45a" opacity="0.2"/>
+  <circle cx="600" cy="220" r="90" fill="none" stroke="#c8a45a" stroke-width="4" opacity="0.25"/>
+  <line x1="660" y1="290" x2="700" y2="340" stroke="#c8a45a" stroke-width="5" stroke-linecap="round" opacity="0.25"/>
+  <text x="600" y="185" font-family="Georgia, serif" font-size="22" font-weight="400" letter-spacing="12" fill="#c8a45a" opacity="0.7" text-anchor="middle">THE</text>
+  <text x="600" y="380" font-family="Georgia, serif" font-size="72" font-weight="700" letter-spacing="4" fill="#f4e7c9" text-anchor="middle">The Case Room</text>
+  <rect x="200" y="400" width="800" height="1" fill="#c8a45a" opacity="0.4"/>
+  <text x="600" y="440" font-family="Georgia, serif" font-size="26" font-weight="400" letter-spacing="3" fill="#a09070" text-anchor="middle">Interactive Mystery Cases</text>
+  <text x="600" y="490" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#7a7060" text-anchor="middle">Read. Deduce. Accuse.</text>
+  <text x="100" y="580" font-family="Georgia, serif" font-size="13" fill="#c8a45a" opacity="0.4">thecaseroom.pixelandink.in</text>
+</svg>
