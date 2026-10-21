@@ -1649,9 +1649,9 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
     if (open) { panel.scrollIntoView({ behavior: 'auto', block: 'nearest' }); panel.querySelector(consent() === 'accepted' ? '.cr-accept' : '.cr-decline').focus({ preventScroll: true }); }
   });
   const savedConsent = consent();
-  if (savedConsent === 'accepted') { panel.hidden = true; analyticsSession(true); }
-  else if (savedConsent === 'declined') panel.hidden = true;
-  else panel.hidden = false;
+  // Never interrupt a first-time player with an analytics prompt. Analytics stays off unless explicitly accepted.
+  panel.hidden = true;
+  if (savedConsent === 'accepted') analyticsSession(true);
 
   window.CaseRoomSecureGame = {
     caseId: CASE_ID, ready, accuse, reveal, refresh, resetSession,
