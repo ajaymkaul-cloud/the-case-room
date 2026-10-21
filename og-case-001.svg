@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d0c0a"/>
+      <stop offset="100%" stop-color="#1a1710"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="2" fill="#c8a45a" opacity="0.6"/>
+  <rect x="0" y="628" width="1200" height="2" fill="#c8a45a" opacity="0.6"/>
+  <rect x="430" y="200" width="340" height="220" rx="4" fill="none" stroke="#c8a45a" stroke-width="2" opacity="0.18"/>
+  <line x1="430" y1="200" x2="600" y2="300" stroke="#c8a45a" stroke-width="2" opacity="0.18"/>
+  <line x1="770" y1="200" x2="600" y2="300" stroke="#c8a45a" stroke-width="2" opacity="0.18"/>
+  <text x="600" y="160" font-family="Georgia, serif" font-size="14" letter-spacing="8" fill="#c8a45a" opacity="0.6" text-anchor="middle">CASE 001</text>
+  <text x="600" y="390" font-family="Georgia, serif" font-size="56" font-weight="700" fill="#f4e7c9" text-anchor="middle">The Missing Envelope</text>
+  <rect x="200" y="410" width="800" height="1" fill="#c8a45a" opacity="0.35"/>
+  <text x="600" y="452" font-family="Georgia, serif" font-size="22" fill="#a09070" text-anchor="middle">A sealed letter. A body on the floor.</text>
+  <text x="600" y="490" font-family="Georgia, serif" font-size="18" fill="#7a7060" text-anchor="middle">What did the partners know?</text>
+  <text x="100" y="580" font-family="Georgia, serif" font-size="13" fill="#c8a45a" opacity="0.4">thecaseroom.pixelandink.in</text>
+</svg>
