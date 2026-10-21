@@ -843,6 +843,51 @@
     .share-label      { font-size: 13px; }
     .stamp-card       { font-size: 14px; }
   }
+ /* Fit Case 001 elimination tables on mobile */
+@media (max-width: 700px) {
+  .puzzle-right,
+  .elim-grids,
+  .grid-panel,
+  .grid-wrap {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .grid-wrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .elim-grid {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .elim-grid thead th:first-child {
+    width: 28%;
+  }
+
+  .elim-grid th[scope="row"] {
+    width: auto;
+  }
+
+  .elim-grid th,
+  .elim-grid td {
+    padding: 6px 2px;
+    overflow-wrap: anywhere;
+  }
+
+  .elim-grid th {
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  .grid-cell {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
 </style>
 </head>
 <body>
