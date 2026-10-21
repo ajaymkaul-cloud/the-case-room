@@ -1494,7 +1494,6 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   }
   function endpointReady() {
     return /^https:\/\/[^/]+\/functions\/v1\/case-game\/?$/.test(GAME_ENDPOINT)
-      && !GAME_ENDPOINT.includes('hqibmotqlomwjlmpnchb')
       && SUPABASE_PUBLISHABLE_KEY.trim().length > 0
       && !SUPABASE_PUBLISHABLE_KEY.startsWith('YOUR_');
   }
@@ -1604,9 +1603,9 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   const css = document.createElement('style');
   css.textContent = `
     #cr-analytics-consent[hidden], #cr-game-server-warning[hidden] { display:none !important; }
-    #cr-analytics-consent { position:relative; z-index:2; margin:12px auto 16px; width:min(600px,calc(100% - 24px)); box-sizing:border-box; padding:18px; border:1px solid rgba(200,164,90,.72); border-radius:12px; background:#171611; color:#f0e6d0; box-shadow:0 16px 48px rgba(0,0,0,.4); font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    #cr-analytics-consent { position:relative; z-index:2; margin:12px auto 16px; width:min(420px,calc(100% - 24px)); box-sizing:border-box; padding:12px; border:1px solid rgba(200,164,90,.72); border-radius:12px; background:#171611; color:#f0e6d0; box-shadow:0 16px 48px rgba(0,0,0,.4); font:12px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     #cr-analytics-consent * { box-sizing:border-box; }
-    #cr-analytics-consent h2 { margin:0 0 6px; color:#f4e7c9; font:600 17px/1.3 Georgia,serif; }
+    #cr-analytics-consent h2 { margin:0 0 6px; color:#f4e7c9; font:600 13px/1.3 Georgia,serif; }
     #cr-analytics-consent p { margin:0 0 12px; color:#d0c8b7; }
     #cr-analytics-consent .cr-analytics-actions { display:flex; flex-wrap:wrap; gap:8px; }
     #cr-analytics-consent button { flex:1 1 160px; min-height:40px; padding:9px 13px; border-radius:6px; border:1px solid #75633b; cursor:pointer; font:600 12px/1.2 system-ui,-apple-system,sans-serif; }
