@@ -1307,8 +1307,11 @@ notesInput.addEventListener('input', () => {
 // &#9472;&#9472; ACCUSATION LOGIC &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
 const MAX_TRIES = 2;
 let CASE_STARTED_AT = Date.now();
+let CASE_COMPLETED_AT = null;   // server-clock time the case closed; null while playing or if unknown
+let completedTimeUnknown = false;
 let triesUsed = 0;
 let caseOver  = false;
+let accusationInFlight = false;
 
 const pips = [document.getElementById('pip-1'), document.getElementById('pip-2')];
 
@@ -1340,8 +1343,15 @@ function updateCaseStatus(state) {
   footerNumber.textContent = next.footer;
 }
 
+function serverClockNow() {
+  const secure = window.CaseRoomSecureGame;
+  return secure && typeof secure.serverNow === 'function' ? secure.serverNow() : Date.now();
+}
+
 function formatElapsedTime() {
-  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - CASE_STARTED_AT) / 1000));
+  if (completedTimeUnknown) return null;
+  const end = CASE_COMPLETED_AT !== null ? CASE_COMPLETED_AT : serverClockNow();
+  const elapsedSeconds = Math.max(0, Math.floor((end - CASE_STARTED_AT) / 1000));
   const minutes = Math.floor(elapsedSeconds / 60);
   const seconds = elapsedSeconds % 60;
   return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
@@ -1358,10 +1368,11 @@ function showStamp(solved) {
   const outcome = solved
     ? `🔎 Solved in ${triesUsed} ${triesUsed === 1 ? 'accusation' : 'accusations'}`
     : '🧊 Case went cold';
+  const elapsed = formatElapsedTime();
   copyNode.textContent =
     `🕵️ The Case Room · Case #001\n` +
     `The Missing Envelope\n\n` +
-    `⏱️ Time: ${formatElapsedTime()}\n` +
+    (elapsed ? `⏱️ Time: ${elapsed}\n` : '') +
     `${attemptPattern}\n` +
     `${outcome}\n\n` +
     `Can you spot the contradiction?\n` +
@@ -1429,7 +1440,7 @@ function showWrongStamp() {
 }
 
 async function makeAccusation() {
-  if (caseOver) return;
+  if (caseOver || accusationInFlight) return;
   const who = whoSel.value, how = howSel.value, where = whereSel.value;
   if (!who || !how || !where) {
     const missing = []; if (!who) missing.push(whoSel); if (!how) missing.push(howSel); if (!where) missing.push(whereSel);
@@ -1443,6 +1454,8 @@ async function makeAccusation() {
     hint.textContent = 'Select a suspect, method, and location before filing your accusation.';
     setTimeout(() => { if (hint) hint.textContent = ''; }, 3500); return;
   }
+  accusationInFlight = true;
+  const attemptsBefore = triesUsed;
   const hint = document.getElementById('accuse-hint'); if (hint) hint.textContent = '';
   const button = document.getElementById('accuse-btn'); button.disabled = true;
   const verdict = document.getElementById('verdict');
@@ -1457,31 +1470,50 @@ async function makeAccusation() {
     triesUsed = Number(result.attempts) || 0;
     const terminal = result.status === 'solved' || result.status === 'failed';
     caseOver = terminal;
+    if (terminal) { CASE_COMPLETED_AT = serverClockNow(); completedTimeUnknown = false; }
     pips.forEach((pip, i) => { pip.className = 'pip' + (i < triesUsed ? ' used' : ''); });
     if (result.status === 'solved') {
       lockForm(); verdict.className = 'correct'; headline.textContent = 'Case closed.';
       body.textContent = 'Your deduction has been verified. Loading the closed case file…';
       updateCaseStatus('solved'); showStamp(true);
-      const reveal = await secure.reveal(); body.textContent = reveal.solution;
+      try { const reveal = await secure.reveal(); body.textContent = reveal.solution; }
+      catch (_) { body.textContent = 'Your accusation is confirmed. Reconnect to load the closed case file.'; }
     } else if (result.status === 'failed') {
       lockForm(); verdict.className = 'cold'; headline.textContent = 'The case goes cold.';
       body.textContent = 'Both attempts exhausted. Loading the closed case file…'; updateCaseStatus('closed'); showStamp(false);
-      const reveal = await secure.reveal(); body.textContent = 'Both attempts exhausted. ' + reveal.solution;
+      try { const reveal = await secure.reveal(); body.textContent = 'Both attempts exhausted. ' + reveal.solution; }
+      catch (_) { body.textContent = 'Both attempts exhausted. Reconnect to load the closed case file.'; }
     } else {
       verdict.className = 'wrong'; headline.textContent = 'Not quite.';
       body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining — review the evidence and your notes.';
       updateCaseStatus('retry'); showWrongStamp();
     }
   } catch (error) {
-    try {
-      const state = await window.CaseRoomSecureGame?.refresh();
-      if (state) { await applySecureState(state); }
-    } catch (_) {}
+    // The result is uncertain. Keep the button locked until the server confirms the case status.
+    verdict.style.display = 'block'; verdict.className = 'wrong'; headline.textContent = 'Accusation not confirmed.';
+    body.textContent = 'Checking the case status with the server before you can try again…';
+    const secure = window.CaseRoomSecureGame;
+    let state = null;
+    if (secure && typeof secure.recoverStatus === 'function') {
+      state = await secure.recoverStatus(() => {
+        if (!caseOver) body.textContent = 'Still checking the case status. This retries automatically, and straight away when your connection comes back.';
+      });
+    }
     if (!caseOver) {
-      verdict.style.display = 'block'; verdict.className = 'wrong'; headline.textContent = 'Accusation not confirmed.';
-      body.textContent = 'The secure case server could not confirm the result. Check your connection and retry only after the case status refreshes.';
+      verdict.style.display = 'block'; verdict.className = 'wrong';
+      if (state && Number(state.attempts) > attemptsBefore) {
+        // The accusation reached the server but the reply was lost. A still-open case means it was not correct.
+        headline.textContent = 'Not quite.';
+        body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining — review the evidence and your notes.';
+      } else {
+        headline.textContent = 'Accusation not confirmed.';
+        body.textContent = (error && (error.status === 400 || error.status === 429) && error.message)
+          ? error.message + ' Your accusation was not counted.'
+          : 'Your accusation was not counted. You can file it again.';
+      }
     }
   } finally {
+    accusationInFlight = false;
     if (!caseOver) button.disabled = false;
     verdict.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
     verdict.focus({ preventScroll: true });
@@ -1492,8 +1524,14 @@ async function applySecureState(state) {
   if (!state) return;
   triesUsed = Number(state.attempts) || 0;
   if (state.started_at && Number.isFinite(Date.parse(state.started_at))) CASE_STARTED_AT = Date.parse(state.started_at);
+  const terminal = state.status === 'solved' || state.status === 'failed';
+  if (terminal && CASE_COMPLETED_AT === null) {
+    // Restored case: use the server's own close time. Older servers do not send it, so leave the time off the share card.
+    if (state.completed_at && Number.isFinite(Date.parse(state.completed_at))) { CASE_COMPLETED_AT = Date.parse(state.completed_at); completedTimeUnknown = false; }
+    else completedTimeUnknown = true;
+  }
   pips.forEach((pip, i) => { pip.className = 'pip' + (i < triesUsed ? ' used' : ''); });
-  caseOver = state.status === 'solved' || state.status === 'failed';
+  caseOver = terminal;
   if (state.status === 'solved') {
     lockForm(); updateCaseStatus('solved'); showStamp(true);
     document.getElementById('verdict').style.display = 'block'; document.getElementById('verdict').className = 'correct';
@@ -1571,19 +1609,58 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_PUBLISHABLE_KEY },
       body: JSON.stringify(payload)
     });
-    let data = {};
+    let data = null;
     try { data = await response.json(); } catch (_) {}
     if (!response.ok) {
-      const error = new Error(typeof data.error === 'string' ? data.error : `Secure case request failed (${response.status}).`);
+      const error = new Error(data && typeof data.error === 'string' ? data.error : `Secure case request failed (${response.status}).`);
       error.status = response.status; throw error;
     }
     return data;
   }
+
+  // Reliability fix: validate every server reply before the page acts on it.
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const STATUSES = ['playing', 'solved', 'failed'];
+  const MAX_ATTEMPTS = CASE_ID === '001' ? 2 : null;
+  let serverOffsetMs = 0;
+  function badResponse(what) {
+    const error = new Error(`The secure case server sent an unexpected ${what}.`);
+    error.code = 'bad_response'; return error;
+  }
+  function isObject(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
+  function validAttempts(n) { return Number.isInteger(n) && n >= 0 && (MAX_ATTEMPTS === null || n <= MAX_ATTEMPTS); }
+  function validTime(value) { return value === undefined || value === null || (typeof value === 'string' && Number.isFinite(Date.parse(value))); }
+  function consistent(status, attempts) {
+    if (status === 'solved') return attempts >= 1;
+    if (status === 'failed') return MAX_ATTEMPTS !== null && attempts === MAX_ATTEMPTS;
+    return MAX_ATTEMPTS === null || attempts < MAX_ATTEMPTS;
+  }
+  function checkSession(data) {
+    if (!isObject(data) || typeof data.session_id !== 'string' || !UUID_RE.test(data.session_id)) throw badResponse('session');
+    if (data.case_id !== undefined && data.case_id !== CASE_ID) throw badResponse('session');
+    if (!STATUSES.includes(data.status) || !validAttempts(data.attempts) || !consistent(data.status, data.attempts)) throw badResponse('session');
+    if (!validTime(data.started_at) || !validTime(data.completed_at) || !validTime(data.server_now)) throw badResponse('session');
+    if (typeof data.server_now === 'string') serverOffsetMs = Date.parse(data.server_now) - Date.now();
+    return data;
+  }
+  function checkVerdict(data) {
+    if (!isObject(data) || typeof data.correct !== 'boolean' || !STATUSES.includes(data.status)) throw badResponse('verdict');
+    if (!validAttempts(data.attempts) || data.attempts < 1 || !consistent(data.status, data.attempts)) throw badResponse('verdict');
+    if (data.correct !== (data.status === 'solved')) throw badResponse('verdict');
+    return data;
+  }
+  function checkReveal(data) {
+    if (!isObject(data) || typeof data.solution !== 'string' || !data.solution.trim()) throw badResponse('solution');
+    return data;
+  }
+  function serverNow() { return Date.now() + serverOffsetMs; }
+
+  // Reliability fix: the browser type is only sent when analytics is accepted.
   function trackingFields() {
-    const enabled = consent() === 'accepted';
+    if (consent() !== 'accepted') return { analytics_opt_in: false, analytics_session_id: null };
     return {
-      analytics_opt_in: enabled,
-      analytics_session_id: enabled ? analyticsSession(true) : null,
+      analytics_opt_in: true,
+      analytics_session_id: analyticsSession(true),
       user_agent_class: window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop'
     };
   }
@@ -1598,13 +1675,13 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
     try {
       data = await request(payload);
     } catch (error) {
-      if (sessionId && error.status === 410) {
+      if (sessionId && (error.status === 410 || error.status === 404)) {
         safeRemove('localStorage', GAME_SESSION_KEY);
         return startSession(true);
       }
       throw error;
     }
-    if (!data || !data.session_id) throw new Error('The secure case server returned an invalid session.');
+    checkSession(data);
     safeSet('localStorage', GAME_SESSION_KEY, data.session_id);
     latestState = data;
     serverMessage('');
@@ -1624,32 +1701,68 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
     if (!state) throw new Error('Could not connect to the secure case server. Please retry.');
     return state;
   }
-  async function accuse(options) {
-    const state = await needSession();
-    const result = await request({
-      action: 'accuse', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
-      ...options, ...trackingFields()
-    });
-    latestState = { ...state, ...result };
-    return result;
+
+  // Reliability fix: only one accusation can be on its way to the server at a time.
+  let accuseInFlight = null;
+  function accuse(options) {
+    if (accuseInFlight) return accuseInFlight;
+    accuseInFlight = (async () => {
+      const state = await needSession();
+      const result = checkVerdict(await request({
+        action: 'accuse', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+        ...options, ...trackingFields()
+      }));
+      latestState = { ...state, ...result };
+      if (result.status !== 'playing' && !latestState.completed_at) latestState.completed_at = new Date(serverNow()).toISOString();
+      return result;
+    })();
+    accuseInFlight.then(() => { accuseInFlight = null; }, () => { accuseInFlight = null; });
+    return accuseInFlight;
   }
   async function reveal() {
     const state = await needSession();
-    const result = await request({
+    return checkReveal(await request({
       action: 'reveal', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
       ...trackingFields()
-    });
-    return result;
+    }));
   }
   async function refresh() {
     const state = await needSession();
-    const result = await request({
-      action: 'start', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
-      ...trackingFields()
-    });
+    let result;
+    try {
+      result = checkSession(await request({
+        action: 'start', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+        ...trackingFields()
+      }));
+    } catch (error) {
+      // An expired or unknown token cannot be refreshed; start a new guest session, as a page reload would.
+      if (error.status === 410 || error.status === 404) return startSession(true);
+      throw error;
+    }
     latestState = result;
     window.dispatchEvent(new CustomEvent('case-room-secure-ready', { detail: result }));
     return result;
+  }
+  // Reliability fix: after an uncertain result, keep asking the server for the case status
+  // (backing off up to 30 seconds, and immediately when the connection returns) until it answers.
+  function waitForRetry(ms) {
+    return new Promise(resolve => {
+      let timer = null;
+      const done = () => { clearTimeout(timer); window.removeEventListener('online', done); resolve(); };
+      timer = setTimeout(done, ms);
+      window.addEventListener('online', done);
+    });
+  }
+  async function recoverStatus(onRetry) {
+    let delay = 2000;
+    for (;;) {
+      try { return await refresh(); }
+      catch (error) {
+        if (typeof onRetry === 'function') { try { onRetry(error); } catch (_) {} }
+        await waitForRetry(delay);
+        delay = Math.min(delay * 2, 30000);
+      }
+    }
   }
   async function resetSession() {
     const state = await startSession(true);
@@ -1710,7 +1823,8 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   else panel.hidden = false;
 
   window.CaseRoomSecureGame = {
-    caseId: CASE_ID, ready, accuse, reveal, refresh, resetSession,
+    caseId: CASE_ID, ready, accuse, reveal, refresh, recoverStatus, resetSession, serverNow,
+    isAccusing: () => Boolean(accuseInFlight),
     getState: () => latestState,
     getAnalyticsConsent: () => consent()
   };
