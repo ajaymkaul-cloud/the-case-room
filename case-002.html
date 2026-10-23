@@ -274,13 +274,13 @@
     <div class="bar-center">The Last Shot</div>
     <div class="bar-right">
       <span class="bar-location">Mumbai · Film Set</span>
-      <span class="bar-stamp" id="case-stamp">Open</span>
+      <span class="bar-stamp" id="case-stamp">Checking</span>
     </div>
   </header>
 
   <section class="case-header">
     <div class="case-header-text">
-      <div class="case-number" id="case-number">Case 002 · Open Investigation</div>
+      <div class="case-number" id="case-number">Case 002 · Checking case status…</div>
       <h1 class="case-title">The Last Shot</h1>
       <div class="case-title-rule"><span>Mumbai · Film Set · 2026</span></div>
       <p class="case-setting">5:47 AM, Film City, Mumbai. Lead actor Veer Kapoor is found unconscious in his trailer minutes before the final shot of <em>Raat Ka Darwaza</em>. He survives but the shoot is suspended. Investigators determine his morning energy drink contained a sedative. The bottle came through the production’s catering service. Someone on the crew switched it before it reached him.</p>
@@ -293,7 +293,7 @@
       <div class="dossier-row"><span class="dossier-key">Incident</span><span class="dossier-val">Deliberate incapacitation</span></div>
       <div class="dossier-row"><span class="dossier-key">Window</span><span class="dossier-val">04:38–05:30 hrs</span></div>
       <div class="dossier-row"><span class="dossier-key">Persons of interest</span><span class="dossier-val">4 suspects</span></div>
-      <div class="dossier-stamp" id="case-stamp-2">Open</div>
+      <div class="dossier-stamp" id="case-stamp-2">Checking</div>
     </aside>
   </section>
 
@@ -340,7 +340,7 @@
           <div class="exhibit-checkboxes" id="exhibit-checkboxes"></div>
         </div>
         <p class="accuse-note" id="accuse-note" aria-live="polite">Select two exhibits that directly support your accusation.</p>
-        <button class="accuse-btn" id="accuse-btn" type="button"><span>File Accusation</span></button>
+        <button class="accuse-btn" id="accuse-btn" type="button" disabled><span>File Accusation</span></button>
         <div id="verdict" tabindex="-1" role="status" aria-live="polite" aria-atomic="true">
           <div class="verdict-headline" id="verdict-headline"></div>
           <div class="verdict-body" id="verdict-body"></div>
@@ -561,7 +561,7 @@
 
     let accusationInFlight = false;
     async function submitAccusation() {
-      if (isCaseOver() || accusationInFlight) return;
+      if (isCaseOver() || accusationInFlight || !statusConfirmed) return;
       const suspectSelect = $('sel-suspect'); const suspect = suspectSelect.value; const selected = [...checkedExhibits];
       let valid = true;
       if (!suspect) { suspectSelect.classList.add('error'); valid = false; }
@@ -579,6 +579,7 @@
         const result = await secure.accuse({ suspect, exhibits: selected });
         attempts = Number(result.attempts) || 0;
         caseStatus = result.status === 'solved' ? 'solved' : 'investigating';
+        if (!statusConfirmed) { statusConfirmed = true; if (result.status !== 'solved') updateStatus('Open'); }
         if (result.status === 'solved') {
           lastFeedback = null; renderOutcome(); saveState();
         } else {
@@ -611,7 +612,7 @@
         }
       } finally {
         accusationInFlight = false;
-        if (!isCaseOver()) button.disabled = false;
+        if (!isCaseOver() && statusConfirmed) button.disabled = false;
         $('verdict').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
         $('verdict').focus({ preventScroll: true });
       }
@@ -631,10 +632,12 @@
 
     function applySecureState(state) {
       if (!state) return;
+      statusConfirmed = true;
       attempts = Number(state.attempts) || 0;
       caseStatus = state.status === 'solved' ? 'solved' : 'investigating';
       if (caseStatus === 'solved') lastFeedback = null;
       renderOutcome();
+      if (caseStatus !== 'solved' && !accusationInFlight) $('accuse-btn').disabled = false;
     }
     window.addEventListener('case-room-secure-ready', event => { applySecureState(event.detail); });
 
@@ -678,7 +681,8 @@
     function renderOutcome() {
       const verdict = $('verdict');
       if (caseStatus !== 'solved') {
-        updateStatus('Open'); $('share-block').classList.remove('visible'); $('verdict-reveal').classList.remove('show');
+        if (statusConfirmed) updateStatus('Open');
+        $('share-block').classList.remove('visible'); $('verdict-reveal').classList.remove('show');
         if (lastFeedback) {
           verdict.style.display = 'block'; verdict.className = 'wrong'; $('verdict-headline').textContent = lastFeedback.headline; $('verdict-body').textContent = lastFeedback.body;
         } else { verdict.style.display = 'none'; }
@@ -698,14 +702,14 @@
       if (!window.confirm('Clear your notes and start a new case session?')) return;
       try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(LEGACY_STORAGE_KEY); } catch (_) {}
       nbState = {}; caseStatus = 'investigating'; checkedExhibits = new Set(); attempts = 0; completedAt = null; lastFeedback = null;
-      $('sel-suspect').value = ''; $('sel-suspect').disabled = false; $('sel-suspect').classList.remove('error'); $('accuse-btn').disabled = false;
+      $('sel-suspect').value = ''; $('sel-suspect').disabled = false; $('sel-suspect').classList.remove('error'); $('accuse-btn').disabled = true; statusConfirmed = false;
       $('verdict').style.display = 'none'; $('verdict').className = ''; $('verdict-headline').textContent = ''; $('verdict-body').textContent = '';
       $('verdict-reveal').classList.remove('show'); $('reveal-btn').hidden = false; $('reveal-text').classList.remove('show'); $('reveal-text').textContent = '';
       $('stamp-card').textContent = ''; $('share-block').classList.remove('visible'); $('share-confirm').classList.remove('show'); $('share-confirm').textContent = 'Copied — ready to share';
       $('share-block').querySelectorAll('textarea').forEach(el => el.remove());
-      renderExhibits(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); updateStatus('Open'); saveState();
+      renderExhibits(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); showStatusChecking(); saveState();
       try { const state = await window.CaseRoomSecureGame.resetSession(); applySecureState(state); }
-      catch (_) { $('verdict').style.display = 'block'; $('verdict-headline').textContent = 'Could not start a new secure session.'; $('verdict-body').textContent = 'Reconnect to the case server and reload this page.'; }
+      catch (_) { showStatusUnconfirmed(); $('verdict').style.display = 'block'; $('verdict-headline').textContent = 'Could not start a new secure session.'; $('verdict-body').textContent = 'Reconnect to the case server and reload this page.'; }
     }
 
     $('accuse-btn').addEventListener('click', submitAccusation);
@@ -713,6 +717,34 @@
     $('restart-btn').addEventListener('click', resetCase);
     $('copy-btn').addEventListener('click', copyStamp);
     $('sel-suspect').addEventListener('change', () => { $('sel-suspect').classList.remove('error'); saveState(); });
+
+    // Until the server confirms the saved session, the header shows a neutral "Checking" state (set in the HTML).
+    // If the load check fails or takes too long, say the status is not confirmed rather than implying "Open".
+    let statusConfirmed = false;
+    function showStatusUnconfirmed() {
+      if (statusConfirmed) return;
+      ['case-stamp', 'case-stamp-2'].forEach(id => { $(id).textContent = 'Unconfirmed'; $(id).classList.remove('solved'); });
+      $('case-number').textContent = 'Case 002 · Case status not confirmed';
+    }
+    // Neutral state while a new session (Start over) is being confirmed; same 10-second fallback as on load.
+    let unconfirmedTimer = null;
+    function startStatusTimeout() { clearTimeout(unconfirmedTimer); unconfirmedTimer = setTimeout(showStatusUnconfirmed, 10000); }
+    function showStatusChecking() {
+      ['case-stamp', 'case-stamp-2'].forEach(id => { $(id).textContent = 'Checking'; $(id).classList.remove('solved'); });
+      $('case-number').textContent = 'Case 002 · Checking case status…';
+      startStatusTimeout();
+    }
+    startStatusTimeout();
+    document.addEventListener('DOMContentLoaded', () => {
+      const secure = window.CaseRoomSecureGame;
+      if (!secure || !secure.ready) { showStatusUnconfirmed(); return; }
+      // If the first status check fails, keep retrying in the background; a valid reply re-enables play.
+      Promise.resolve(secure.ready).then(state => {
+        if (state) return;
+        showStatusUnconfirmed();
+        if (typeof secure.recoverStatus === 'function') return secure.recoverStatus();
+      }).catch(() => { showStatusUnconfirmed(); });
+    });
 
     loadState();
     renderExhibits(); renderStatements(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); renderOutcome();

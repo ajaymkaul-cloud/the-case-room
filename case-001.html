@@ -532,8 +532,9 @@
     transition: transform 0.3s ease;
     z-index: 0;
   }
-  .accuse-btn:hover { color: var(--bg); border-color: var(--gold); }
-  .accuse-btn:hover::before { transform: translateX(0); }
+  .accuse-btn:hover:not(:disabled) { color: var(--bg); border-color: var(--gold); }
+  .accuse-btn:hover:not(:disabled)::before { transform: translateX(0); }
+  .accuse-btn:disabled { opacity: .4; cursor: not-allowed; }
   .accuse-btn span { position: relative; z-index: 1; }
 
   /* TRIES */
@@ -901,14 +902,14 @@
   <div class="bar-center">The Missing Envelope</div>
   <div class="bar-right">
     <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Bengaluru · Law Firm</span>
-    <span class="bar-stamp" id="case-stamp">Open</span>
+    <span class="bar-stamp" id="case-stamp">Checking</span>
   </div>
 </div>
 
 <!-- CASE HEADER -->
 <div class="case-header">
   <div class="case-header-text">
-    <div class="case-number" id="case-number">Case 001 · Open Investigation</div>
+    <div class="case-number" id="case-number">Case 001 · Checking case status…</div>
     <h1 class="case-title" id="case-title">The Missing Envelope</h1>
     <div class="case-title-rule"><span>Bengaluru · Law Firm · 2026</span></div>
     <p class="case-setting" id="case-setting"></p>
@@ -936,7 +937,7 @@
       <span class="dossier-key">Persons of interest</span>
       <span class="dossier-val">3 suspects</span>
     </div>
-    <div class="dossier-stamp" id="dossier-stamp" data-state="open">Open</div>
+    <div class="dossier-stamp" id="dossier-stamp" data-state="checking">Checking</div>
   </div>
 </div>
 
@@ -1022,7 +1023,7 @@
           <option value="">— Select location —</option>
         </select>
       </div>
-      <button class="accuse-btn" id="accuse-btn" type="button">
+      <button class="accuse-btn" id="accuse-btn" type="button" disabled>
         <span>Make Your Accusation</span>
       </button>
     </div>
@@ -1343,6 +1344,26 @@ function updateCaseStatus(state) {
   footerNumber.textContent = next.footer;
 }
 
+// Until the server confirms the saved session, the header shows a neutral "Checking" state (set in the HTML).
+// If the load check fails or takes too long, say the status is not confirmed rather than implying "Open".
+let statusConfirmed = false;
+function showStatusUnconfirmed() {
+  if (statusConfirmed) return;
+  ['case-stamp', 'dossier-stamp'].forEach(id => { const el = document.getElementById(id); el.textContent = 'Unconfirmed'; el.dataset.state = 'checking'; });
+  document.getElementById('case-number').textContent = 'Case 001 · Case status not confirmed';
+}
+setTimeout(showStatusUnconfirmed, 10000);
+document.addEventListener('DOMContentLoaded', () => {
+  const secure = window.CaseRoomSecureGame;
+  if (!secure || !secure.ready) { showStatusUnconfirmed(); return; }
+  // If the first status check fails, keep retrying in the background; a valid reply re-enables play.
+  Promise.resolve(secure.ready).then(state => {
+    if (state) return;
+    showStatusUnconfirmed();
+    if (typeof secure.recoverStatus === 'function') return secure.recoverStatus();
+  }).catch(() => { showStatusUnconfirmed(); });
+});
+
 function serverClockNow() {
   const secure = window.CaseRoomSecureGame;
   return secure && typeof secure.serverNow === 'function' ? secure.serverNow() : Date.now();
@@ -1440,7 +1461,7 @@ function showWrongStamp() {
 }
 
 async function makeAccusation() {
-  if (caseOver || accusationInFlight) return;
+  if (caseOver || accusationInFlight || !statusConfirmed) return;
   const who = whoSel.value, how = howSel.value, where = whereSel.value;
   if (!who || !how || !where) {
     const missing = []; if (!who) missing.push(whoSel); if (!how) missing.push(howSel); if (!where) missing.push(whereSel);
@@ -1467,6 +1488,7 @@ async function makeAccusation() {
     if (!secure) throw new Error('Secure case validation is not available.');
     await secure.ready;
     const result = await secure.accuse({ suspect: who, method: how, location: where });
+    statusConfirmed = true;
     triesUsed = Number(result.attempts) || 0;
     const terminal = result.status === 'solved' || result.status === 'failed';
     caseOver = terminal;
@@ -1514,7 +1536,7 @@ async function makeAccusation() {
     }
   } finally {
     accusationInFlight = false;
-    if (!caseOver) button.disabled = false;
+    if (!caseOver && statusConfirmed) button.disabled = false;
     verdict.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
     verdict.focus({ preventScroll: true });
   }
@@ -1522,6 +1544,7 @@ async function makeAccusation() {
 
 async function applySecureState(state) {
   if (!state) return;
+  statusConfirmed = true;
   triesUsed = Number(state.attempts) || 0;
   if (state.started_at && Number.isFinite(Date.parse(state.started_at))) CASE_STARTED_AT = Date.parse(state.started_at);
   const terminal = state.status === 'solved' || state.status === 'failed';
@@ -1546,6 +1569,7 @@ async function applySecureState(state) {
     catch (_) { document.getElementById('verdict-body').textContent = 'Both attempts exhausted. Reconnect to load the closed case file.'; }
   } else {
     updateCaseStatus(triesUsed > 0 ? 'retry' : 'open');
+    if (!accusationInFlight) document.getElementById('accuse-btn').disabled = false;
   }
 }
 window.addEventListener('case-room-secure-ready', event => { applySecureState(event.detail).catch(() => {}); });
