@@ -49,12 +49,56 @@
     .bar-stamp.solved { color: var(--gold); border-color: var(--gold); }
 
     .case-header { padding: 26px 0 18px; border-bottom: 1px solid var(--fg-low); }
+    .case-header-text { min-width: 0; }
+    /* Case file card: same look as Cases 001/002. Phone: one line under the intro that opens the card. Laptop: always open beside the title. */
+    .case-dossier { position: relative; margin-top: 16px; border: 1px solid var(--fg-low); background: rgba(17,14,10,.6); }
+    .case-dossier::before { content: ''; position: absolute; inset: 4px; border: 1px solid var(--gold-dim); opacity: .3; pointer-events: none; }
+    .dossier-toggle { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 0 18px;
+      background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+    .dossier-toggle:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+    .dossier-peek { flex: 1; font-size: 14px; color: var(--fg); letter-spacing: .05em; }
+    .dossier-chev { width: 8px; height: 8px; border-right: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(45deg) translateY(-2px); transition: transform .2s; }
+    .dossier-toggle[aria-expanded="true"] .dossier-chev { transform: rotate(-135deg) translateY(-2px); }
+    .dossier-label-wide { display: none; }
+    .dossier-body { display: none; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; padding: 2px 18px 16px; }
+    .case-dossier.open .dossier-body { display: grid; }
+    .dossier-label { font-size: 12px; letter-spacing: .3em; color: var(--fg-mid); text-transform: uppercase; }
+    .dossier-row { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .dossier-key { font-size: 12px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
+    .dossier-val { font-size: 15px; color: var(--fg); letter-spacing: .03em; line-height: 1.45; overflow-wrap: anywhere; }
+    .dossier-divider { grid-column: 1 / -1; height: 1px; background: var(--fg-low); }
+    .dossier-file { display: none; }
+    .dossier-wide { grid-column: 1 / -1; }
+    .dossier-body > * { order: 4; }
+    .dossier-body > .dossier-artist { order: 1; }
+    .dossier-body > .dossier-row:nth-child(2) { order: 0; }
+    .dossier-body > .dossier-divider { order: 2; }
+    .dossier-body > .dossier-stamp { order: 9; }
+    .dossier-stamp { justify-self: start; align-self: end; font-size: 12px; letter-spacing: .16em; color: var(--red); text-transform: uppercase;
+      border: 1px solid var(--red-dim); padding: 4px 10px; transform: rotate(-3deg); white-space: nowrap; }
+    .dossier-stamp.solved { color: var(--gold); border-color: var(--gold); }
+    body:not([data-tab="trail"]) .case-header .case-dossier { display: none; }
+    @media (min-width: 900px) {
+      .case-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: start; }
+      .case-dossier { margin-top: 0; width: 260px; padding: 22px 24px; }
+      .dossier-toggle { display: none; }
+      .dossier-label-wide { display: block; margin-bottom: 16px; }
+      .dossier-file { display: flex; }
+      .dossier-body, .case-dossier.open .dossier-body { display: block; padding: 0; }
+      .dossier-row { margin-bottom: 14px; }
+      .dossier-divider { margin: 4px 0 16px; }
+      .dossier-stamp { display: inline-block; margin-top: 10px; }
+    }
     .case-number { font-size: 12px; letter-spacing: .22em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
     .case-title { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: clamp(32px, 9vw, 52px); line-height: 1.05; margin-bottom: 12px; }
     .opening { font-size: 17px; line-height: 1.5; }
     .opening span { display: block; }
     .start-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; margin-top: 16px; padding: 0 22px; background: var(--gold); color: var(--bg); font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; }
     .start-link:hover { filter: brightness(1.08); }
+    .wait-note { margin-top: 8px; font-size: 14px; color: var(--ink-mid); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+    .retry-btn { min-height: 44px; padding: 0 18px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
+    .retry-btn:disabled { opacity: .55; cursor: default; }
+    .retry-btn:focus-visible { outline: 2px solid var(--terra); outline-offset: 3px; }
     .start-link:focus-visible, .howto-btn:focus-visible, .map-tip button:focus-visible, .howto-close:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
     .title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0 12px; margin-bottom: 12px; }
     .title-row .case-number { order: 1; flex: 1 1 0; min-width: 0; margin-bottom: 0; }
@@ -476,6 +520,18 @@
     .ticket .stamp-card { background: none; border: 0; padding: 0; margin: 0; color: var(--ink); font-size: 13px; line-height: 1.5; text-align: left; }
     .drop-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
     .finds-drop .share-confirm { color: var(--terra); margin: 0; }
+    /* After the drop: point somewhere next instead of ending abruptly */
+    .up-next { width: 100%; max-width: 420px; margin-top: 6px; padding-top: 16px; border-top: 1px dashed #b3a68d; display: grid; gap: 10px; text-align: left; }
+    .up-next-title { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 20px; color: var(--ink); text-align: center; }
+    .next-case { display: grid; gap: 2px; min-height: 48px; padding: 12px 40px 12px 14px; background: #fffaf0; border: 1px solid #c9b894; color: var(--ink); text-decoration: none; position: relative; transition: transform .15s, box-shadow .15s; }
+    .next-case::after { content: ''; position: absolute; right: 16px; top: 50%; width: 8px; height: 8px; border-top: 2px solid var(--terra); border-right: 2px solid var(--terra); transform: translateY(-50%) rotate(45deg); }
+    .next-case:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+    .next-case:focus-visible { outline: 2px solid var(--terra); outline-offset: 3px; }
+    .nc-num { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--terra); }
+    .nc-title { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 18px; line-height: 1.2; }
+    .nc-meta { font-size: 14px; color: #5a4e3c; }
+    .up-next .all-cases { justify-self: center; display: inline-flex; align-items: center; }
+    @media (prefers-reduced-motion: reduce) { .next-case { transition: none; } .next-case:hover { transform: none; } }
     @media (min-width: 640px) {
       .tray { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
       .slot, .slot.found { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
@@ -540,6 +596,7 @@
 
   <div class="wrap">
     <section class="case-header">
+      <div class="case-header-text">
       <div class="title-row">
         <div class="case-number" id="case-number">Case 003 · Checking case status…</div>
         <h1 class="case-title">The Hidden Drop</h1>
@@ -547,6 +604,20 @@
       </div>
       <p class="opening"><span>Kaavla hid something in Kesari Peth.</span><span>Four clues. One drop.</span></p>
       <a class="start-link" href="#stage-1" id="start-link">Start here <span aria-hidden="true">&#8595;</span></a>
+      </div>
+      <aside class="case-dossier" aria-label="Case file">
+        <button class="dossier-toggle" id="dossier-toggle" type="button" aria-expanded="false" aria-controls="dossier-body"><span class="dossier-label">Case File</span><span class="dossier-peek">CR-003-2026</span><span class="dossier-chev" aria-hidden="true"></span></button>
+        <div class="dossier-label dossier-label-wide" aria-hidden="true">Case File</div>
+        <div class="dossier-body" id="dossier-body">
+        <div class="dossier-row dossier-file"><span class="dossier-key">File No.</span><span class="dossier-val">CR-003-2026</span></div>
+        <div class="dossier-row"><span class="dossier-key">Location</span><span class="dossier-val">Kesari Peth<br>Pune</span></div>
+        <div class="dossier-divider"></div>
+        <div class="dossier-row dossier-wide"><span class="dossier-key">Incident</span><span class="dossier-val">Hidden street drop</span></div>
+        <div class="dossier-row dossier-artist"><span class="dossier-key">Artist</span><span class="dossier-val">Kaavla</span></div>
+        <div class="dossier-row dossier-wide dossier-trail"><span class="dossier-key">Trail</span><span class="dossier-val">3 pieces, 1 door</span></div>
+        <div class="dossier-stamp" id="case-stamp-2">Checking</div>
+        </div>
+      </aside>
     </section>
   </div>
 
@@ -640,6 +711,12 @@
           </div>
           <div class="ticket"><div class="stamp-card" id="stamp-card"></div></div>
           <div class="drop-actions"><button class="finds-primary" id="copy-btn" type="button">Copy share text</button><span class="share-confirm" id="share-confirm" aria-live="polite"></span></div>
+          <nav class="up-next" aria-labelledby="up-next-title">
+            <h2 class="up-next-title" id="up-next-title">Another case?</h2>
+            <a class="next-case" href="./case-001.html"><span class="nc-num">Case 001</span><span class="nc-title">The Missing Envelope</span><span class="nc-meta">Bengaluru · Law firm · 10–20 min</span></a>
+            <a class="next-case" href="./case-002.html"><span class="nc-num">Case 002</span><span class="nc-title">The Last Shot</span><span class="nc-meta">Mumbai · Film set · 15–25 min</span></a>
+            <a class="finds-link all-cases" href="./index.html">See all cases</a>
+          </nav>
         </div>
         <section class="collection" aria-labelledby="collection-title">
           <div class="collection-head">
@@ -687,12 +764,19 @@ const STAGES = {
 const FINAL = { title: 'The Drop', label: 'Final', lines: ["Piece one's colour.", "Piece two's number.", "Piece three's sign.", 'Find the door.'], bar: "Piece one's colour, two's number, three's sign.",
   hints: ['Each wrong door misses by one thing.', 'Check the numbers closely. One is reversed.'] };
 const DOORS = ['A', 'B', 'C', 'D', 'E', 'F'];
-const LS = { picks: 'cr003_picks_v1', hints: 'cr003_hints_v1', tab: 'cr003_tab_v1', mapTip: 'cr003_maptip_done_v1', seen: 'cr003_seen_v1' };
+const LS = { picks: 'cr003_picks_v1', hints: 'cr003_hints_v1', tab: 'cr003_tab_v1', mapTip: 'cr003_maptip_done_v1', seen: 'cr003_seen_v1', progress: 'cr003_progress_v1' };
 function load(key) { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (_) { return null; } }
 function save(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {} }
 
 // fragments: released by the server only for confirmed stages (never bundled in this page).
-const game = { confirmed: false, status: null, found: [], fragments: [], attempts: 0, solution: null };
+const game = { confirmed: false, status: null, found: [], fragments: [], attempts: 0, solution: null, statusKind: 'checking' };
+/* Early play: while the server wakes up, the player can read the current clue, look around and pick.
+   Only Check waits. The page remembers just HOW MANY pieces were found last time (a count, never places or fragments),
+   so it knows which clue to show first. The server's reply always replaces this guess. */
+const savedProgress = (() => { const v = load(LS.progress); return v && Number.isInteger(v.n) && v.n >= 0 && v.n <= 3 ? v : { n: 0, solved: false }; })();
+// Picks made before the server answered. Once it answers, any that belong to a different stage are dropped.
+const earlyPicks = new Set();
+function rememberProgress() { if (game.confirmed) save(LS.progress, { n: game.found.length, solved: game.status === 'solved' }); }
 // seen: how many found pieces the player has moved past with "Next clue". The page never advances by itself.
 let seen = load(LS.seen);
 let picks = load(LS.picks) || {};
@@ -734,7 +818,7 @@ function fragNode(f, stage) {
 }
 const countText = n => n >= 3 ? 'All pieces found.' : `Piece ${n} of 3`;
 function currentStage() {
-  if (!game.confirmed) return 0;
+  if (!game.confirmed) return savedProgress.solved ? 0 : Math.min(savedProgress.n + 1, 4);
   if (game.status === 'solved') return 5;
   return Math.min(game.found.length + 1, 4);
 }
@@ -750,8 +834,9 @@ function setStatus(kind) {
   const stamp = $('case-stamp'); const line = $('case-number');
   const map = { checking: ['Checking', 'Case 003 · Checking case status…'], open: ['Open', 'Case 003 · Hunt open'],
     solved: ['Solved', 'Case 003 · Drop found'], unconfirmed: ['Unconfirmed', 'Case 003 · Case status not confirmed'] };
-  const [s, l] = map[kind]; stamp.textContent = s; line.textContent = l;
-  stamp.classList.toggle('solved', kind === 'solved');
+  game.statusKind = kind;
+  const [s, l] = map[kind]; line.textContent = l;
+  [stamp, $('case-stamp-2')].forEach((el) => { if (!el) return; el.textContent = s; el.classList.toggle('solved', kind === 'solved'); });
 }
 let unconfirmedTimer = setTimeout(() => { if (!game.confirmed) showUnconfirmed(); }, 10000);
 function showUnconfirmed() { if (game.confirmed) return; setStatus('unconfirmed'); renderAll(); }
@@ -764,6 +849,11 @@ function applyServerState(state) {
   game.found = Array.isArray(state.stages_found) ? state.stages_found.slice(0, 3) : [];
   game.fragments = Array.isArray(state.fragments) ? state.fragments.slice(0, game.found.length) : [];
   syncSeen();
+  if (earlyPicks.size) {
+    const live = currentStage();
+    earlyPicks.forEach(st => { if (st !== live) delete picks[st]; });
+    earlyPicks.clear(); save(LS.picks, picks);
+  }
   setStatus(game.status === 'solved' ? 'solved' : 'open');
   renderAll();
   if (game.status === 'solved' && !game.solution) loadSolution();
@@ -798,6 +888,11 @@ $('start-link').addEventListener('click', e => {
 });
 
 /* ---------- How to play (opened only by the player) ---------- */
+/* Case file card: phones show one line that opens the full card; laptops always show it (CSS). */
+$('dossier-toggle').addEventListener('click', () => {
+  const t = $('dossier-toggle'); const open = t.getAttribute('aria-expanded') !== 'true';
+  t.setAttribute('aria-expanded', String(open)); t.closest('.case-dossier').classList.toggle('open', open);
+});
 const howto = $('howto'), howtoBtn = $('howto-btn');
 function openHowto() {
   howto.hidden = false; howtoBtn.setAttribute('aria-expanded', 'true'); document.body.classList.add('modal-open');
@@ -826,7 +921,7 @@ function openCloseup(id) {
   sheetFor = id;
   const cur = currentStage();
   const meta = cur >= 1 && cur <= 3 ? STAGES[cur] : cur === 4 ? FINAL : null;
-  $('closeup-clue').hidden = !(meta && game.confirmed);
+  $('closeup-clue').hidden = !meta;
   if (meta) { $('closeup-clue-label').textContent = cur === 4 ? 'Find the door' : `Find piece ${cur}`; $('closeup-clue-text').textContent = meta.bar; }
   const art = btn.querySelector('svg'); $('closeup-art').replaceChildren(art ? art.cloneNode(true) : '');
   $('closeup-title').textContent = p.name;
@@ -839,7 +934,7 @@ function openCloseup(id) {
     sg.append(document.createTextNode(`${p.signName} sign`)); lines.append(sg);
   } else if (p.signName) lines.append(el('p', { class: 'cap-sign' }, 'No sign'));
   lines.append(el('p', { class: 'cap-hours' }, p.home ? 'Home, not a shop' : (p.closed === 'Never' ? `Open ${p.hours}, every day` : `Open ${p.hours} · Closed ${p.closed}`)));
-  const choosing = game.confirmed && !busy && cur >= 1 && cur <= 3;
+  const choosing = !busy && cur >= 1 && cur <= 3;
   const at = game.found.indexOf(id), foundLine = $('closeup-found');
   foundLine.replaceChildren(); foundLine.hidden = at < 0;
   if (at >= 0) { foundLine.append(el('span', {}, `Piece ${WORD[at + 1]} was here.`)); if (game.fragments[at]) foundLine.append(fragNode(game.fragments[at], 0)); }
@@ -872,7 +967,8 @@ sheet.addEventListener('keydown', e => {
 
 /* ---------- Picking ---------- */
 function pick(stage, value) {
-  if (busy || !game.confirmed || pending() || currentStage() !== stage) return;
+  if (busy || pending() || currentStage() !== stage) return;
+  if (!game.confirmed) earlyPicks.add(stage);
   picks[stage] = value; save(LS.picks, picks);
   feedback[stage] = null;
   renderAll();
@@ -1007,6 +1103,25 @@ function doorScene() {
   return scene;
 }
 function fillLines(node, text) { node.replaceChildren(...String(text).split('\n').filter(Boolean).map(l => el('span', {}, l))); }
+// Shown under Check / Open only while the server has not answered yet.
+function waitNote() {
+  if (game.confirmed || busy) return document.createTextNode('');
+  if (game.statusKind !== 'unconfirmed') return el('p', { class: 'wait-note', role: 'status' }, 'Connecting. You can pick a place now.');
+  const box = el('div', { class: 'wait-note', role: 'status' });
+  box.append(el('span', {}, 'Can\u2019t reach the server yet. Keep looking.'));
+  const b = el('button', { type: 'button', class: 'retry-btn' }, retrying ? 'Retrying\u2026' : 'Retry');
+  b.disabled = retrying; b.addEventListener('click', retryConnection); box.append(b);
+  return box;
+}
+// Retry only asks the server for the case status again. It never sends the player's pick.
+let retrying = false;
+function retryConnection() {
+  const secure = window.CaseRoomSecureGame;
+  if (game.confirmed || retrying || !secure || typeof secure.retryNow !== 'function') return;
+  retrying = true; renderAll();
+  secure.retryNow();
+  setTimeout(() => { retrying = false; if (!game.confirmed) renderAll(); }, 2500);
+}
 function feedbackNode(stage) {
   const f = feedback[stage];
   const p = el('p', { class: `feedback ${f ? f[0] : ''}`, role: 'status', 'aria-live': 'polite', id: `feedback-${stage}` }, f ? f[1] : '');
@@ -1047,7 +1162,8 @@ function doneRow(stage, meta) {
 function renderStages() {
   const root = $('stages'); root.replaceChildren();
   const cur = currentStage();
-  const canAct = game.confirmed && !busy;
+  const canAct = game.confirmed && !busy; // Check / Open: needs the server
+  const canPick = !busy;                   // choosing a place or door: works while the server wakes up
   const wait = pending(), nFound = game.found.length;
   [1, 2, 3, 4].forEach(stage => {
     const meta = stage === 4 ? FINAL : STAGES[stage];
@@ -1063,7 +1179,7 @@ function renderStages() {
     } else tag = el('span', { class: 'stage-tag' }, stage === 4 ? 'Final' : meta.label);
     head.append(el('h3', { class: 'stage-title', id: `stage-title-${stage}` }, meta.title), tag);
     card.append(head);
-    if (!game.confirmed && !done) {
+    if (!game.confirmed && !done && stage < cur) {
       card.append(el('p', { class: 'locked' }, 'Checking…'));
     } else if (done && stage < 4) {
       const body = el('div', { class: 'found-body' });
@@ -1095,25 +1211,26 @@ function renderStages() {
       const body = el('div', { class: 'stage-body' });
       body.append(postNode(meta));
       if (stage < 4) {
-        body.append(el('p', { class: 'ask' }, `Where is ${meta.label.toLowerCase()}?`), chipsFor(stage, canAct));
+        body.append(el('p', { class: 'ask' }, `Where is ${meta.label.toLowerCase()}?`), chipsFor(stage, canPick));
         const btn = el('button', { type: 'button', class: 'act' + (picks[stage] && canAct ? ' primary' : ''), id: `check-${stage}` }, 'Check'); btn.disabled = !canAct;
-        btn.addEventListener('click', () => submitStage(stage)); body.append(btn, feedbackNode(stage));
+        btn.addEventListener('click', () => submitStage(stage)); body.append(btn, feedbackNode(stage), waitNote());
       } else {
         const yours = el('div', { class: 'your-pieces', role: 'group', 'aria-label': 'Your pieces' });
         yours.append(el('p', { class: 'ask' }, 'Your pieces'));
         const row = el('div', { class: 'frag-row' }); game.fragments.forEach((f, i) => row.append(fragNode(f, i + 1))); yours.append(row);
+        if (!game.confirmed) yours.append(el('p', { class: 'hint-note' }, 'Loading your pieces…'));
         body.append(yours, el('p', { class: 'ask' }, 'Pothi Lane doors'));
         const grid = el('div', { class: 'doors', role: 'group', 'aria-label': 'Pothi Lane doors' });
         DOORS.forEach(d => {
           const tpl = $(`tpl-door-${d}`);
           const b = el('button', { type: 'button', class: 'door-btn', 'aria-pressed': String(picks[4] === d), id: `door-${d}` });
           if (tpl) b.append(tpl.content.cloneNode(true));
-          b.disabled = !canAct; b.addEventListener('click', () => pick(4, d));
+          b.disabled = !canPick; b.addEventListener('click', () => pick(4, d));
           grid.append(b);
         });
         body.append(grid);
         const btn = el('button', { type: 'button', class: 'act' + (picks[4] && canAct ? ' primary' : ''), id: 'open-door' }, 'Open this door'); btn.disabled = !canAct;
-        btn.addEventListener('click', submitDoor); body.append(btn, feedbackNode(4));
+        btn.addEventListener('click', submitDoor); body.append(btn, feedbackNode(4), waitNote());
         if (game.attempts) body.append(el('p', { class: 'hint-note' }, `Tries: ${game.attempts}`));
       }
       body.append(hintsFor(stage, meta.hints));
@@ -1124,7 +1241,7 @@ function renderStages() {
 }
 function renderMap() {
   const cur = currentStage();
-  const choosing = game.confirmed && !pending() && cur >= 1 && cur <= 3;
+  const choosing = !pending() && cur >= 1 && cur <= 3;
   document.querySelectorAll('#street .shop').forEach(b => {
     const id = b.dataset.id, chosen = choosing && picks[cur] === id, at = game.found.indexOf(id);
     b.classList.toggle('chosen', chosen);
@@ -1153,7 +1270,14 @@ function renderClue() {
   const cur = currentStage();
   const label = $('clue-label'), text = $('clue-text'), row = $('clue-row'), pickEl = $('clue-pick'), btn = $('clue-check');
   renderMini();
-  btn.classList.remove('primary', 'is-next');
+  btn.classList.remove('primary', 'is-next', 'is-retry');
+  if (!game.confirmed && game.statusKind === 'unconfirmed') {
+    // Connection failed: say so in the bar and offer Retry; the clue stays readable underneath.
+    label.textContent = 'Can\u2019t reach the server'; text.textContent = cur >= 1 && cur <= 4 ? (cur === 4 ? FINAL : STAGES[cur]).bar : '';
+    row.hidden = false; pickEl.replaceChildren();
+    btn.textContent = retrying ? 'Retrying\u2026' : 'Retry'; btn.disabled = retrying; btn.classList.add('primary', 'is-retry');
+    return;
+  }
   if (cur === 0) { label.textContent = 'Checking…'; text.textContent = ''; row.hidden = true; return; }
   if (cur === 5) { label.textContent = 'Drop found'; text.textContent = ''; row.hidden = true; return; }
   if (pending()) {
@@ -1173,7 +1297,7 @@ function renderClue() {
   btn.disabled = !game.confirmed || busy || !picks[cur];
   if (!btn.disabled) btn.classList.add('primary');
 }
-$('clue-check').addEventListener('click', () => { if (pending()) { nextClue(); return; } const cur = currentStage(); if (cur >= 1 && cur <= 3) submitStage(cur, true); else if (cur === 4) submitDoor(); });
+$('clue-check').addEventListener('click', () => { if (!game.confirmed) { if (game.statusKind === 'unconfirmed') retryConnection(); return; } if (pending()) { nextClue(); return; } const cur = currentStage(); if (cur >= 1 && cur <= 3) submitStage(cur, true); else if (cur === 4) submitDoor(); });
 const CROW_OUTLINE = '<svg viewBox="0 0 60 40" aria-hidden="true"><use href="#crow"/></svg>';
 function renderFinds() {
   const tray = $('tray'); tray.replaceChildren();
@@ -1215,7 +1339,7 @@ $('finds-next').addEventListener('click', () => {
   const card = $(`stage-${Math.min(Math.max(currentStage(), 1), 4)}`);
   if (card) { card.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); const h = card.querySelector('h3'); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
 });
-function renderAll() { renderStages(); renderMap(); renderClue(); renderFinds(); }
+function renderAll() { rememberProgress(); renderStages(); renderMap(); renderClue(); renderFinds(); }
 
 $('copy-btn').addEventListener('click', async () => {
   const text = $('stamp-card').textContent; const msg = $('share-confirm');
@@ -1366,7 +1490,9 @@ document.addEventListener('DOMContentLoaded', () => {
       user_agent_class: window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop'
     };
   }
+  let startSeq = 0;
   async function startSession(fresh = false) {
+    const mine = ++startSeq;
     if (fresh) safeRemove('localStorage', GAME_SESSION_KEY);
     let sessionId = fresh ? null : safeGet('localStorage', GAME_SESSION_KEY);
     const payload = {
@@ -1384,6 +1510,8 @@ document.addEventListener('DOMContentLoaded', () => {
       throw error;
     }
     checkSession(data);
+    // A slow reply from an older start attempt must not replace the session a newer attempt already set up.
+    if (mine !== startSeq && latestState) return latestState;
     safeSet('localStorage', GAME_SESSION_KEY, data.session_id);
     latestState = data;
     serverMessage('');
@@ -1463,24 +1591,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   // Reliability fix: after an uncertain result, keep asking the server for the case status
   // (backing off up to 30 seconds, and immediately when the connection returns) until it answers.
+  let wakeRetry = null, recovering = 0;
   function waitForRetry(ms) {
     return new Promise(resolve => {
       let timer = null;
-      const done = () => { clearTimeout(timer); window.removeEventListener('online', done); resolve(); };
+      const done = () => { clearTimeout(timer); window.removeEventListener('online', done); if (wakeRetry === done) wakeRetry = null; resolve(); };
       timer = setTimeout(done, ms);
       window.addEventListener('online', done);
+      wakeRetry = done;
     });
   }
   async function recoverStatus(onRetry) {
     let delay = 2000;
-    for (;;) {
-      try { return await refresh(); }
-      catch (error) {
-        if (typeof onRetry === 'function') { try { onRetry(error); } catch (_) {} }
-        await waitForRetry(delay);
-        delay = Math.min(delay * 2, 30000);
+    recovering += 1;
+    try {
+      for (;;) {
+        try { return await refresh(); }
+        catch (error) {
+          if (typeof onRetry === 'function') { try { onRetry(error); } catch (_) {} }
+          await waitForRetry(delay);
+          delay = Math.min(delay * 2, 30000);
+        }
       }
-    }
+    } finally { recovering -= 1; }
+  }
+  // Player-pressed Retry: only asks the server for the case status. It never submits a choice.
+  // If a background retry is waiting, run it now. Otherwise (the first request failed or is hanging)
+  // start a fresh status request, then keep retrying in the background if that fails too.
+  let manualTry = null;
+  function retryNow() {
+    if (wakeRetry) { wakeRetry(); return; }
+    if (recovering || manualTry) return;
+    const known = latestState && latestState.session_id;
+    manualTry = (known ? refresh() : startSession(false))
+      .catch(() => recoverStatus())
+      .catch(() => null)
+      .finally(() => { manualTry = null; });
   }
   async function resetSession() {
     const state = await startSession(true);
@@ -1542,7 +1688,7 @@ document.addEventListener('DOMContentLoaded', () => {
   else panel.hidden = false;
 
   window.CaseRoomSecureGame = {
-    caseId: CASE_ID, ready, accuse, check, reveal, refresh, recoverStatus, resetSession, serverNow,
+    caseId: CASE_ID, ready, accuse, check, reveal, refresh, recoverStatus, retryNow, resetSession, serverNow,
     isAccusing: () => Boolean(accuseInFlight), isChecking: () => Boolean(checkInFlight),
     getState: () => latestState,
     getAnalyticsConsent: () => consent()
