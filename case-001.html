@@ -1288,21 +1288,37 @@ CASE.locations.forEach(l => { const o = document.createElement('option'); o.valu
 // ── INVESTIGATOR NOTES ─────────────────────────────────────────────────
 const notesInput = document.getElementById('investigator-notes');
 const notesStatus = document.getElementById('notes-status');
-const NOTES_KEY = 'caseroom_case001_notes_v1';
-
+const NOTES_KEY = 'caseroom_case001_notes_v2';
+// Notes belong to one server session. They are shown again only after the server confirms that same session,
+// so a new or expired session (or another player on this device) starts with an empty notepad.
+let notesSid = null, pendingNotes = null;
 try {
-  notesInput.value = localStorage.getItem(NOTES_KEY) || '';
+  localStorage.removeItem('caseroom_case001_notes_v1'); // older notes had no session, so they cannot be matched: discard
+  const saved = JSON.parse(localStorage.getItem(NOTES_KEY) || 'null');
+  if (saved && typeof saved.sid === 'string' && typeof saved.text === 'string') pendingNotes = saved;
 } catch (error) {
   notesStatus.textContent = 'Browser storage is unavailable. Your notes may not persist after this page is closed.';
 }
+function saveNotes() {
+  try {
+    localStorage.setItem(NOTES_KEY, JSON.stringify({ sid: notesSid, text: notesInput.value }));
+    return true;
+  } catch (error) { return false; }
+}
 
 notesInput.addEventListener('input', () => {
-  try {
-    localStorage.setItem(NOTES_KEY, notesInput.value);
-    notesStatus.textContent = 'Saved automatically in this browser.';
-  } catch (error) {
-    notesStatus.textContent = 'Could not save notes in this browser. Keep a separate copy before leaving.';
-  }
+  notesStatus.textContent = saveNotes()
+    ? 'Saved automatically in this browser.'
+    : 'Could not save notes in this browser. Keep a separate copy before leaving.';
+});
+window.addEventListener('case-room-secure-ready', event => {
+  const sid = event.detail && typeof event.detail.session_id === 'string' ? event.detail.session_id : null;
+  if (!sid || sid === notesSid) return;
+  const first = notesSid === null, saved = pendingNotes;
+  pendingNotes = null; notesSid = sid;
+  if (first) { if (saved && saved.sid === sid && !notesInput.value) notesInput.value = saved.text; }
+  else notesInput.value = ''; // the session changed while open (expired or replaced): start clean
+  saveNotes();
 });
 
 // &#9472;&#9472; ACCUSATION LOGIC &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
