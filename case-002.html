@@ -398,10 +398,13 @@
     const $ = id => document.getElementById(id);
     const isCaseOver = () => caseStatus === 'solved';
 
+    // Saved notes and selections belong to one server session. They are shown again only after the server
+    // confirms that same session, so a new or expired session (or another player on this device) starts empty.
+    let currentSid = null, pendingDraft = null;
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          v: 5, nbState, suspect: $('sel-suspect').value,
+          v: 6, sid: currentSid, nbState, suspect: $('sel-suspect').value,
           exhibits: [...checkedExhibits]
         }));
       } catch (_) { /* Private browsing or storage restrictions should not stop play. */ }
@@ -409,10 +412,18 @@
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return;
         const data = JSON.parse(raw);
-        if (![4, 5].includes(data.v)) return;
+        // Older saves have no session, so they cannot be matched to one: discard them.
+        if (data.v !== 6 || typeof data.sid !== 'string') { localStorage.removeItem(STORAGE_KEY); return; }
+        pendingDraft = data;
+      } catch (_) { /* Ignore invalid or unavailable saved state. */ }
+    }
+    function clearDraft() { nbState = {}; checkedExhibits = new Set(); $('sel-suspect').value = ''; }
+    function applyDraft(data) {
+      try {
         const validExhibits = new Set(EXHIBITS.map(ex => ex.id));
         if (data.nbState && typeof data.nbState === 'object') {
           Object.keys(data.nbState).forEach(id => {
@@ -421,7 +432,21 @@
         }
         if (Array.isArray(data.exhibits)) data.exhibits.filter(id => validExhibits.has(id)).slice(0, 2).forEach(id => checkedExhibits.add(id));
         if (typeof data.suspect === 'string' && SUSPECTS.some(s => s.id === data.suspect)) $('sel-suspect').value = data.suspect;
-      } catch (_) { /* Ignore invalid or unavailable saved state. */ }
+      } catch (_) { /* Ignore invalid saved state. */ }
+    }
+    function syncDraftToSession(state) {
+      const sid = typeof state.session_id === 'string' ? state.session_id : null;
+      if (!sid || sid === currentSid) return;
+      const first = currentSid === null, draft = pendingDraft;
+      pendingDraft = null; currentSid = sid;
+      const untouched = !$('sel-suspect').value && !checkedExhibits.size && !Object.keys(nbState).length;
+      let changed = false;
+      if (first) {
+        // Restore only this same session's own saved work, and never over what the player has just done.
+        if (draft && draft.sid === sid && untouched) { applyDraft(draft); changed = true; }
+      } else { clearDraft(); changed = true; } // the session changed while open (expired or replaced): start clean
+      if (changed) { renderExhibits(); renderNotebook(); renderExhibitCheckboxes(); updateNote(); }
+      saveState();
     }
 
     function renderExhibits(openId = null) {
@@ -632,6 +657,7 @@
 
     function applySecureState(state) {
       if (!state) return;
+      syncDraftToSession(state);
       statusConfirmed = true;
       attempts = Number(state.attempts) || 0;
       caseStatus = state.status === 'solved' ? 'solved' : 'investigating';
@@ -701,7 +727,7 @@
       if (accusationInFlight) return;
       if (!window.confirm('Clear your notes and start a new case session?')) return;
       try { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(LEGACY_STORAGE_KEY); } catch (_) {}
-      nbState = {}; caseStatus = 'investigating'; checkedExhibits = new Set(); attempts = 0; completedAt = null; lastFeedback = null;
+      nbState = {}; caseStatus = 'investigating'; checkedExhibits = new Set(); attempts = 0; completedAt = null; lastFeedback = null; currentSid = null; pendingDraft = null;
       $('sel-suspect').value = ''; $('sel-suspect').disabled = false; $('sel-suspect').classList.remove('error'); $('accuse-btn').disabled = true; statusConfirmed = false;
       $('verdict').style.display = 'none'; $('verdict').className = ''; $('verdict-headline').textContent = ''; $('verdict-body').textContent = '';
       $('verdict-reveal').classList.remove('show'); $('reveal-btn').hidden = false; $('reveal-text').classList.remove('show'); $('reveal-text').textContent = '';

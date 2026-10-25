@@ -779,7 +779,12 @@ const earlyPicks = new Set();
 function rememberProgress() { if (game.confirmed) save(LS.progress, { n: game.found.length, solved: game.status === 'solved' }); }
 // seen: how many found pieces the player has moved past with "Next clue". The page never advances by itself.
 let seen = load(LS.seen);
-let picks = load(LS.picks) || {};
+// Picks belong to one server session. They are shown again only after the server confirms that same session,
+// so a new or expired session (or another player on this device) never starts with earlier choices filled in.
+const storedPicks = (() => { const v = load(LS.picks); return v && typeof v.sid === 'string' && v.picks && typeof v.picks === 'object' ? v : null; })();
+let picks = {};
+let sessionId = null;
+function savePicks() { save(LS.picks, { sid: sessionId, picks }); }
 let hints = load(LS.hints) || {};
 const feedback = {};
 let busy = false;
@@ -849,11 +854,20 @@ function applyServerState(state) {
   game.found = Array.isArray(state.stages_found) ? state.stages_found.slice(0, 3) : [];
   game.fragments = Array.isArray(state.fragments) ? state.fragments.slice(0, game.found.length) : [];
   syncSeen();
+  const sid = typeof state.session_id === 'string' ? state.session_id : null;
+  if (sid && sid !== sessionId) {
+    if (sessionId === null) {
+      // First answer on this page load: bring back this same session's own earlier picks (not over new ones).
+      if (storedPicks && storedPicks.sid === sid) Object.entries(storedPicks.picks).forEach(([st, v]) => { if (!(st in picks) && typeof v === 'string') picks[st] = v; });
+    } else picks = {}; // the session changed while the page was open: start clean
+    sessionId = sid;
+  }
   if (earlyPicks.size) {
     const live = currentStage();
     earlyPicks.forEach(st => { if (st !== live) delete picks[st]; });
-    earlyPicks.clear(); save(LS.picks, picks);
+    earlyPicks.clear();
   }
+  savePicks();
   setStatus(game.status === 'solved' ? 'solved' : 'open');
   renderAll();
   if (game.status === 'solved' && !game.solution) loadSolution();
@@ -969,7 +983,7 @@ sheet.addEventListener('keydown', e => {
 function pick(stage, value) {
   if (busy || pending() || currentStage() !== stage) return;
   if (!game.confirmed) earlyPicks.add(stage);
-  picks[stage] = value; save(LS.picks, picks);
+  picks[stage] = value; savePicks();
   feedback[stage] = null;
   renderAll();
 }
