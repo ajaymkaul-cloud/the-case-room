@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080604">
+  <meta name="description" content="Case 001: The Hidden Drop. A fictional treasure hunt through a Pune lane, from The Case Room.">
+  <title>The Case Room · Case 001: The Hidden Drop</title>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Case Room">
+  <meta property="og:url" content="https://thecaseroom.pixelandink.in/cases/hidden-drop/">
+  <link rel="canonical" href="https://thecaseroom.pixelandink.in/cases/hidden-drop/">
+  <meta property="og:title" content="Case 001: The Hidden Drop · The Case Room">
+  <meta property="og:description" content="A street artist has hidden a drop in a Pune lane. Three crow pieces lead to it. Can you read the street?">
+  <meta property="og:image" content="https://thecaseroom.pixelandink.in/og-hidden-drop.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Case 001: The Hidden Drop · The Case Room">
+  <meta name="twitter:description" content="A street artist has hidden a drop in a Pune lane. Three crow pieces lead to it. Can you read the street?">
+  <meta name="twitter:image" content="https://thecaseroom.pixelandink.in/og-hidden-drop.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+  <style>
+    :root {
+      --bg: #080604; --fg: #f0e6d0; --fg-mid: #a8987a; --fg-low: #221e16;
+      --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='%23fff2d8' fill-opacity='.05'%3E%3Ccircle cx='8' cy='14' r='1'/%3E%3Ccircle cx='41' cy='7' r='.8'/%3E%3Ccircle cx='77' cy='22' r='1.1'/%3E%3Ccircle cx='103' cy='9' r='.7'/%3E%3Ccircle cx='23' cy='48' r='.9'/%3E%3Ccircle cx='62' cy='57' r='1'/%3E%3Ccircle cx='96' cy='44' r='.8'/%3E%3Ccircle cx='14' cy='88' r='1.1'/%3E%3Ccircle cx='51' cy='96' r='.7'/%3E%3Ccircle cx='88' cy='81' r='1'/%3E%3Ccircle cx='112' cy='108' r='.9'/%3E%3C/g%3E%3Cg fill='%23000' fill-opacity='.08'%3E%3Ccircle cx='31' cy='29' r='.9'/%3E%3Ccircle cx='70' cy='38' r='1'/%3E%3Ccircle cx='5' cy='63' r='.8'/%3E%3Ccircle cx='44' cy='73' r='1.1'/%3E%3Ccircle cx='83' cy='110' r='.8'/%3E%3Ccircle cx='109' cy='66' r='1'/%3E%3C/g%3E%3C/svg%3E");
+      --gold: #c8a45a; --gold-dim: #6a5228; --red: #e06a5b; --red-dim: #7a1a1a; --green-bright: #4a9c6a;
+      --card-bg: #110f0a; --card-border: #2a2418;
+      --teal: #1f8a8a; --mustard: #d4a017; --maroon: #7a1f2b; --green: #2e7d4f; --white: #ececec; --tankblue: #3b6ea5;
+      --wood: #8a5a32;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Courier Prime', 'Courier New', monospace; min-height: 100vh; font-size: 16px; line-height: 1.6; }
+    button { font: inherit; color: inherit; }
+    button:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    svg { display: block; max-width: 100%; height: auto; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .wrap { max-width: 1500px; margin: 0 auto; padding: 0 16px; }
+
+    .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--fg-low); }
+    .bar-logo { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: 17px; color: var(--fg); text-decoration: none; white-space: nowrap; }
+    .bar-logo em { color: var(--gold); }
+    .bar-label { font-size: 10px; letter-spacing: .12em; color: var(--fg-mid); text-transform: uppercase; }
+    .bar-stamp { font-size: 10px; letter-spacing: .16em; color: var(--red); text-transform: uppercase; border: 1px solid var(--red-dim); padding: 4px 8px; transform: rotate(2deg); display: inline-block; white-space: nowrap; }
+    .bar-stamp.solved { color: var(--gold); border-color: var(--gold); }
+
+    .case-header { padding: 26px 0 18px; border-bottom: 1px solid var(--fg-low); }
+    .case-header-text { min-width: 0; }
+    /* Case file card: same look as Cases 001/002. Phone: one line under the intro that opens the card. Laptop: always open beside the title. */
+    .case-dossier { position: relative; margin-top: 16px; border: 1px solid var(--fg-low); background: rgba(17,14,10,.6); }
+    .case-dossier::before { content: ''; position: absolute; inset: 4px; border: 1px solid var(--gold-dim); opacity: .3; pointer-events: none; }
+    .dossier-toggle { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 0 18px;
+      background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+    .dossier-toggle:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+    .dossier-peek { flex: 1; font-size: 14px; color: var(--fg); letter-spacing: .05em; }
+    .dossier-chev { width: 8px; height: 8px; border-right: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(45deg) translateY(-2px); transition: transform .2s; }
+    .dossier-toggle[aria-expanded="true"] .dossier-chev { transform: rotate(-135deg) translateY(-2px); }
+    .dossier-label-wide { display: none; }
+    .dossier-body { display: none; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; padding: 2px 18px 16px; }
+    .case-dossier.open .dossier-body { display: grid; }
+    .dossier-label { font-size: 12px; letter-spacing: .3em; color: var(--fg-mid); text-transform: uppercase; }
+    .dossier-row { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .dossier-key { font-size: 12px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
+    .dossier-val { font-size: 15px; color: var(--fg); letter-spacing: .03em; line-height: 1.45; overflow-wrap: anywhere; }
+    .dossier-divider { grid-column: 1 / -1; height: 1px; background: var(--fg-low); }
+    .dossier-file { display: none; }
+    .dossier-wide { grid-column: 1 / -1; }
+    .dossier-body > * { order: 4; }
+    .dossier-body > .dossier-artist { order: 1; }
+    .dossier-body > .dossier-row:nth-child(2) { order: 0; }
+    .dossier-body > .dossier-divider { order: 2; }
+    .dossier-body > .dossier-stamp { order: 9; }
+    .dossier-stamp { justify-self: start; align-self: end; font-size: 12px; letter-spacing: .16em; color: var(--red); text-transform: uppercase;
+      border: 1px solid var(--red-dim); padding: 4px 10px; transform: rotate(-3deg); white-space: nowrap; }
+    .dossier-stamp.solved { color: var(--gold); border-color: var(--gold); }
+    body:not([data-tab="trail"]) .case-header .case-dossier { display: none; }
+    @media (min-width: 900px) {
+      .case-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: start; }
+      .case-dossier { margin-top: 0; width: 260px; padding: 22px 24px; }
+      .dossier-toggle { display: none; }
+      .dossier-label-wide { display: block; margin-bottom: 16px; }
+      .dossier-file { display: flex; }
+      .dossier-body, .case-dossier.open .dossier-body { display: block; padding: 0; }
+      .dossier-row { margin-bottom: 14px; }
+      .dossier-divider { margin: 4px 0 16px; }
+      .dossier-stamp { display: inline-block; margin-top: 10px; }
+    }
+    .case-number { font-size: 12px; letter-spacing: .22em; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+    .case-title { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: clamp(32px, 9vw, 52px); line-height: 1.05; margin-bottom: 12px; }
+    .opening { font-size: 17px; line-height: 1.5; }
+    .opening span { display: block; }
+    .start-link { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; margin-top: 16px; padding: 0 22px; background: var(--gold); color: var(--bg); font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; }
+    .start-link:hover { filter: brightness(1.08); }
+    .wait-note { margin-top: 8px; font-size: 14px; color: var(--ink-mid); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+    .retry-btn { min-height: 44px; padding: 0 18px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
+    .retry-btn:disabled { opacity: .55; cursor: default; }
+    .retry-btn:focus-visible { outline: 2px solid var(--terra); outline-offset: 3px; }
+    .start-link:focus-visible, .howto-btn:focus-visible, .map-tip button:focus-visible, .howto-close:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+    .title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0 12px; margin-bottom: 12px; }
+    .title-row .case-number { order: 1; flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+    .title-row .howto-btn { order: 2; flex: none; }
+    .title-row .case-title { order: 3; flex: 1 0 100%; margin: 8px 0 0; }
+    @media (max-width: 359px) {
+      .title-row .case-number { flex-basis: 100%; }
+      .title-row .howto-btn { order: 4; margin-top: 12px; }
+    }
+    .howto-btn { min-height: 44px; min-width: 44px; padding: 0 16px; border: 1px solid var(--gold-dim); border-radius: 22px; background: transparent; color: var(--gold); font: inherit; font-size: 13px; letter-spacing: .08em; cursor: pointer; white-space: nowrap; }
+    .howto-btn:hover { border-color: var(--gold); }
+    .howto-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .howto-backdrop[hidden] { display: none; }
+    .howto-panel { width: 100%; max-width: 380px; background: var(--card-bg); border: 1px solid var(--gold-dim); padding: 22px 20px 20px; color: var(--fg); }
+    .howto-panel h2 { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; margin-bottom: 14px; }
+    .howto-panel ol { list-style: none; padding: 0; margin: 0 0 14px; font-size: 16px; line-height: 1.6; }
+    .howto-panel p { color: var(--fg-mid); font-size: 15px; }
+    .howto-close { width: 100%; min-height: 48px; margin-top: 18px; border: 0; background: var(--gold); color: var(--bg); font: inherit; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; cursor: pointer; }
+    body.modal-open { overflow: hidden; }
+    .map-tip { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid var(--gold-dim); padding: 0 0 0 12px; margin-bottom: 10px; color: var(--fg); font-size: 15px; }
+    .map-tip[hidden] { display: none; }
+    .map-tip button { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: var(--gold); font-size: 20px; cursor: pointer; }
+    
+    /* Sticky navigation + active clue */
+    .sticky { position: sticky; top: 0; z-index: 40; background: var(--bg); border-bottom: 1px solid var(--fg-low); }
+    .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tab { min-height: 48px; border: 0; border-bottom: 2px solid transparent; background: none; cursor: pointer; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--fg-mid); }
+    .tab[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .tab:focus { outline: none; }
+    .tab:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+    .clue { padding: 8px 16px 10px; border-top: 1px solid var(--fg-low); max-width: 1500px; margin: 0 auto; }
+    .clue-label { font-size: 10px; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; }
+    .clue-text { font-size: 14px; line-height: 1.45; margin-top: 2px; }
+    .clue-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+    .clue-pick { font-size: 13px; color: var(--fg-mid); min-width: 0; }
+    .clue-pick b { color: var(--fg); }
+
+    .panel { padding: 20px 0 8px; }
+    .section-label { font-size: 11px; letter-spacing: .24em; color: var(--gold); text-transform: uppercase; margin: 22px 0 12px; display: flex; align-items: center; gap: 12px; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--fg-low); }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); padding: 14px; margin-bottom: 12px; }
+    .post-head { display: flex; gap: 10px; align-items: center; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; background: #f0e6d0; display: grid; place-items: center; flex-shrink: 0; }
+    .post-meta { color: var(--fg-mid); font-weight: 400; font-size: 12px; }
+    .photo { border: 1px solid var(--card-border); background: #000; }
+    .caption { margin-top: 10px; font-size: 16px; line-height: 1.55; }
+
+    .patya { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; background: #6b4f2e; padding: 10px; }
+    .patya > div { background: #fffbe9; color: #1f1d1a; padding: 9px; font-size: 13px; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,.35); }
+    .patya b { display: block; font-size: 13px; margin-bottom: 2px; }
+    .patya span, .patya i { display: block; }
+    .patya i { color: #6b4f2e; font-size: 12.5px; margin-top: 2px; }
+    .chat { display: flex; flex-direction: column; gap: 8px; }
+    .msg { background: #15120c; border: 1px solid var(--card-border); border-radius: 12px; padding: 7px 11px; max-width: 92%; font-size: 15px; line-height: 1.45; }
+    .msg b { display: block; font-size: 12px; color: var(--gold); letter-spacing: .04em; }
+
+    .stage-card { border: 1px solid var(--card-border); background: var(--card-bg); margin-bottom: 14px; scroll-margin-top: 210px; }
+    .stage-card.current { border-color: var(--gold-dim); }
+    .stage-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--fg-low); }
+    .stage-title { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 20px; }
+    .stage-tag { font-size: 11px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; white-space: nowrap; }
+    .stage-body { padding: 14px; }
+    .locked { color: var(--fg-mid); font-size: 14px; padding: 14px; }
+    .found-line { font-size: 15px; }
+    .found-line b { color: var(--gold); }
+    .ask { font-size: 13px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; margin: 16px 0 8px; }
+    .chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .chip { min-height: 48px; padding: 8px 10px; text-align: left; background: transparent; border: 1px solid var(--fg-low); cursor: pointer; font-size: 14px; line-height: 1.3; }
+    .chip small { display: block; color: var(--fg-mid); font-size: 11px; letter-spacing: .06em; }
+    .chip[aria-pressed="true"] { border-color: var(--gold); background: rgba(200,164,90,.12); color: var(--gold); }
+    .chip:disabled { opacity: .45; cursor: not-allowed; }
+    .act { width: 100%; min-height: 50px; margin-top: 12px; border: 1px solid var(--gold-dim); background: transparent; color: var(--gold); letter-spacing: .2em; text-transform: uppercase; font-size: 13px; cursor: pointer; }
+    .act:disabled { opacity: .4; cursor: not-allowed; }
+    .act.small { width: auto; min-height: 40px; margin-top: 0; padding: 6px 14px; font-size: 11px; letter-spacing: .14em; flex-shrink: 0; }
+    .feedback { margin-top: 10px; font-size: 15px; min-height: 1px; }
+    .feedback.ok { color: var(--gold); }
+    .feedback.wrong { color: var(--red); }
+    .feedback.pending { color: var(--fg-mid); }
+    .hints { margin-top: 14px; border-top: 1px dashed var(--fg-low); padding-top: 10px; }
+    .hint-btn { background: none; border: 1px solid var(--fg-low); color: var(--fg-mid); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 12px; min-height: 40px; cursor: pointer; margin: 0 6px 6px 0; }
+    .hint-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .hint-text { font-size: 14px; color: var(--fg); margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--gold-dim); }
+    .hint-note { font-size: 12px; color: var(--fg-mid); }
+
+    /* Map: HTML grid so every place is a large, labelled button */
+
+    /* Doors */
+    .doors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .door-btn { background: #f3eee2; color: #1f1d1a; border: 2px solid #8a8070; padding: 8px; cursor: pointer; text-align: left; font-size: 13px; }
+    .door-btn svg { width: 70%; margin: 0 auto 6px; }
+    .door-btn[aria-pressed="true"] { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold); }
+    .door-btn:disabled { cursor: not-allowed; opacity: .55; }
+    .door-btn dl { display: grid; grid-template-columns: auto 1fr; gap: 0 6px; }
+    .door-btn dt { color: #6b655c; } .door-btn dd { font-weight: 700; }
+    .door-name { display: block; font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+
+    /* Finds */
+    .tray { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .slot { border: 1.5px dashed var(--fg-low); padding: 10px 8px; font-size: 13px; line-height: 1.4; min-height: 110px; }
+    .slot b { display: block; color: var(--gold); letter-spacing: .1em; text-transform: uppercase; font-size: 11px; margin-bottom: 4px; }
+    .slot.found { border-style: solid; border-color: var(--gold-dim); }
+    .reveal-text { color: var(--fg); margin-top: 8px; }
+    .reveal-text span { display: block; }
+    .stamp-card { background: var(--bg); border: 1px solid var(--fg-low); padding: 14px; font-size: 13px; color: var(--fg-mid); white-space: pre-wrap; overflow-wrap: anywhere; margin: 10px 0; }
+    .share-btn { min-height: 44px; padding: 8px 16px; border: 1px solid var(--gold-dim); background: transparent; color: var(--gold); letter-spacing: .16em; text-transform: uppercase; font-size: 12px; cursor: pointer; }
+    .share-confirm { font-size: 12px; color: var(--gold); margin-left: 10px; }
+    .closed-head { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 24px; color: var(--gold); }
+
+    .foot { padding: 20px 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; border-top: 1px solid var(--fg-low); margin-top: 30px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-mid); }
+    .foot .foot-num { color: var(--gold); }
+
+    .trail-grid, .map-layout, .finds-layout { display: block; }
+    .photo { max-width: 560px; }
+    @media (min-width: 900px) {
+      .wrap { padding: 0 40px; }
+      .top-bar { padding: 18px 40px; }
+      .foot { padding: 20px 40px; }
+      .case-header { padding: 40px 0 26px; }
+      .tabs { max-width: 1500px; grid-template-columns: repeat(3, 160px); }
+      .clue { padding: 10px 40px 12px; }
+      .clue-text { font-size: 15px; max-width: 900px; }
+      .clue-row { max-width: 900px; justify-content: flex-start; gap: 18px; }
+      .trail-grid, .finds-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 48px; align-items: start; }
+      .trail-ref { border-left: 1px solid var(--fg-low); padding-left: 48px; margin-left: -24px; }
+      .chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stage-card { scroll-margin-top: 170px; }
+    }
+    .caption span { display: block; }
+    body[data-tab="trail"] .clue-text { display: none; }
+    body[data-tab="trail"] #clue-check.is-next { display: none; } /* on the trail the found card holds the one Next clue */
+    @media (max-width: 480px) {
+      .patya { grid-template-columns: minmax(0, 1fr); }
+      .tray { grid-template-columns: minmax(0, 1fr); }
+      .slot { min-height: 0; }
+    }
+    @media (max-width: 360px) {
+      .chips { grid-template-columns: minmax(0, 1fr); }
+      .tab { letter-spacing: .1em; }
+    }
+    /* ---------- Alive: press, settle, found stamp, door, hover ---------- */
+    .chip, .shop, .door-btn, .act, .hint-btn, .tab, .share-btn, .howto-btn, .howto-close, .start-link, .map-tip button {
+      transition: scale .1s ease, translate .18s ease, box-shadow .18s ease, border-color .18s ease, color .25s ease, background-color .18s ease, filter .18s ease;
+    }
+    :is(.chip, .shop, .door-btn, .act, .hint-btn, .tab, .share-btn, .howto-btn, .howto-close, .map-tip button):active:not(:disabled), .start-link:active { scale: .97; }
+    .act { position: relative; overflow: hidden; isolation: isolate; }
+    .act::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--gold); transform: translateX(-101%); transition: transform .3s ease; }
+    .act:focus-visible:not(:disabled) { color: var(--bg); border-color: var(--gold); outline: none; }
+    .act:focus-visible:not(:disabled)::before { transform: translateX(0); }
+    :is(.chip, .door-btn):focus-visible:not(:disabled) { translate: 0 -2px; box-shadow: 0 12px 22px rgba(0,0,0,.4); outline: 2px solid var(--gold); outline-offset: 2px; }
+    @media (hover: hover) and (pointer: fine) {
+      .act:hover:not(:disabled) { color: var(--bg); border-color: var(--gold); }
+      .act:hover:not(:disabled)::before { transform: translateX(0); }
+      .chip:hover:not(:disabled) { translate: 0 -2px; border-color: var(--gold-dim); box-shadow: 0 12px 22px rgba(0,0,0,.4); }
+      .door-btn:hover:not(:disabled) { translate: 0 -2px; border-color: var(--gold); box-shadow: 0 12px 22px rgba(0,0,0,.45); }
+      .hint-btn:hover:not(:disabled) { border-color: var(--gold-dim); color: var(--fg); }
+      .tab:hover { color: var(--fg); }
+      .tab[aria-selected="true"]:hover { color: var(--gold); }
+      .share-btn:hover { background: var(--gold); color: var(--bg); }
+      .howto-close:hover { filter: brightness(1.08); }
+    }
+    .pin { position: absolute; top: 6px; right: 6px; z-index: 2; width: 26px; height: 26px; border-radius: 50%; background: var(--gold); border: 2px solid #1f1d1a; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .pin svg, .shop .pin svg { display: block; width: 16px; height: auto; fill: #111; }
+    .door-scene { position: relative; width: 132px; aspect-ratio: 80 / 120; margin: 4px auto 18px; perspective: 520px; }
+    .door-scene > svg { display: block; width: 100%; height: 100%; }
+    .door-leaf { position: absolute; left: 20%; top: 3.33%; width: 60%; height: 95%; transform-origin: left center; transform: rotateY(-108deg); box-shadow: 0 0 0 rgba(0,0,0,0); }
+    .door-leaf { transform-style: preserve-3d; }
+    .door-leaf svg { display: block; width: 100%; height: 100%; }
+    .door-front, .door-back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .door-back { position: absolute; inset: 0; transform: rotateY(180deg); border: 1px solid #222; filter: brightness(.62); box-shadow: inset 0 0 0 4px rgba(0,0,0,.18); }
+    .door-crow { transform-origin: 40px 104px; }
+    .door-scene.opening .door-leaf { animation: door-open 1.15s cubic-bezier(.45,.05,.3,1) both; animation-delay: calc(var(--ago, 0ms) + 350ms); }
+    .door-scene.opening .door-crow { animation: crow-in .6s ease-out both; animation-delay: calc(var(--ago, 0ms) + 1100ms); }
+    .door-scene.opening ~ .closed-head, .door-scene.opening ~ .reveal-text { animation: rise .5s ease-out both; animation-delay: calc(var(--ago, 0ms) + 1500ms); }
+    .door-scene.opening ~ .reveal-text { animation-delay: calc(var(--ago, 0ms) + 1750ms); }
+    @keyframes door-open { 0% { transform: rotateY(0); } 15% { transform: rotateY(6deg); } 100% { transform: rotateY(-108deg); } }
+    @keyframes crow-in { 0% { opacity: 0; transform: scale(.7); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes rise { 0% { opacity: 0; translate: 0 8px; } 100% { opacity: 1; translate: 0 0; } }
+    /* ---------- Treasure-hunt flow: fragments, piece count, next action ---------- */
+    .found-stamp { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--red); border: 2px solid var(--red); padding: 3px 9px 3px 6px; transform: rotate(-4deg); }
+    .found-stamp svg { width: 22px; fill: var(--red); }
+    .found-body { padding: 14px; display: grid; gap: 10px; justify-items: start; }
+    .count-line { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+    .found-body .act { margin-top: 2px; }
+    .act.primary { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 700; }
+    .act.primary::before { display: none; }
+    .up-next { color: var(--gold); }
+    .frag { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border: 1px solid var(--gold-dim); background: #15120c; font-size: 14px; }
+    .frag-art { flex: none; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid #1f1d1a; box-shadow: 0 0 0 1px var(--gold-dim); }
+    .frag-colour .frag-art { border-radius: 3px; }
+    .frag-number .frag-art { background: #f6f3ea; color: #1d3d6b; font-weight: 700; font-size: 15px; border-color: #1d3d6b; border-radius: 4px; }
+    .frag-sign .frag-art { background: #f8f1e0; border-radius: 4px; }
+    .frag-sign .frag-art svg { width: 24px; height: 24px; }
+    .frag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+    .fill-in .frag-art, .mini-slot.fill-in > * { animation: frag-fill .6s cubic-bezier(.2,.9,.3,1.15) both; animation-delay: var(--ago, 0ms); }
+    @keyframes frag-fill { 0% { transform: scale(.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .clue-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+    .clue-top .clue-label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-tray { flex: none; display: flex; align-items: center; gap: 4px; }
+    .mini-tray[hidden] { display: none; }
+    .mini-slot { width: 20px; height: 20px; border: 1.5px dashed var(--fg-low); display: inline-flex; align-items: center; justify-content: center; overflow: hidden; }
+    .mini-slot.filled { border: 0; }
+    .mini-slot .frag-art { width: 20px; height: 20px; border-width: 1.5px; box-shadow: none; font-size: 10px; }
+    .mini-slot .frag-art svg { width: 15px; height: 15px; }
+    .mini-count { font-size: 11px; color: var(--fg-mid); margin-left: 3px; letter-spacing: .06em; }
+    .finds-count { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: -4px 0 10px; }
+    .slot { display: grid; gap: 6px; align-content: start; }
+    .slot-place { font-size: 14px; }
+    .slot-empty { color: var(--fg-mid); }
+    .slot .frag { font-size: 13px; }
+    .your-pieces { border-left: 2px solid var(--gold-dim); padding-left: 10px; margin-bottom: 6px; }
+    .sheet-found { display: grid; gap: 8px; justify-items: start; margin: -2px 0 12px; color: var(--gold); font-size: 14px; }
+    .sheet-found[hidden] { display: none; }
+    .found-badge { position: absolute; top: 6px; left: 6px; z-index: 2; display: inline-flex; align-items: center; gap: 2px; padding: 2px 6px 2px 3px; background: #b4462f; color: #fff6e6; font-size: 11px; font-weight: 700; border: 1.5px solid #1f1d1a; transform: rotate(-4deg); pointer-events: none; }
+    .shop .found-badge svg { display: inline; width: 18px; height: auto; fill: #fff6e6; }
+    /* ---------- Merged street (Map tab) ---------- */
+    .street { max-width: 880px; border: 2px solid #6b5230; background: var(--card-bg); box-shadow: 0 14px 30px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,236,200,.06); }
+    .street-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: #0b0906; }
+    .shop { position: relative; min-width: 0; padding: 0; margin: 0; border: 0; background: var(--card-bg); color: var(--fg); font: inherit; text-align: left; cursor: pointer; display: flex; flex-direction: column; }
+    .shop > svg { display: block; width: 100%; height: auto; }
+    .shop-label { display: block; padding: 6px 5px 8px; font-size: 12px; line-height: 1.3; background: #1a150e var(--grain); background-size: 120px 120px; }
+    .shop-no { display: flex !important; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px; }
+    .shop-no > span.nw { white-space: nowrap; }
+    .shop .mag { display: inline-block; width: 12px; height: 12px; flex: none; color: var(--gold); opacity: .8; }
+    .shop:hover .mag, .shop:focus-visible .mag { opacity: 1; }
+    .nm-short, .nm-full, .shop-no { display: block; }
+    .nm-short, .nm-full { font-weight: 700; }
+    .nm-full { display: none; }
+    .shop-no { color: var(--fg-mid); }
+    .shop.chosen { outline: 3px solid var(--gold); outline-offset: -3px; z-index: 1; }
+    .shop.chosen .shop-label { color: var(--gold); }
+    .shop:focus-visible { outline: 3px solid var(--gold); outline-offset: -3px; z-index: 2; }
+    @media (min-width: 640px) { .nm-short { display: none; } .nm-full { display: block; } .shop-label { font-size: 13px; padding: 8px 10px 10px; } }
+    .galli { position: relative; height: 74px; background-color: #5b4a36; background-image: linear-gradient(90deg, rgba(239,230,210,.5) 50%, transparent 50%), radial-gradient(circle at 30% 40%, rgba(255,240,210,.07) 0 2px, transparent 3px), radial-gradient(circle at 70% 70%, rgba(0,0,0,.12) 0 2px, transparent 3px), var(--grain); background-size: 28px 2px, 13px 11px, 17px 13px, 120px 120px; background-repeat: repeat-x, repeat, repeat, repeat; background-position: 0 50%, 0 0, 5px 4px, 0 0; border-top: 5px solid #b3a68d; border-bottom: 5px solid #b3a68d; box-shadow: inset 0 6px 8px -6px rgba(0,0,0,.55), inset 0 -6px 8px -6px rgba(0,0,0,.55); color: #f4ead6; }
+    .galli-name { position: absolute; left: 8px; top: 6px; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; background: #5b4a36; padding: 0 4px; }
+    .katta { position: absolute; left: 50%; top: 2px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; }
+    .banyan { width: 50px; height: 50px; display: block; }
+    .katta-label { font-size: 10px; background: #5b4a36; padding: 0 4px; margin-top: -2px; white-space: nowrap; }
+    .compass { position: absolute; right: 0; padding: 0 8px 0 4px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 4px; font-size: 11px; line-height: 1.35; background: #5b4a36; }
+    .rose { width: 30px; height: 30px; }
+    .compass-text { display: flex; flex-direction: column; align-items: flex-end; }
+    .compass b { color: var(--gold); }
+    @media (min-width: 640px) { .galli { height: 88px; } .galli-name, .katta-label, .compass { font-size: 12px; } .banyan { width: 64px; height: 64px; } .rose { width: 36px; height: 36px; } }
+    @media (hover: hover) and (pointer: fine) { .shop:hover { translate: 0 -2px; box-shadow: 0 12px 22px rgba(0,0,0,.45); z-index: 2; } .shop:hover .shop-label { color: var(--gold); } }
+    /* close-up sheet */
+    .sheet-backdrop { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.66); display: flex; align-items: flex-end; justify-content: center; }
+    .sheet-backdrop[hidden] { display: none; }
+    .sheet { width: 100%; max-width: 560px; max-height: 92vh; overflow: auto; background: var(--card-bg); border-top: 2px solid var(--gold-dim); padding: 16px 16px 20px; color: var(--fg); animation: sheet-up .26s ease-out both; }
+    .sheet:focus { outline: none; }
+    @keyframes sheet-up { from { translate: 0 40px; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+    @media (min-width: 700px) { .sheet-backdrop { align-items: center; padding: 16px; } .sheet { border: 1px solid var(--gold-dim); } }
+    .sheet-clue { border-left: 2px solid var(--gold-dim); padding-left: 10px; margin-bottom: 14px; font-size: 14px; line-height: 1.45; }
+    .sheet-clue[hidden] { display: none; }
+    .sheet-clue b { display: block; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 400; }
+    .sheet-body { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; align-items: start; }
+    @media (min-width: 380px) { .sheet-body { grid-template-columns: 132px minmax(0, 1fr); } }
+    .sheet-art svg { display: block; width: 100%; height: auto; border: 1px solid #000; }
+    .sheet h2 { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 900; font-size: 22px; line-height: 1.15; margin-bottom: 10px; }
+    .facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 10px; font-size: 14px; line-height: 1.35; }
+    .facts dt { color: var(--fg-mid); }
+    .facts dd { margin: 0; }
+    .facts dd .sign-val { display: inline-flex; align-items: center; gap: 6px; }
+    .facts dd svg { flex: none; width: 18px; height: 18px; background: #f8f1e0; border-radius: 2px; }
+    .sheet-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .sheet-choose, .sheet-back { flex: 1 1 220px; min-height: 48px; font: inherit; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+    .sheet-choose[hidden] { display: none; }
+    .sheet-choose { border: 0; background: var(--gold); color: var(--bg); font-weight: 700; }
+    .sheet-choose:disabled { opacity: .55; cursor: default; }
+    .sheet-back { border: 1px solid var(--gold-dim); background: transparent; color: var(--gold); }
+    :is(.sheet-choose, .sheet-back):focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+    :is(.sheet-choose, .sheet-back):active:not(:disabled) { scale: .97; }
+    /* ---------- v6 visual pass: street first, paper close-up, quieter chrome ---------- */
+    .clue-text { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 17px; line-height: 1.35; margin-top: 4px; }
+    .clue-row[hidden] { display: none; }
+    body:not([data-tab="trail"]) .case-header .opening, body:not([data-tab="trail"]) .case-header .start-link { display: none; }
+    body:not([data-tab="trail"]) .case-header { padding-bottom: 10px; }
+    #panel-map { padding-top: 6px; }
+    .street { border: 0; box-shadow: 0 10px 24px rgba(0,0,0,.4); }
+    @media (max-width: 639px) { #panel-map .street { margin: 0 -16px; } }
+    .street-row { gap: 0; background: none; }
+    .shop { background: #e2d4b6; }
+    .shop-label { background: #e2d4b6 var(--grain); background-size: 120px 120px; color: #2b241c; border-top: 1px solid #b3a68d; }
+    .nm-short, .nm-full { color: #2b241c; }
+    .shop-no { color: #6b5a40; }
+    .shop .mag { color: #8a5a2c; opacity: 1; }
+    .shop.chosen .shop-label { background: #f0dca3; }
+    .shop.chosen .shop-label, .shop.chosen .nm-short, .shop.chosen .nm-full { color: #2b241c; }
+    @media (hover: hover) and (pointer: fine) { .shop:hover .shop-label { color: #2b241c; background: #efe3c8; } }
+    .shop:focus-visible { outline-color: #2b241c; }
+    /* close-up: a paper card, the drawing first */
+    .sheet { background: #f3e9d4; color: #2b241c; border-top: 4px solid #b4462f; padding: 14px 16px 18px; }
+    .sheet-clue { border-left-color: #b4462f; color: #2b241c; font-size: 14px; }
+    .sheet-clue b { color: #b4462f; }
+    .sheet-art { display: flex; justify-content: center; margin: 2px 0 12px; }
+    .sheet-art svg { display: block; height: min(46vh, 400px); width: auto; max-width: 100%; border: 2px solid #2b241c; box-shadow: 0 6px 0 rgba(43,36,28,.18); }
+    .sheet-caption { text-align: center; }
+    .sheet h2 { color: #2b241c; margin-bottom: 6px; }
+    .caption-lines { display: grid; gap: 3px; font-size: 15px; line-height: 1.4; }
+    .caption-lines .cap-sign { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .caption-lines .cap-sign svg { width: 20px; height: 20px; background: #fff8ea; border: 1px solid #2b241c; border-radius: 2px; }
+    .caption-lines .cap-hours { color: #6b5a40; }
+    .sheet-found { justify-items: center; color: #b4462f; margin: 10px 0 0; }
+    .sheet-found .frag { background: #fff8ea; color: #2b241c; }
+    .sheet-actions { margin-top: 12px; }
+    .sheet-actions:empty, .sheet-actions:not(:has(button:not([hidden]))) { display: none; }
+    .sheet-top { display: flex; margin: -8px 0 4px -8px; }
+    .sheet-top .sheet-back { flex: none; min-height: 44px; padding: 0 8px; text-align: left; }
+    .sheet-choose { background: #2b241c; color: #f3e9d4; font-size: 14px; letter-spacing: .1em; }
+    .sheet-back { border: 0; background: transparent; color: #2b241c; text-decoration: underline; text-underline-offset: 4px; min-height: 44px; }
+    :is(.sheet-choose, .sheet-back):focus-visible { outline-color: #b4462f; }
+    /* ---------- v6 throughout: warm paper for everything you read; dark frame for navigation ---------- */
+    :root { --paper: #f3e9d4; --paper-2: #fffaf0; --ink: #2b241c; --ink-mid: #6b5a40; --terra: #b4462f; --paper-line: #d8c9a8; }
+    .street-hint { font-size: 15px; color: var(--fg); margin: 2px 0 10px; display: flex; align-items: center; gap: 8px; }
+    .street-hint::before { content: ''; width: 16px; height: 16px; flex: none; background: var(--gold); -webkit-mask: radial-gradient(circle at 40% 40%, transparent 4px, #000 4.5px 6.5px, transparent 7px), linear-gradient(45deg, transparent 62%, #000 62% 76%, transparent 76%); mask: radial-gradient(circle at 40% 40%, transparent 4px, #000 4.5px 6.5px, transparent 7px), linear-gradient(45deg, transparent 62%, #000 62% 76%, transparent 76%); }
+    /* the drawing takes the room left after the clue, caption and button, so nothing needs scrolling */
+    .sheet-art svg { width: auto; max-width: 100%; height: clamp(220px, calc(92vh - 372px), 560px); }
+    /* stage cards on paper */
+    .stage-card { background: var(--paper); color: var(--ink); border: 0; box-shadow: 0 8px 20px rgba(0,0,0,.35); }
+    .stage-card.current { box-shadow: 0 0 0 2px var(--gold), 0 8px 20px rgba(0,0,0,.35); }
+    .stage-head { border-bottom-color: var(--paper-line); }
+    .stage-title { color: var(--ink); }
+    .stage-tag, .ask { color: var(--terra); }
+    .caption, .post-head { color: var(--ink); }
+    .avatar { background: var(--ink); }
+    .avatar svg { fill: var(--paper) !important; }
+    .photo { border-color: var(--ink); }
+    .chip { background: var(--paper-2); border-color: #c9b894; color: var(--ink); }
+    .chip small { color: var(--ink-mid); }
+    .chip[aria-pressed="true"] { border: 2px solid var(--ink); background: #f0dca3; color: var(--ink); }
+    .stage-card .act { border-color: var(--ink); color: var(--ink); }
+    .stage-card .act::before { background: var(--ink); }
+    .stage-card .act:focus-visible:not(:disabled), .stage-card .act.primary { color: var(--paper); border-color: var(--ink); background: var(--ink); }
+    @media (hover: hover) and (pointer: fine) { .stage-card .act:hover:not(:disabled) { color: var(--paper); border-color: var(--ink); } .chip:hover:not(:disabled) { border-color: var(--ink); } }
+    .stage-card .feedback.wrong { color: var(--terra); }
+    .stage-card .feedback.pending, .stage-card .hint-note { color: var(--ink-mid); }
+    .stage-card .hints { border-top-color: #c9b894; }
+    .stage-card .hint-btn { border-color: #c9b894; color: var(--ink); }
+    .stage-card .hint-text { color: var(--ink); border-left-color: var(--terra); }
+    .stage-card .count-line { color: var(--terra); }
+    .stage-card .frag, .slot .frag, .sheet-found .frag { background: var(--paper-2); color: var(--ink); border-color: #c9b894; }
+    .stage-card .closed-head { color: var(--terra); }
+    .stage-card .reveal-text { color: var(--ink); }
+    .stage-card .found-line b { color: var(--terra); }
+    .your-pieces { border-left-color: var(--terra); }
+    /* waiting stages: quiet one-line rows on the dark ground */
+    .stage-card .locked { color: var(--ink-mid); }
+    .stage-card.waiting .locked { color: var(--fg-mid); }
+    .stage-card.waiting { background: transparent; color: var(--fg-mid); box-shadow: none; border: 1px dashed var(--fg-low); }
+    .stage-card.waiting .stage-head { border-bottom: 0; padding-bottom: 0; }
+    .stage-card.waiting .stage-title { color: var(--fg-mid); font-size: 18px; }
+    .stage-card.waiting .stage-tag { color: var(--fg-mid); }
+    .stage-card.waiting .locked { padding-top: 4px; }
+    .stage-card.waiting .up-next { color: var(--gold); }
+    /* finished stages: short rows that open again */
+    .stage-card.done-row { background: #e8dcc1; box-shadow: none; }
+    .row-summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; padding: 10px 12px; min-height: 48px; }
+    .row-summary::-webkit-details-marker { display: none; }
+    .row-summary:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+    .row-mark { grid-row: span 2; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--terra); display: grid; place-items: center; transform: rotate(-6deg); }
+    .row-mark svg { width: 22px; fill: var(--terra); }
+    .row-title { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+    .row-title .stage-title { font-size: 17px; }
+    .row-num { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--terra); white-space: nowrap; }
+    .row-found { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 14px; }
+    .row-found b { color: var(--ink); }
+    .row-found .frag { padding: 2px 8px 2px 2px; font-size: 13px; gap: 6px; }
+    .row-found .frag-art { width: 22px; height: 22px; border-width: 1.5px; box-shadow: none; font-size: 11px; }
+    .row-found .frag-art svg { width: 16px; height: 16px; }
+    .row-chev { grid-row: 1 / span 2; grid-column: 3; color: var(--ink-mid); font-size: 18px; transition: transform .15s ease; }
+    details[open] .row-chev { transform: rotate(90deg); }
+    .row-body { padding: 4px 14px 14px; border-top: 1px solid var(--paper-line); }
+    /* chat on paper */
+    .card.chat { background: #e8dcc1; border: 0; }
+    .msg { background: var(--paper-2); border-color: var(--paper-line); color: var(--ink); }
+    .msg b { color: var(--terra); }
+    /* finds on paper */
+    .slot.found { background: var(--paper); color: var(--ink); border: 0; box-shadow: 0 6px 14px rgba(0,0,0,.3); }
+    .slot.found b { color: var(--terra); }
+    .slot.found .slot-place { font-weight: 700; }
+    #finds-solved .card { background: var(--paper); color: var(--ink); border: 0; }
+    #finds-solved .closed-head { color: var(--terra); }
+    #finds-solved .reveal-text { color: var(--ink); }
+    /* ---------- Finds: a collected-pieces page, not a form ---------- */
+    .finds-page { display: grid; gap: 26px; padding-top: 6px; }
+    .collection { background: var(--paper) var(--grain); background-size: 120px 120px; color: var(--ink); padding: 18px 16px 16px; box-shadow: 0 10px 24px rgba(0,0,0,.4); }
+    @media (max-width: 639px) { .collection, .finds-drop { margin: 0 -16px; } }
+    .collection-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; border-bottom: 1px solid var(--paper-line); padding-bottom: 10px; }
+    .collection-title { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 900; font-size: 24px; color: var(--ink); }
+    .collection .finds-count { margin: 0; color: var(--terra); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .tray { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .slot, .slot.found { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; align-items: center; min-height: 0; padding: 0; border: 0; background: none; box-shadow: none; color: var(--ink); font-size: 14px; }
+    .slot-art { position: relative; width: 92px; aspect-ratio: 240 / 316; background: #fffaf0; padding: 4px; box-shadow: 0 3px 8px rgba(43,36,28,.35); transform: rotate(-1.5deg); }
+    .slot:nth-child(2) .slot-art { transform: rotate(1.2deg); }
+    .slot:nth-child(3) .slot-art { transform: rotate(-.6deg); }
+    .slot-art > svg { display: block; width: 100%; height: 100%; }
+    .slot-art .stencil { position: absolute; left: 70%; top: 13%; width: 34%; transform: translate(-50%, -50%) rotate(-8deg); fill: #15110c; opacity: .9; }
+    .slot-art.empty { background: transparent; box-shadow: none; border: 1.5px dashed #b3a68d; display: grid; place-items: center; transform: none; }
+    .slot-art.empty svg { width: 58%; height: auto; fill: none; stroke: #b3a68d; stroke-width: 1.4; }
+    .slot-info { display: grid; gap: 6px; justify-items: start; min-width: 0; }
+    .slot-info b { color: var(--terra); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin: 0; }
+    .slot .slot-place { font-weight: 700; font-size: 15px; }
+    .slot .slot-empty { color: var(--ink-mid); }
+    .slot .frag { background: var(--paper-2); color: var(--ink); border-color: #c9b894; font-size: 14px; }
+    .finds-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--paper-line); }
+    .finds-primary { min-height: 48px; padding: 0 22px; border: 0; background: var(--ink); color: var(--paper); font: inherit; font-weight: 700; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
+    .finds-primary[hidden] { display: none; }
+    .finds-link { min-height: 44px; padding: 0 4px; border: 0; background: none; color: var(--ink); font: inherit; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+    :is(.finds-primary, .finds-link):focus-visible { outline: 2px solid var(--terra); outline-offset: 3px; }
+    .finds-primary:active, .finds-link:active { scale: .97; }
+    /* the drop, once solved */
+    .finds-drop { background: var(--paper) var(--grain); background-size: 120px 120px; color: var(--ink); padding: 20px 16px 18px; box-shadow: 0 10px 24px rgba(0,0,0,.4); display: grid; gap: 14px; justify-items: center; text-align: center; }
+    .finds-drop[hidden] { display: none; }
+    .drop-scene .door-scene { margin: 0 auto; width: 120px; }
+    .finds-drop .closed-head { color: var(--terra); font-size: 28px; }
+    .finds-drop .reveal-text { color: var(--ink); margin-top: 6px; }
+    .ticket { width: 100%; max-width: 360px; background: #fffaf0; border: 2px dashed #b3a68d; padding: 14px 16px; position: relative; }
+    .ticket::before, .ticket::after { content: ''; position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--paper); transform: translateY(-50%); }
+    .ticket::before { left: -9px; } .ticket::after { right: -9px; }
+    .ticket .stamp-card { background: none; border: 0; padding: 0; margin: 0; color: var(--ink); font-size: 13px; line-height: 1.5; text-align: left; }
+    .drop-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .finds-drop .share-confirm { color: var(--terra); margin: 0; }
+    /* After the drop: point somewhere next instead of ending abruptly */
+    .up-next { width: 100%; max-width: 420px; margin-top: 6px; padding-top: 16px; border-top: 1px dashed #b3a68d; display: grid; gap: 10px; text-align: left; }
+    .up-next-title { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 20px; color: var(--ink); text-align: center; }
+    .next-case { display: grid; gap: 2px; min-height: 48px; padding: 12px 40px 12px 14px; background: #fffaf0; border: 1px solid #c9b894; color: var(--ink); text-decoration: none; position: relative; transition: transform .15s, box-shadow .15s; }
+    .next-case::after { content: ''; position: absolute; right: 16px; top: 50%; width: 8px; height: 8px; border-top: 2px solid var(--terra); border-right: 2px solid var(--terra); transform: translateY(-50%) rotate(45deg); }
+    .next-case:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+    .next-case:focus-visible { outline: 2px solid var(--terra); outline-offset: 3px; }
+    .nc-num { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--terra); }
+    .nc-title { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 18px; line-height: 1.2; }
+    .nc-meta { font-size: 14px; color: #5a4e3c; }
+    .up-next .all-cases { justify-self: center; display: inline-flex; align-items: center; }
+    @media (prefers-reduced-motion: reduce) { .next-case { transition: none; } .next-case:hover { transform: none; } }
+    @media (min-width: 640px) {
+      .tray { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+      .slot, .slot.found { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+      .slot-art { width: 100%; max-width: 160px; }
+      .slot-info { justify-items: center; }
+      .collection, .finds-drop { padding: 24px; }
+    }
+    @media (min-width: 900px) {
+      .finds-page.is-solved { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 40px; }
+      .finds-page.is-solved .tray { grid-template-columns: minmax(0, 1fr); }
+      .finds-page.is-solved .slot, .finds-page.is-solved .slot.found { grid-template-columns: 92px minmax(0, 1fr); justify-items: start; text-align: left; }
+      .finds-page.is-solved .slot-info { justify-items: start; }
+      .finds-page:not(.is-solved) { max-width: 900px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-delay: 0ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="crow" viewBox="0 0 60 40"><path fill-rule="evenodd" d="M3 31 L13 25 Q17 17 27 15 Q31 8 39 8 Q45 8 47 12 L58 14 L47.5 16.5 Q47 23 40 26 Q35 29 29 29.5 L30.5 34 L33.5 37 L28.5 37 L27.6 34 L26.4 29.6 Q19 29.5 13.5 27.5 Z M33.6 10.4 L34.9 10.1 Q34.6 18 37.9 25.4 L36.6 25.9 Q33.2 18.2 33.6 10.4 Z M17.2 21.3 Q27 18.6 35.8 23.2 L35.3 24.3 Q27 19.9 17.6 22.5 Z M14.2 25.6 L15.4 25.2 L16.4 27.9 L15.1 28.2 Z M43.8 12 A1.8 1.8 0 1 0 40.2 12 A1.8 1.8 0 1 0 43.8 12 Z"/></symbol>
+    <pattern id="ribs" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="none"/><line x1="0" y1="7" x2="8" y2="7" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/></pattern>
+    <pattern id="stone" width="24" height="14" patternUnits="userSpaceOnUse"><rect width="24" height="14" fill="#9a9890"/><path d="M0 0H24M0 7H24M12 0V7M0 7V14M24 7V14" stroke="#7d7b74" stroke-width="1" fill="none"/></pattern>
+    <pattern id="planksV" width="10" height="10" patternUnits="userSpaceOnUse"><line x1="9" y1="0" x2="9" y2="10" stroke="rgba(0,0,0,.3)"/></pattern>
+    <pattern id="planksH" width="10" height="10" patternUnits="userSpaceOnUse"><line x1="0" y1="9" x2="10" y2="9" stroke="rgba(0,0,0,.3)"/></pattern>
+  </defs>
+</svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="st-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9c99a"/><stop offset=".55" stop-color="#f1dfbd"/><stop offset="1" stop-color="#f4e9d3"/></linearGradient>
+  <linearGradient id="st-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe6ee"/><stop offset=".5" stop-color="#a9cad6"/><stop offset="1" stop-color="#d9eef3"/></linearGradient>
+  <linearGradient id="st-shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
+  <linearGradient id="st-tankshade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".25"/><stop offset=".35" stop-color="#fff" stop-opacity=".18"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
+  <pattern id="st-basalt" width="34" height="20" patternUnits="userSpaceOnUse"><rect width="34" height="20" fill="#8e8b84"/>
+    <path d="M0 0H34M0 10H34M10 0V10M27 10V20" stroke="#74716a" stroke-width="1.6" fill="none"/><path d="M2 3h6M14 13h9" stroke="#a6a39b" stroke-width="1" opacity=".7"/></pattern>
+  <pattern id="st-roof" width="12" height="9" patternUnits="userSpaceOnUse"><rect width="12" height="9" fill="#b5573a"/><path d="M0 8.5H12M6 0V9" stroke="#9a462d" stroke-width="1.2"/><path d="M1 2h4" stroke="#d07a5a" stroke-width="1"/></pattern>
+  <pattern id="st-pave" width="26" height="14" patternUnits="userSpaceOnUse"><rect width="26" height="14" fill="#cbbfa8"/><path d="M0 13.5H26M25.5 0V14" stroke="#b3a68d" stroke-width="1"/></pattern>
+  <pattern id="st-plank" width="9" height="10" patternUnits="userSpaceOnUse"><rect width="9" height="10" fill="#7a4a2a"/><path d="M8.5 0V10" stroke="#5e3820" stroke-width="1"/><path d="M3 2v4" stroke="#94603a" stroke-width="1"/></pattern>
+</defs></svg><template id="tpl-icon-cup"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><path d="M5 9h14v8a7 7 0 0 1-14 0z M19 11h3a3 3 0 0 1 0 6h-3" fill="none" stroke="#2b241c" stroke-width="2.2"/><path d="M9 3c-1 2 1 3 0 5M14 3c-1 2 1 3 0 5" stroke="#2b241c" stroke-width="1.6" fill="none"/></svg></template><template id="tpl-icon-scissors"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><circle cx="7" cy="19" r="4" fill="none" stroke="#2b241c" stroke-width="2.2"/><circle cx="19" cy="19" r="4" fill="none" stroke="#2b241c" stroke-width="2.2"/><path d="M9.5 16 L21 3 M16.5 16 L5 3" stroke="#2b241c" stroke-width="2.2"/></svg></template><template id="tpl-icon-book"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><path d="M2 7 q6-3 11 0 v15 q-5-3-11 0z M13 7 q5-3 11 0 v15 q-6-3-11 0z" fill="#fff" stroke="#2b241c" stroke-width="2"/></svg></template><template id="tpl-icon-loaf"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><path d="M3 20 v-6 a10 7 0 0 1 20 0 v6z" fill="#e8b45e" stroke="#2b241c" stroke-width="2"/><path d="M9 12l2 4M13 11l2 4M17 12l2 4" stroke="#2b241c" stroke-width="1.6"/></svg></template><template id="tpl-icon-wheel"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><circle cx="13" cy="13" r="11" fill="none" stroke="#2b241c" stroke-width="2.2"/><circle cx="13" cy="13" r="2.4" fill="#2b241c"/><path d="M13 2v22M2 13h22M5.2 5.2l15.6 15.6M5.2 20.8L20.8 5.2" stroke="#2b241c" stroke-width="1.2"/></svg></template><template id="tpl-icon-pestle"><svg viewBox="0 0 26 26" aria-hidden="true" focusable="false"><path d="M3 13h20l-3 9H6z" fill="#fff" stroke="#2b241c" stroke-width="2"/><path d="M13 13 L21 2" stroke="#2b241c" stroke-width="3" stroke-linecap="round"/></svg></template>
+<template id="tpl-post1"><svg viewBox="0 0 320 190" role="img" aria-label="Black and white photo: a crow stencil on a ribbed metal shutter. No colour, sign or number visible.">
+    <rect width="320" height="190" fill="#8c8c8c"/><rect width="320" height="190" fill="url(#ribs)"/>
+    <use href="#crow" x="95" y="50" width="130" height="90" fill="#111"/>
+  </svg></template>
+<template id="tpl-post2"><svg viewBox="0 0 320 190" role="img" aria-label="Photo: a crow stencil on a flat grey stone wall. The round blue water tank fills the left edge of the frame. The edge of a wooden gate is on the right. No number plaque is visible.">
+    <rect width="320" height="190" fill="url(#stone)"/>
+    <ellipse cx="-10" cy="100" rx="70" ry="110" fill="var(--tankblue)" stroke="#223"/>
+    <rect x="290" y="0" width="30" height="190" fill="var(--wood)"/><rect x="290" y="0" width="30" height="190" fill="url(#planksV)"/>
+    <use href="#crow" x="130" y="55" width="130" height="90" fill="#111"/>
+  </svg></template>
+<template id="tpl-door-A"><svg viewBox="0 0 80 120" aria-hidden="true" focusable="false"><path d="M12 118V40a28 28 0 0 1 56 0v78z" fill="var(--teal)" stroke="#222"/><path d="M12 118V40a28 28 0 0 1 56 0v78z" fill="url(#planksV)"/><rect x="28" y="54" width="24" height="12" fill="#fff" stroke="#222"/><text x="40" y="64" font-size="10" text-anchor="middle" font-weight="700">27</text><rect x="31" y="76" width="18" height="18" fill="#fffbe9" stroke="#222"/><g transform="translate(34 79)" stroke="#222" stroke-width="1.2" fill="none"><circle cx="3" cy="10" r="2.5"/><circle cx="9" cy="10" r="2.5"/><path d="M4.5 8 L12 0 M7.5 8 L0 0"/></g></svg><span class="door-name">Door A</span><span class="visually-hidden">arched top, vertical planks, teal, number 27, scissors tile.</span><dl><dt>Colour</dt><dd>teal</dd><dt>No.</dt><dd>27</dd><dt>Tile</dt><dd>scissors</dd></dl></template>
+<template id="tpl-door-B"><svg viewBox="0 0 80 120" aria-hidden="true" focusable="false"><rect x="8" y="14" width="64" height="104" fill="var(--teal)" stroke="#222"/><line x1="40" y1="14" x2="40" y2="118" stroke="#222"/><g fill="none" stroke="rgba(0,0,0,.35)"><rect x="13" y="20" width="22" height="22"/><rect x="45" y="20" width="22" height="22"/><rect x="13" y="92" width="22" height="22"/><rect x="45" y="92" width="22" height="22"/></g><rect x="28" y="50" width="24" height="12" fill="#fff" stroke="#222"/><text x="40" y="60" font-size="10" text-anchor="middle" font-weight="700">72</text><rect x="31" y="68" width="18" height="18" fill="#fffbe9" stroke="#222"/><g transform="translate(40 77)" stroke="#222" fill="none" stroke-width="1.2"><circle r="6"/><path d="M0 -6V6M-6 0H6" stroke-width=".8"/></g></svg><span class="door-name">Door B</span><span class="visually-hidden">double door with square panels, teal, number 72, wheel tile.</span><dl><dt>Colour</dt><dd>teal</dd><dt>No.</dt><dd>72</dd><dt>Tile</dt><dd>wheel</dd></dl></template>
+<template id="tpl-door-C"><svg viewBox="0 0 80 120" aria-hidden="true" focusable="false"><rect x="14" y="14" width="52" height="104" fill="var(--mustard)" stroke="#222"/><path d="M14 40 L66 20 M14 112 L66 92 M14 76 L66 56" stroke="rgba(0,0,0,.4)" stroke-width="3"/><rect x="28" y="24" width="24" height="12" fill="#fff" stroke="#222"/><text x="40" y="34" font-size="10" text-anchor="middle" font-weight="700">27</text><rect x="31" y="66" width="18" height="18" fill="#fffbe9" stroke="#222"/><g transform="translate(40 75)" stroke="#222" fill="none" stroke-width="1.2"><circle r="6"/><path d="M0 -6V6M-6 0H6" stroke-width=".8"/></g></svg><span class="door-name">Door C</span><span class="visually-hidden">single door with diagonal battens, mustard, number 27, wheel tile.</span><dl><dt>Colour</dt><dd>mustard</dd><dt>No.</dt><dd>27</dd><dt>Tile</dt><dd>wheel</dd></dl></template>
+<template id="tpl-door-D"><svg viewBox="0 0 80 120" aria-hidden="true" focusable="false"><rect x="16" y="4" width="48" height="114" fill="var(--teal)" stroke="#222"/><rect x="30" y="12" width="20" height="16" fill="#222"/><path d="M30 20h20M40 12v16M30 12l20 16M50 12l-20 16" stroke="#9fd3d3" stroke-width=".8"/><g fill="#333"><circle cx="22" cy="40" r="1.6"/><circle cx="58" cy="40" r="1.6"/><circle cx="22" cy="70" r="1.6"/><circle cx="58" cy="70" r="1.6"/><circle cx="22" cy="100" r="1.6"/><circle cx="58" cy="100" r="1.6"/></g><rect x="28" y="36" width="24" height="12" fill="#fff" stroke="#222"/><text x="40" y="46" font-size="10" text-anchor="middle" font-weight="700">27</text><rect x="31" y="56" width="18" height="18" fill="#fffbe9" stroke="#222"/><g transform="translate(40 65)" stroke="#222" fill="none" stroke-width="1.2"><circle r="6"/><path d="M0 -6V6M-6 0H6" stroke-width=".8"/></g></svg><span class="door-name">Door D</span><span class="visually-hidden">tall door with a small jaali window and iron studs, teal, number 27, wheel tile.</span><dl><dt>Colour</dt><dd>teal</dd><dt>No.</dt><dd>27</dd><dt>Tile</dt><dd>wheel</dd></dl></template>
+<template id="tpl-door-E"><svg viewBox="0 0 80 120" aria-hidden="true" focusable="false"><rect x="14" y="14" width="52" height="104" fill="var(--teal)" stroke="#222"/><rect x="20" y="20" width="40" height="38" fill="#d6ecf5" stroke="#222"/><line x1="40" y1="20" x2="40" y2="58" stroke="#222"/><rect x="28" y="64" width="24" height="12" fill="#fff" stroke="#222"/><text x="40" y="74" font-size="10" text-anchor="middle" font-weight="700">21</text><rect x="31" y="82" width="18" height="18" fill="#fffbe9" stroke="#222"/><g transform="translate(40 91)" stroke="#222" fill="none" stroke-width="1.2"><circle r="6"/><path d="M0 -6V6M-6 0H6" stroke-width=".8"/></g></svg><span class="door-name">Door E</span><span class="visually-hidden">half-glass top, wooden bottom, teal, number 21, wheel tile.</span><dl><dt>Colour</dt><dd>teal</dd><dt>No.</dt><dd>21</dd><dt>Tile</dt><dd>wheel</dd></dl></template>
+<template id="tpl-door-F"><svg viewBox="0 0 80 120" aria-hidden="true" focusable="false"><path d="M10 118V50a30 30 0 0 1 60 0v68z" fill="var(--maroon)" stroke="#222"/><path d="M10 118V50a30 30 0 0 1 60 0v68z" fill="url(#planksH)"/><rect x="28" y="52" width="24" height="12" fill="#fff" stroke="#222"/><text x="40" y="62" font-size="10" text-anchor="middle" font-weight="700">27</text><rect x="31" y="72" width="18" height="18" fill="#fffbe9" stroke="#222"/><g transform="translate(40 81)" stroke="#222" fill="none" stroke-width="1.2"><circle r="6"/><path d="M0 -6V6M-6 0H6" stroke-width=".8"/></g></svg><span class="door-name">Door F</span><span class="visually-hidden">round top with horizontal boards, maroon, number 27, wheel tile.</span><dl><dt>Colour</dt><dd>maroon</dd><dt>No.</dt><dd>27</dd><dt>Tile</dt><dd>wheel</dd></dl></template>
+
+  <header class="top-bar">
+    <div><a class="bar-logo" href="../../index.html">The Case<em>Room</em></a><div class="bar-label">Case No. 001</div></div>
+    <span class="bar-stamp" id="case-stamp">Checking</span>
+  </header>
+
+  <div class="wrap">
+    <section class="case-header">
+      <div class="case-header-text">
+      <div class="title-row">
+        <div class="case-number" id="case-number">Case 001 · Checking case status…</div>
+        <h1 class="case-title">The Hidden Drop</h1>
+        <button class="howto-btn" id="howto-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="howto">How to play</button>
+      </div>
+      <p class="opening"><span>Kaavla hid something in Kesari Peth.</span><span>Four clues. One drop.</span></p>
+      <a class="start-link" href="#stage-1" id="start-link">Start here <span aria-hidden="true">&#8595;</span></a>
+      </div>
+      <aside class="case-dossier" aria-label="Case file">
+        <button class="dossier-toggle" id="dossier-toggle" type="button" aria-expanded="false" aria-controls="dossier-body"><span class="dossier-label">Case File</span><span class="dossier-peek">CR-001-2026</span><span class="dossier-chev" aria-hidden="true"></span></button>
+        <div class="dossier-label dossier-label-wide" aria-hidden="true">Case File</div>
+        <div class="dossier-body" id="dossier-body">
+        <div class="dossier-row dossier-file"><span class="dossier-key">File No.</span><span class="dossier-val">CR-001-2026</span></div>
+        <div class="dossier-row"><span class="dossier-key">Location</span><span class="dossier-val">Kesari Peth<br>Pune</span></div>
+        <div class="dossier-divider"></div>
+        <div class="dossier-row dossier-wide"><span class="dossier-key">Incident</span><span class="dossier-val">Hidden street drop</span></div>
+        <div class="dossier-row dossier-artist"><span class="dossier-key">Artist</span><span class="dossier-val">Kaavla</span></div>
+        <div class="dossier-row dossier-wide dossier-trail"><span class="dossier-key">Trail</span><span class="dossier-val">3 pieces, 1 door</span></div>
+        <div class="dossier-stamp" id="case-stamp-2">Checking</div>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <div class="sticky" id="sticky">
+    <div class="tabs wrap" role="tablist" aria-label="Case 001 sections">
+      <button class="tab" role="tab" id="tab-trail" aria-controls="panel-trail" aria-selected="true">Trail</button>
+      <button class="tab" role="tab" id="tab-map" aria-controls="panel-map" aria-selected="false" tabindex="-1">Map</button>
+      <button class="tab" role="tab" id="tab-finds" aria-controls="panel-finds" aria-selected="false" tabindex="-1">Finds</button>
+    </div>
+    <div class="clue" id="clue" aria-live="polite">
+      <div class="clue-top"><div class="clue-label" id="clue-label">Active clue</div><div class="mini-tray" id="mini-tray" role="img" aria-label="Pieces found" hidden></div></div>
+      <div class="clue-text" id="clue-text">Checking your progress…</div>
+      <div class="clue-row" id="clue-row" hidden>
+        <span class="clue-pick" id="clue-pick"></span>
+        <button class="act small" id="clue-check" type="button" disabled>Check</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="howto-backdrop" id="howto" hidden>
+    <div class="howto-panel" role="dialog" aria-modal="true" aria-labelledby="howto-title" tabindex="-1" id="howto-panel">
+      <h2 id="howto-title">How to play</h2>
+      <ol>
+        <li>Read the clue.</li>
+        <li>Tap a place on the map.</li>
+        <li>Find the fragment.</li>
+        <li>Use the pieces to find the door.</li>
+      </ol>
+      <p>No timer. Hints are free.</p>
+      <button class="howto-close" id="howto-close" type="button">Got it</button>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop" id="closeup" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="closeup-title" tabindex="-1" id="closeup-panel">
+      <div class="sheet-top"><button type="button" class="sheet-back" id="closeup-back"><span aria-hidden="true">&#8249;</span> Back to street</button></div>
+      <div class="sheet-clue" id="closeup-clue" hidden><b id="closeup-clue-label"></b><span id="closeup-clue-text"></span></div>
+      <div class="sheet-art" id="closeup-art" aria-hidden="true"></div>
+      <div class="sheet-caption">
+        <h2 id="closeup-title"></h2>
+        <div class="caption-lines" id="closeup-facts"></div>
+        <p class="sheet-found" id="closeup-found" hidden></p>
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="sheet-choose" id="closeup-choose" hidden></button>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="panel" id="panel-trail" role="tabpanel" aria-labelledby="tab-trail" tabindex="-1">
+      <div class="trail-grid"><div class="trail-play">
+      <h2 class="section-label">The trail</h2>
+      <div id="stages"></div>
+      </div><div class="trail-ref">
+
+      <h2 class="section-label">Noticeboard</h2>
+      <div class="patya" role="list" aria-label="Kesari Peth noticeboard, Puneri patya">
+        <div role="listitem"><b>Cafe Noor</b><span>6:30 am to 11 pm. Closed Monday.</span><i>Order chai also.</i></div>
+        <div role="listitem"><b>Sharp Stitch Tailors</b><span>10:30 am to 8 pm. Closed Tuesday.</span><i>No "by evening."</i></div>
+        <div role="listitem"><b>Vachan Kendra</b><span>10 am to 6 pm. Closed Sunday.</span><i>Silence. Phone also.</i></div>
+        <div role="listitem"><b>Shinde Bakery</b><span>7 am to 9 pm. Open every day.</span><i>Pav at 7. Do not ask.</i></div>
+        <div role="listitem"><b>Laxmi Cycle Works</b><span>9 am to 7 pm. Closed Sunday.</span><i>Puncture story not included.</i></div>
+        <div role="listitem"><b>Kulkarni Medical</b><span>8 am to 10 pm. Open every day.</span><i>Ask us, not the internet.</i></div>
+      </div>
+
+      <h2 class="section-label">KP Neighbours</h2>
+      <div class="card chat" aria-label="KP Neighbours group chat">
+        <div class="msg"><b>Meera (Ketkar Wada)</b>A crow on our wall! Aaji approves.</div>
+        <div class="msg"><b>Vachan Kendra</b>Open this Sunday for the book swap.</div>
+        <div class="msg"><b>Joshi kaka</b>In my time crows only stole bread.</div>
+        <div class="msg"><b>Anu</b>Third piece is up!</div>
+      </div>
+
+      </div></div>
+    </section>
+
+    <section class="panel" id="panel-map" role="tabpanel" aria-labelledby="tab-map" tabindex="-1" hidden>
+      <h2 class="visually-hidden" id="street-view">Kesari Peth street</h2>
+      <p class="street-hint" id="street-hint">Tap a building to look closer.</p>
+      <div class="street" id="street"><div class="street-row" role="group" aria-label="North side of Neem Galli, west to east"><button type="button" class="shop" id="shop-noor" data-id="noor" aria-haspopup="dialog" aria-controls="closeup" data-label="Cafe Noor, number 2: green wooden door with an arched fanlight, cup sign. No shutter. Opens a close-up." aria-label="Cafe Noor, number 2: green wooden door with an arched fanlight, cup sign. No shutter. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><rect x="14" y="46" width="212" height="250" fill="#efe2c6" stroke="#2b241c" stroke-width="1.6"/><rect x="10" y="46" width="220" height="8" fill="#cbb995" stroke="#2b241c" stroke-width="1.4"/><rect x="14" y="54" width="212" height="10" fill="url(#st-shade)"/><path d="M42 86.0 A20.0 20.0 0 0 1 82 86.0" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><rect x="42" y="86.0" width="40" height="46" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M52.0 86.0V132.0" stroke="#6b5a40" stroke-width="1.2"/><path d="M62.0 86.0V132.0" stroke="#6b5a40" stroke-width="1.2"/><path d="M72.0 86.0V132.0" stroke="#6b5a40" stroke-width="1.2"/><rect x="33" y="86.0" width="8" height="46" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="83" y="86.0" width="8" height="46" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="31" y="132.0" width="62" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><path d="M158 86.0 A20.0 20.0 0 0 1 198 86.0" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><rect x="158" y="86.0" width="40" height="46" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M168.0 86.0V132.0" stroke="#6b5a40" stroke-width="1.2"/><path d="M178.0 86.0V132.0" stroke="#6b5a40" stroke-width="1.2"/><path d="M188.0 86.0V132.0" stroke="#6b5a40" stroke-width="1.2"/><rect x="149" y="86.0" width="8" height="46" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="199" y="86.0" width="8" height="46" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="147" y="132.0" width="62" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><rect x="30" y="152" width="180" height="34" rx="2" fill="#f8f1e0" stroke="#2b241c" stroke-width="1.8"/><rect x="33" y="155" width="174" height="28" rx="1" fill="none" stroke="#2b241c" stroke-width=".6" opacity=".5"/><g transform="translate(36 156.0)"><path d="M5 9h14v8a7 7 0 0 1-14 0z M19 11h3a3 3 0 0 1 0 6h-3" fill="none" stroke="#2b241c" stroke-width="2.2"/><path d="M9 3c-1 2 1 3 0 5M14 3c-1 2 1 3 0 5" stroke="#2b241c" stroke-width="1.6" fill="none"/></g><text x="68" y="174.0" font-family="Playfair Display, Georgia, serif" font-weight="900" font-size="14" fill="#2b241c" textLength="134" lengthAdjust="spacingAndGlyphs">CAFE NOOR</text><path d="M86 224 A34 34 0 0 1 154 224 V296 H86z" fill="#e2d2ae" stroke="#2b241c" stroke-width="1.6"/><path d="M92 224 A28 28 0 0 1 148 224" fill="#f1d891" stroke="#2b241c" stroke-width="1.2"/><path d="M120 196V224M100 204l20 20M140 204l-20 20" stroke="#2b241c" stroke-width="1"/><rect x="92" y="226" width="56" height="70" fill="#2e7d4f" stroke="#2b241c" stroke-width="1.6"/><path d="M120 226V296" stroke="#2b241c" stroke-width="1.4"/><rect x="97" y="232" width="18" height="26" fill="none" stroke="#1d5a38" stroke-width="1.6"/><rect x="125" y="232" width="18" height="26" fill="none" stroke="#1d5a38" stroke-width="1.6"/><rect x="97" y="264" width="18" height="26" fill="none" stroke="#1d5a38" stroke-width="1.6"/><rect x="125" y="264" width="18" height="26" fill="none" stroke="#1d5a38" stroke-width="1.6"/><circle cx="115" cy="262" r="2" fill="#d8c27a"/><circle cx="125" cy="262" r="2" fill="#d8c27a"/><g stroke="#2b241c" stroke-width="1.6" fill="none"><path d="M186 296V266 q0-8 8-8 h6"/><path d="M186 276h20 M204 276V296 M190 276V296"/></g><ellipse cx="120.0" cy="298" rx="100.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Cafe Noor</span><span class="nm-full">Cafe Noor</span><span class="shop-no"><span class="nw">No. 2</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button><button type="button" class="shop" id="shop-stitch" data-id="stitch" aria-haspopup="dialog" aria-controls="closeup" data-label="Sharp Stitch Tailors, number 4: teal shutter, scissors sign. Opens a close-up." aria-label="Sharp Stitch Tailors, number 4: teal shutter, scissors sign. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><rect x="10" y="70" width="220" height="226" fill="#e6d6b8" stroke="#2b241c" stroke-width="1.6"/><rect x="6" y="70" width="228" height="8" fill="#cbb995" stroke="#2b241c" stroke-width="1.4"/><rect x="10" y="78" width="220" height="10" fill="url(#st-shade)"/><rect x="100" y="88" width="40" height="34" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M110.0 88V122" stroke="#6b5a40" stroke-width="1.2"/><path d="M120.0 88V122" stroke="#6b5a40" stroke-width="1.2"/><path d="M130.0 88V122" stroke="#6b5a40" stroke-width="1.2"/><rect x="91" y="88" width="8" height="34" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="141" y="88" width="8" height="34" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="89" y="122" width="62" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><rect x="168" y="96" width="34" height="20" fill="#d9d6cf" stroke="#2b241c" stroke-width="1.2"/><path d="M172 101h26M172 106h26M172 111h26" stroke="#9c988f" stroke-width="1"/><rect x="18" y="138" width="204" height="36" rx="2" fill="#f8f1e0" stroke="#2b241c" stroke-width="1.8"/><rect x="21" y="141" width="198" height="30" rx="1" fill="none" stroke="#2b241c" stroke-width=".6" opacity=".5"/><g transform="translate(24 143.0)"><circle cx="7" cy="19" r="4" fill="none" stroke="#2b241c" stroke-width="2.2"/><circle cx="19" cy="19" r="4" fill="none" stroke="#2b241c" stroke-width="2.2"/><path d="M9.5 16 L21 3 M16.5 16 L5 3" stroke="#2b241c" stroke-width="2.2"/></g><text x="56" y="161.0" font-family="Playfair Display, Georgia, serif" font-weight="900" font-size="14" fill="#2b241c" textLength="158" lengthAdjust="spacingAndGlyphs">SHARP STITCH TAILORS</text><rect x="21" y="180" width="198" height="12" fill="#4a4036" stroke="#2b241c" stroke-width="1.4"/><rect x="24" y="192" width="192" height="104" fill="#1f8a8a" stroke="#2b241c" stroke-width="1.6"/><path d="M24 199H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 200.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 206H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 207.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 213H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 214.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 220H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 221.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 227H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 228.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 234H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 235.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 241H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 242.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 248H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 249.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 255H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 256.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 262H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 263.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 269H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 270.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 276H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 277.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 283H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 284.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 290H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 291.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><rect x="24" y="289" width="192" height="7" fill="#000" fill-opacity=".18"/><g transform="translate(114.0 276)"><path d="M2 6 v-3 a4 4 0 0 1 8 0 v3" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><rect x="0" y="6" width="12" height="9" rx="1.5" fill="#c9a24a" stroke="#2b241c" stroke-width="1"/></g><ellipse cx="120.0" cy="298" rx="104.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Sharp Stitch</span><span class="nm-full">Sharp Stitch Tailors</span><span class="shop-no"><span class="nw">No. 4</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button><button type="button" class="shop" id="shop-vachan" data-id="vachan" aria-haspopup="dialog" aria-controls="closeup" data-label="Vachan Kendra library, number 6: glass door with no shutter, open book sign. Opens a close-up." aria-label="Vachan Kendra library, number 6: glass door with no shutter, open book sign. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><rect x="10" y="52" width="220" height="244" fill="#e3ddcf" stroke="#2b241c" stroke-width="1.6"/><rect x="6" y="52" width="228" height="8" fill="#c9c0ac" stroke="#2b241c" stroke-width="1.4"/><rect x="10" y="60" width="220" height="10" fill="url(#st-shade)"/><rect x="40" y="70" width="160" height="50" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M80 70V120M120 70V120M160 70V120" stroke="#6b5a40" stroke-width="1.2"/><rect x="34" y="118" width="172" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1"/><path d="M34 118 v-16 M206 118 v-16 M34 102 H206" stroke="#2b241c" stroke-width="1.4"/><path d="M44 118V102" stroke="#2b241c" stroke-width="1"/><path d="M54 118V102" stroke="#2b241c" stroke-width="1"/><path d="M64 118V102" stroke="#2b241c" stroke-width="1"/><path d="M74 118V102" stroke="#2b241c" stroke-width="1"/><path d="M84 118V102" stroke="#2b241c" stroke-width="1"/><path d="M94 118V102" stroke="#2b241c" stroke-width="1"/><path d="M104 118V102" stroke="#2b241c" stroke-width="1"/><path d="M114 118V102" stroke="#2b241c" stroke-width="1"/><path d="M124 118V102" stroke="#2b241c" stroke-width="1"/><path d="M134 118V102" stroke="#2b241c" stroke-width="1"/><path d="M144 118V102" stroke="#2b241c" stroke-width="1"/><path d="M154 118V102" stroke="#2b241c" stroke-width="1"/><path d="M164 118V102" stroke="#2b241c" stroke-width="1"/><path d="M174 118V102" stroke="#2b241c" stroke-width="1"/><path d="M184 118V102" stroke="#2b241c" stroke-width="1"/><path d="M194 118V102" stroke="#2b241c" stroke-width="1"/><path d="M204 118V102" stroke="#2b241c" stroke-width="1"/><g><rect x="46" y="96" width="14" height="10" fill="#9a5a3a" stroke="#2b241c"/><path d="M48 96q5-12 10 0" fill="#5c8a4a"/><rect x="178" y="96" width="14" height="10" fill="#9a5a3a" stroke="#2b241c"/><path d="M180 96q5-12 10 0" fill="#5c8a4a"/></g><rect x="26" y="138" width="188" height="36" rx="2" fill="#f8f1e0" stroke="#2b241c" stroke-width="1.8"/><rect x="29" y="141" width="182" height="30" rx="1" fill="none" stroke="#2b241c" stroke-width=".6" opacity=".5"/><g transform="translate(32 143.0)"><path d="M2 7 q6-3 11 0 v15 q-5-3-11 0z M13 7 q5-3 11 0 v15 q-6-3-11 0z" fill="#fff" stroke="#2b241c" stroke-width="2"/></g><text x="64" y="161.0" font-family="Playfair Display, Georgia, serif" font-weight="900" font-size="14" fill="#2b241c" textLength="142" lengthAdjust="spacingAndGlyphs">VACHAN KENDRA</text><rect x="56" y="190" width="128" height="100" fill="#d8cfbb" stroke="#2b241c" stroke-width="1.6"/><rect x="62" y="196" width="56" height="94" fill="url(#st-glass)" stroke="#2b241c" stroke-width="1.6"/><rect x="122" y="196" width="56" height="94" fill="url(#st-glass)" stroke="#2b241c" stroke-width="1.6"/><rect x="66" y="232" width="6" height="20" fill="#8a3b2e" opacity=".55"/><rect x="75" y="234" width="6" height="18" fill="#3d5a7a" opacity=".55"/><rect x="84" y="236" width="6" height="16" fill="#c09a3a" opacity=".55"/><rect x="93" y="232" width="6" height="20" fill="#5a6b3e" opacity=".55"/><rect x="102" y="234" width="6" height="18" fill="#8a3b2e" opacity=".55"/><rect x="111" y="236" width="6" height="16" fill="#3d5a7a" opacity=".55"/><rect x="120" y="232" width="6" height="20" fill="#c09a3a" opacity=".55"/><rect x="129" y="234" width="6" height="18" fill="#5a6b3e" opacity=".55"/><rect x="138" y="236" width="6" height="16" fill="#8a3b2e" opacity=".55"/><rect x="147" y="232" width="6" height="20" fill="#3d5a7a" opacity=".55"/><rect x="156" y="234" width="6" height="18" fill="#c09a3a" opacity=".55"/><rect x="165" y="236" width="6" height="16" fill="#5a6b3e" opacity=".55"/><path d="M64 220H176" stroke="#7a6a52" stroke-width="2" opacity=".6"/><path d="M70 202 l20 30 M128 202 l26 40" stroke="#fff" stroke-width="3" opacity=".55"/><path d="M114 236v18M126 236v18" stroke="#8a8a8a" stroke-width="3" stroke-linecap="round"/><rect x="50" y="290" width="140" height="6" fill="#b9ad98" stroke="#2b241c" stroke-width="1"/><ellipse cx="120.0" cy="298" rx="104.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Vachan Kendra</span><span class="nm-full">Vachan Kendra</span><span class="shop-no"><span class="nw">No. 6</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button><button type="button" class="shop" id="shop-shinde" data-id="shinde" aria-haspopup="dialog" aria-controls="closeup" data-label="Shinde Bakery, number 8: mustard shutter, loaf sign. Opens a close-up." aria-label="Shinde Bakery, number 8: mustard shutter, loaf sign. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><path d="M4 64 L120 26 L236 64z" fill="url(#st-roof)" stroke="#2b241c" stroke-width="1.6"/><rect x="12" y="64" width="216" height="232" fill="#ecdcbc" stroke="#2b241c" stroke-width="1.6"/><rect x="8" y="64" width="224" height="8" fill="#cbb995" stroke="#2b241c" stroke-width="1.4"/><rect x="12" y="72" width="216" height="10" fill="url(#st-shade)"/><rect x="100" y="80" width="40" height="34" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M110.0 80V114" stroke="#6b5a40" stroke-width="1.2"/><path d="M120.0 80V114" stroke="#6b5a40" stroke-width="1.2"/><path d="M130.0 80V114" stroke="#6b5a40" stroke-width="1.2"/><rect x="91" y="80" width="8" height="34" fill="#5e7a8a" stroke="#2b241c" stroke-width="1.2"/><rect x="141" y="80" width="8" height="34" fill="#5e7a8a" stroke="#2b241c" stroke-width="1.2"/><rect x="89" y="114" width="62" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><rect x="20" y="134" width="200" height="36" rx="2" fill="#f8f1e0" stroke="#2b241c" stroke-width="1.8"/><rect x="23" y="137" width="194" height="30" rx="1" fill="none" stroke="#2b241c" stroke-width=".6" opacity=".5"/><g transform="translate(26 139.0)"><path d="M3 20 v-6 a10 7 0 0 1 20 0 v6z" fill="#e8b45e" stroke="#2b241c" stroke-width="2"/><path d="M9 12l2 4M13 11l2 4M17 12l2 4" stroke="#2b241c" stroke-width="1.6"/></g><text x="58" y="157.0" font-family="Playfair Display, Georgia, serif" font-weight="900" font-size="14" fill="#2b241c" textLength="154" lengthAdjust="spacingAndGlyphs">SHINDE BAKERY</text><rect x="23" y="178" width="194" height="12" fill="#4a4036" stroke="#2b241c" stroke-width="1.4"/><rect x="26" y="190" width="188" height="106" fill="#d4a017" stroke="#2b241c" stroke-width="1.6"/><path d="M26 197H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 198.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 204H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 205.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 211H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 212.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 218H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 219.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 225H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 226.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 232H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 233.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 239H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 240.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 246H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 247.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 253H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 254.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 260H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 261.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 267H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 268.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 274H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 275.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 281H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 282.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 288H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 289.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M26 295H214" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M26 296.5H214" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><rect x="26" y="289" width="188" height="7" fill="#000" fill-opacity=".18"/><g transform="translate(114.0 276)"><path d="M2 6 v-3 a4 4 0 0 1 8 0 v3" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><rect x="0" y="6" width="12" height="9" rx="1.5" fill="#c9a24a" stroke="#2b241c" stroke-width="1"/></g><ellipse cx="120.0" cy="298" rx="102.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Shinde Bakery</span><span class="nm-full">Shinde Bakery</span><span class="shop-no"><span class="nw">No. 8</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button></div><div class="galli" role="img" aria-label="Neem Galli runs west to east between the two rows. North is up, east is to the right. A banyan tree with a stone katta stands in the middle of the road, opposite the gap between Ketkar Wada and the water tank."><span class="galli-name">Neem Galli</span><span class="katta"><svg class="banyan" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><ellipse cx="34" cy="36" rx="29" ry="25" fill="#000" opacity=".28"/><circle cx="32" cy="32" r="28" fill="#cdbf9f" stroke="#2b241c" stroke-width="1.6"/><path d="M32 32 L60.0 32.0" stroke="#a8987a" stroke-width="1"/><path d="M32 32 L51.8 51.8" stroke="#a8987a" stroke-width="1"/><path d="M32 32 L32.0 60.0" stroke="#a8987a" stroke-width="1"/><path d="M32 32 L12.2 51.8" stroke="#a8987a" stroke-width="1"/><path d="M32 32 L4.0 32.0" stroke="#a8987a" stroke-width="1"/><path d="M32 32 L12.2 12.2" stroke="#a8987a" stroke-width="1"/><path d="M32 32 L32.0 4.0" stroke="#a8987a" stroke-width="1"/><path d="M32 32 L51.8 12.2" stroke="#a8987a" stroke-width="1"/><circle cx="32" cy="32" r="22" fill="#7d6a4c" stroke="#2b241c" stroke-width="1.2"/><circle cx="24" cy="26" r="12" fill="#4f6b33"/><circle cx="41" cy="24" r="11" fill="#5d7b3c"/><circle cx="37" cy="40" r="12" fill="#48632f"/><circle cx="22" cy="40" r="9.5" fill="#5a7a3b"/><circle cx="32" cy="31" r="10" fill="#6a8a45"/><g fill="#93b264" opacity=".75"><circle cx="20" cy="22" r="2.6"/><circle cx="37" cy="19" r="2.2"/><circle cx="29" cy="27" r="2.4"/><circle cx="43" cy="31" r="2"/><circle cx="18" cy="37" r="2"/><circle cx="33" cy="38" r="2.2"/></g></svg><span class="katta-label">banyan + katta</span></span><span class="compass"><svg class="rose" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><circle cx="20" cy="20" r="17" fill="#2e261c" stroke="#c8a45a" stroke-width="1.4"/><path d="M20 5 L24 20 L20 18 L16 20 Z" fill="#c4553a"/><path d="M20 35 L16 20 L20 22 L24 20 Z" fill="#efe6d2"/><path d="M5 20 L20 17 L35 20 L20 23 Z" fill="#c8a45a" opacity=".55"/><circle cx="20" cy="20" r="2" fill="#efe6d2"/></svg><span class="compass-text"><b>N &#8593;</b><span>W &#10231; E</span></span></span></div><div class="street-row" role="group" aria-label="South side of Neem Galli, west to east"><button type="button" class="shop" id="shop-laxmi" data-id="laxmi" aria-haspopup="dialog" aria-controls="closeup" data-label="Laxmi Cycle Works, number 21: maroon shutter, wheel sign. A bicycle stands outside. Opens a close-up." aria-label="Laxmi Cycle Works, number 21: maroon shutter, wheel sign. A bicycle stands outside. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><rect x="10" y="74" width="220" height="222" fill="#e3d0ae" stroke="#2b241c" stroke-width="1.6"/><rect x="6" y="74" width="228" height="8" fill="#cbb995" stroke="#2b241c" stroke-width="1.4"/><rect x="10" y="82" width="220" height="10" fill="url(#st-shade)"/><rect x="48" y="92" width="36" height="30" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M57.0 92V122" stroke="#6b5a40" stroke-width="1.2"/><path d="M66.0 92V122" stroke="#6b5a40" stroke-width="1.2"/><path d="M75.0 92V122" stroke="#6b5a40" stroke-width="1.2"/><rect x="39" y="92" width="8" height="30" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="85" y="92" width="8" height="30" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="37" y="122" width="58" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><rect x="156" y="92" width="36" height="30" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M165.0 92V122" stroke="#6b5a40" stroke-width="1.2"/><path d="M174.0 92V122" stroke="#6b5a40" stroke-width="1.2"/><path d="M183.0 92V122" stroke="#6b5a40" stroke-width="1.2"/><rect x="147" y="92" width="8" height="30" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="193" y="92" width="8" height="30" fill="#7a4a2a" stroke="#2b241c" stroke-width="1.2"/><rect x="145" y="122" width="58" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><rect x="18" y="138" width="204" height="36" rx="2" fill="#f8f1e0" stroke="#2b241c" stroke-width="1.8"/><rect x="21" y="141" width="198" height="30" rx="1" fill="none" stroke="#2b241c" stroke-width=".6" opacity=".5"/><g transform="translate(24 143.0)"><circle cx="13" cy="13" r="11" fill="none" stroke="#2b241c" stroke-width="2.2"/><circle cx="13" cy="13" r="2.4" fill="#2b241c"/><path d="M13 2v22M2 13h22M5.2 5.2l15.6 15.6M5.2 20.8L20.8 5.2" stroke="#2b241c" stroke-width="1.2"/></g><text x="56" y="161.0" font-family="Playfair Display, Georgia, serif" font-weight="900" font-size="14" fill="#2b241c" textLength="158" lengthAdjust="spacingAndGlyphs">LAXMI CYCLE WORKS</text><rect x="21" y="180" width="198" height="12" fill="#4a4036" stroke="#2b241c" stroke-width="1.4"/><rect x="24" y="192" width="192" height="104" fill="#7a1f2b" stroke="#2b241c" stroke-width="1.6"/><path d="M24 199H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 200.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 206H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 207.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 213H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 214.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 220H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 221.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 227H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 228.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 234H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 235.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 241H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 242.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 248H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 249.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 255H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 256.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 262H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 263.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 269H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 270.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 276H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 277.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 283H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 284.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 290H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 291.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><rect x="24" y="289" width="192" height="7" fill="#000" fill-opacity=".18"/><g transform="translate(114.0 276)"><path d="M2 6 v-3 a4 4 0 0 1 8 0 v3" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><rect x="0" y="6" width="12" height="9" rx="1.5" fill="#c9a24a" stroke="#2b241c" stroke-width="1"/></g><g transform="translate(176 262) scale(.62)" fill="none" stroke="#2b241c" stroke-width="3"><circle cx="0" cy="40" r="16"/><circle cx="56" cy="40" r="16"/><path d="M0 40 L20 16 H46 L56 40 M20 16 L32 40 H56 M44 16 L40 6 h8 M18 14 h-8"/></g><ellipse cx="120.0" cy="298" rx="104.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Laxmi Cycle</span><span class="nm-full">Laxmi Cycle Works</span><span class="shop-no"><span class="nw">No. 21</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button><button type="button" class="shop" id="shop-ketkar" data-id="ketkar" aria-haspopup="dialog" aria-controls="closeup" data-label="Ketkar Wada, number 27 on a plaque on the wall: grey stone wall and a wooden gate. No sign. Opens a close-up." aria-label="Ketkar Wada, number 27 on a plaque on the wall: grey stone wall and a wooden gate. No sign. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><path d="M6 92 L120 54 L234 92z" fill="url(#st-roof)" stroke="#2b241c" stroke-width="1.6"/><rect x="40" y="70" width="18" height="24" fill="#c9b48a" stroke="#2b241c"/><rect x="8" y="104" width="224" height="192" fill="url(#st-basalt)" stroke="#2b241c" stroke-width="1.8"/><rect x="4" y="98" width="232" height="8" fill="#6e6b64" stroke="#2b241c" stroke-width="1.4"/><circle cx="150" cy="98" r="9" fill="#c2387a"/><circle cx="164" cy="94" r="8" fill="#d6488a"/><circle cx="176" cy="100" r="9" fill="#b8306e"/><circle cx="190" cy="95" r="7" fill="#d6488a"/><circle cx="156" cy="108" r="6" fill="#c2387a"/><circle cx="184" cy="108" r="6" fill="#b8306e"/><circle cx="204" cy="100" r="6" fill="#c2387a"/><path d="M152 100 q4 14 -2 26" stroke="#4f6b35" stroke-width="2" fill="none"/><path d="M170 100 q4 17 -2 30" stroke="#4f6b35" stroke-width="2" fill="none"/><path d="M188 100 q4 20 -2 34" stroke="#4f6b35" stroke-width="2" fill="none"/><path d="M124 296 V170 A44 44 0 0 1 212 170 V296z" fill="#3a2c1e" stroke="#2b241c" stroke-width="1.8"/><path d="M130 296 V172 A38 38 0 0 1 168 136 V296z" fill="url(#st-plank)" stroke="#2b241c" stroke-width="1.4"/><path d="M168 296 V136 A38 38 0 0 1 206 172 V296z" fill="url(#st-plank)" stroke="#2b241c" stroke-width="1.4"/><circle cx="140" cy="190" r="2.2" fill="#2a2a2a"/><circle cx="140" cy="222" r="2.2" fill="#2a2a2a"/><circle cx="140" cy="254" r="2.2" fill="#2a2a2a"/><circle cx="140" cy="284" r="2.2" fill="#2a2a2a"/><circle cx="156" cy="190" r="2.2" fill="#2a2a2a"/><circle cx="156" cy="222" r="2.2" fill="#2a2a2a"/><circle cx="156" cy="254" r="2.2" fill="#2a2a2a"/><circle cx="156" cy="284" r="2.2" fill="#2a2a2a"/><circle cx="180" cy="190" r="2.2" fill="#2a2a2a"/><circle cx="180" cy="222" r="2.2" fill="#2a2a2a"/><circle cx="180" cy="254" r="2.2" fill="#2a2a2a"/><circle cx="180" cy="284" r="2.2" fill="#2a2a2a"/><circle cx="196" cy="190" r="2.2" fill="#2a2a2a"/><circle cx="196" cy="222" r="2.2" fill="#2a2a2a"/><circle cx="196" cy="254" r="2.2" fill="#2a2a2a"/><circle cx="196" cy="284" r="2.2" fill="#2a2a2a"/><rect x="162" y="226" width="12" height="4" fill="#2a2a2a"/><rect x="48" y="186" width="38" height="24" rx="3" fill="#f6f3ea" stroke="#1d3d6b" stroke-width="2.4"/><text x="67" y="204" text-anchor="middle" font-family="Courier Prime, monospace" font-weight="700" font-size="17" fill="#1d3d6b">27</text><ellipse cx="120.0" cy="298" rx="110.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Ketkar Wada</span><span class="nm-full">Ketkar Wada</span><span class="shop-no"><span class="nw">No. 27</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button><button type="button" class="shop" id="shop-tank" data-id="tank" aria-haspopup="dialog" aria-controls="closeup" data-label="Old Water Tank: round blue metal tank on a platform. No number. Opens a close-up." aria-label="Old Water Tank: round blue metal tank on a platform. No number. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><path d="M30 36 V296 M24 60 H38" stroke="#5a5048" stroke-width="5"/><rect x="70" y="242" width="100" height="54" fill="#bdb3a1" stroke="#2b241c" stroke-width="1.6"/><path d="M82 242 V214 M158 242 V214 M100 242V214 M140 242V214" stroke="#2b241c" stroke-width="3"/><path d="M58 120 A62 34 0 0 1 182 120 V200 A62 22 0 0 1 58 200 Z" fill="#3b6ea5" stroke="#2b241c" stroke-width="1.8"/><path d="M58 120 A62 34 0 0 1 182 120 V200 A62 22 0 0 1 58 200 Z" fill="url(#st-tankshade)"/><ellipse cx="120" cy="120" rx="62" ry="12" fill="none" stroke="#7fa2cc" stroke-width="1.5" opacity=".7"/><path d="M58 160 A62 16 0 0 0 182 160" fill="none" stroke="#7fa2cc" stroke-width="1.5" opacity=".7"/><g stroke="#2b241c" stroke-width="2"><path d="M192 120 V296 M206 120 V296"/><path d="M192 132H206"/><path d="M192 146H206"/><path d="M192 160H206"/><path d="M192 174H206"/><path d="M192 188H206"/><path d="M192 202H206"/><path d="M192 216H206"/><path d="M192 230H206"/><path d="M192 244H206"/><path d="M192 258H206"/><path d="M192 272H206"/><path d="M192 286H206"/></g><path d="M110 92 h20 v-6 h-20z" fill="#2f5a8a" stroke="#2b241c" stroke-width="1.2"/><ellipse cx="133.0" cy="298" rx="77.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Water Tank</span><span class="nm-full">Old Water Tank</span><span class="shop-no"><span class="">No number</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button><button type="button" class="shop" id="shop-kulkarni" data-id="kulkarni" aria-haspopup="dialog" aria-controls="closeup" data-label="Kulkarni Medical, number 29: white shutter, pestle sign. Opens a close-up." aria-label="Kulkarni Medical, number 29: white shutter, pestle sign. Opens a close-up."><svg viewBox="0 0 240 316" aria-hidden="true" focusable="false" class="street-art"><rect width="240" height="300" fill="url(#st-sky)"/><rect x="10" y="58" width="220" height="238" fill="#d9c8a6" stroke="#2b241c" stroke-width="1.6"/><rect x="6" y="58" width="228" height="8" fill="#cbb995" stroke="#2b241c" stroke-width="1.4"/><rect x="10" y="66" width="220" height="10" fill="url(#st-shade)"/><rect x="48" y="76" width="36" height="34" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M57.0 76V110" stroke="#6b5a40" stroke-width="1.2"/><path d="M66.0 76V110" stroke="#6b5a40" stroke-width="1.2"/><path d="M75.0 76V110" stroke="#6b5a40" stroke-width="1.2"/><rect x="39" y="76" width="8" height="34" fill="#6a6a60" stroke="#2b241c" stroke-width="1.2"/><rect x="85" y="76" width="8" height="34" fill="#6a6a60" stroke="#2b241c" stroke-width="1.2"/><rect x="37" y="110" width="58" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><rect x="156" y="76" width="36" height="34" fill="#3b3226" stroke="#2b241c" stroke-width="1.4"/><path d="M165.0 76V110" stroke="#6b5a40" stroke-width="1.2"/><path d="M174.0 76V110" stroke="#6b5a40" stroke-width="1.2"/><path d="M183.0 76V110" stroke="#6b5a40" stroke-width="1.2"/><rect x="147" y="76" width="8" height="34" fill="#6a6a60" stroke="#2b241c" stroke-width="1.2"/><rect x="193" y="76" width="8" height="34" fill="#6a6a60" stroke="#2b241c" stroke-width="1.2"/><rect x="145" y="110" width="58" height="5" fill="#cbb995" stroke="#2b241c" stroke-width="1.2"/><rect x="150" y="112" width="44" height="8" fill="#9a5a3a"/><path d="M154 112q4-10 8 0M166 112q4-12 8 0M178 112q4-10 8 0" fill="#5c8a4a"/><rect x="18" y="134" width="204" height="36" rx="2" fill="#f6f8f4" stroke="#2b241c" stroke-width="1.8"/><rect x="21" y="137" width="198" height="30" rx="1" fill="none" stroke="#2b241c" stroke-width=".6" opacity=".5"/><g transform="translate(24 139.0)"><path d="M3 13h20l-3 9H6z" fill="#fff" stroke="#2b241c" stroke-width="2"/><path d="M13 13 L21 2" stroke="#2b241c" stroke-width="3" stroke-linecap="round"/></g><text x="56" y="157.0" font-family="Playfair Display, Georgia, serif" font-weight="900" font-size="14" fill="#2b241c" textLength="158" lengthAdjust="spacingAndGlyphs">KULKARNI MEDICAL</text><rect x="21" y="178" width="198" height="12" fill="#4a4036" stroke="#2b241c" stroke-width="1.4"/><rect x="24" y="190" width="192" height="106" fill="#ececec" stroke="#2b241c" stroke-width="1.6"/><path d="M24 197H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 198.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 204H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 205.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 211H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 212.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 218H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 219.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 225H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 226.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 232H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 233.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 239H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 240.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 246H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 247.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 253H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 254.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 260H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 261.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 267H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 268.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 274H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 275.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 281H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 282.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 288H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 289.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><path d="M24 295H216" stroke="#000" stroke-opacity=".22" stroke-width="1.4"/><path d="M24 296.5H216" stroke="#fff" stroke-opacity=".18" stroke-width="1"/><rect x="24" y="289" width="192" height="7" fill="#000" fill-opacity=".18"/><g transform="translate(114.0 276)"><path d="M2 6 v-3 a4 4 0 0 1 8 0 v3" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><rect x="0" y="6" width="12" height="9" rx="1.5" fill="#c9a24a" stroke="#2b241c" stroke-width="1"/></g><ellipse cx="120.0" cy="298" rx="104.0" ry="4" fill="#000" opacity=".18"/><rect x="0" y="296" width="240" height="18" fill="url(#st-pave)"/><rect x="0" y="314" width="240" height="6" fill="#8a7f6c"/><rect x="0" y="320" width="240" height="14" fill="#3f3830"/><path d="M0 327h30M60 327h30M120 327h30M180 327h30" stroke="#d8cfbf" stroke-width="2" stroke-dasharray="0" opacity=".5"/><path d="M-2 16 C 70 30, 170 30, 242 16 M-2 26 C 80 38, 160 38, 242 26" stroke="#2b241c" stroke-width="1.3" fill="none" opacity=".75"/></svg><span class="shop-label" aria-hidden="true"><span class="nm-short">Kulkarni Medical</span><span class="nm-full">Kulkarni Medical</span><span class="shop-no"><span class="nw">No. 29</span><svg class="mag" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10 L14.5 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></span></button></div></div>
+    </section>
+
+    <section class="panel" id="panel-finds" role="tabpanel" aria-labelledby="tab-finds" tabindex="-1" hidden>
+      <div class="finds-page" id="finds-page">
+        <div class="finds-drop" id="finds-solved" hidden>
+          <div class="drop-scene" id="finds-door" aria-hidden="true"></div>
+          <div class="drop-text">
+            <p class="closed-head">Case closed.</p>
+            <p class="reveal-text" id="finds-reveal" aria-live="polite"></p>
+          </div>
+          <div class="ticket"><div class="stamp-card" id="stamp-card"></div></div>
+          <div class="drop-actions"><button class="finds-primary" id="copy-btn" type="button">Copy share text</button><span class="share-confirm" id="share-confirm" aria-live="polite"></span></div>
+          <nav class="up-next" aria-labelledby="up-next-title">
+            <h2 class="up-next-title" id="up-next-title">Another case?</h2>
+            <a class="next-case" href="../missing-envelope/"><span class="nc-num">Next · Case 002</span><span class="nc-title">The Missing Envelope</span><span class="nc-meta">Bengaluru · Law firm · 10–20 min</span></a>
+            <a class="next-case" href="../last-shot/"><span class="nc-num">Case 003</span><span class="nc-title">The Last Shot</span><span class="nc-meta">Mumbai · Film set · 15–25 min</span></a>
+            <a class="finds-link all-cases" href="../../index.html#cases">See all cases</a>
+          </nav>
+        </div>
+        <section class="collection" aria-labelledby="collection-title">
+          <div class="collection-head">
+            <h2 class="collection-title" id="collection-title">Kaavla&#8217;s pieces</h2>
+            <p class="finds-count" id="finds-count"></p>
+          </div>
+          <div class="tray" id="tray"></div>
+          <div class="finds-actions">
+            <button class="finds-primary" id="finds-next" type="button" hidden></button>
+            <button class="finds-link" id="go-street" type="button">Go to the street</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot"><span>The Case Room · A Pixel &amp; Ink Product · Kesari Peth is fictional</span><span class="foot-num">Case 001 · thecaseroom.pixelandink.in</span></footer>
+
+<script>
+'use strict';
+/* The Hidden Drop (internal case ID 003; shown to players as Case 001). Game interface.
+   No answers live here: stage answers, the door and the solution are checked and held by the server.
+   The server's "stages_found" list is the source of truth for progress. */
+const $ = id => document.getElementById(id);
+const PLACES = [
+  { id: 'noor', look: 'Green wooden door, no shutter', name: 'Cafe Noor', no: '2', side: 'north', front: 'Wooden door, no shutter', colour: 'Green', sign: 'cup', signName: 'Cup', hours: '6:30 am to 11 pm', closed: 'Monday' },
+  { id: 'stitch', look: 'Teal shutter', name: 'Sharp Stitch Tailors', no: '4', side: 'north', front: 'Shutter', colour: 'Teal', sign: 'scissors', signName: 'Scissors', hours: '10:30 am to 8 pm', closed: 'Tuesday' },
+  { id: 'vachan', look: 'Glass door, no shutter', name: 'Vachan Kendra', no: '6', side: 'north', note: 'library', front: 'Glass door, no shutter', sign: 'book', signName: 'Open book', hours: '10 am to 6 pm', closed: 'Sunday' },
+  { id: 'shinde', look: 'Mustard shutter', name: 'Shinde Bakery', no: '8', side: 'north', front: 'Shutter', colour: 'Mustard', sign: 'loaf', signName: 'Loaf', hours: '7 am to 9 pm', closed: 'Never' },
+  { id: 'laxmi', look: 'Maroon shutter', name: 'Laxmi Cycle Works', no: '21', side: 'south', front: 'Shutter', colour: 'Maroon', sign: 'wheel', signName: 'Wheel', hours: '9 am to 7 pm', closed: 'Sunday' },
+  { id: 'ketkar', look: 'Grey stone wall, wooden gate', name: 'Ketkar Wada', no: '27', noNote: 'plaque on the wall', side: 'south', front: 'Stone wall, wooden gate', colour: 'Grey', signName: 'None', home: true },
+  { id: 'tank', look: 'Round blue metal tank', name: 'Old Water Tank', no: '', side: 'south', front: 'Round metal tank', colour: 'Blue', home: true },
+  { id: 'kulkarni', look: 'White shutter', name: 'Kulkarni Medical', no: '29', side: 'south', front: 'Shutter', colour: 'White', sign: 'pestle', signName: 'Pestle', hours: '8 am to 10 pm', closed: 'Never' }
+];
+const placeName = id => (PLACES.find(p => p.id === id) || {}).name || '';
+const WORD = { 1: 'one', 2: 'two', 3: 'three' };
+const STAGES = {
+  1: { title: 'The Shutter', label: 'Piece one', lines: ['Piece one.', 'On a shutter that opens no earlier than 10.'], bar: 'On a shutter that opens no earlier than 10.', photo: 'post1',
+       hints: ['Check the noticeboard for opening times.', 'Two open from 10. Only one has a shutter.'] },
+  2: { title: 'Under the Banyan', label: 'Piece two', lines: ['Piece two.', 'From the katta, facing south.', 'The tank is on my left.'], bar: 'From the katta, facing south. The tank is on my left.', photo: 'post2',
+       hints: ['Stand on the katta. Face south. Where is east?', 'East is on your left. The wall is west of the tank.'] },
+  3: { title: 'Sunday Morning', label: 'Piece three', lines: ['Piece three.', 'Put up Sunday morning.', 'The shop was shut all day.'], bar: 'Put up Sunday morning. The shop was shut all day.', photo: null,
+       hints: ['Which shops close on Sundays?', 'One of them opened this Sunday. Check the chat.'] }
+};
+const FINAL = { title: 'The Drop', label: 'Final', lines: ["Piece one's colour.", "Piece two's number.", "Piece three's sign.", 'Find the door.'], bar: "Piece one's colour, two's number, three's sign.",
+  hints: ['Each wrong door misses by one thing.', 'Check the numbers closely. One is reversed.'] };
+const DOORS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const LS = { picks: 'cr003_picks_v1', hints: 'cr003_hints_v1', tab: 'cr003_tab_v1', mapTip: 'cr003_maptip_done_v1', seen: 'cr003_seen_v1', progress: 'cr003_progress_v1' };
+function load(key) { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (_) { return null; } }
+function save(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {} }
+
+// fragments: released by the server only for confirmed stages (never bundled in this page).
+const game = { confirmed: false, status: null, found: [], fragments: [], attempts: 0, solution: null, statusKind: 'checking' };
+/* Early play: while the server wakes up, the player can read the current clue, look around and pick.
+   Only Check waits. The page remembers just HOW MANY pieces were found last time (a count, never places or fragments),
+   so it knows which clue to show first. The server's reply always replaces this guess. */
+const savedProgress = (() => { const v = load(LS.progress); return v && Number.isInteger(v.n) && v.n >= 0 && v.n <= 3 ? v : { n: 0, solved: false }; })();
+// Picks made before the server answered. Once it answers, any that belong to a different stage are dropped.
+const earlyPicks = new Set();
+function rememberProgress() { if (game.confirmed) save(LS.progress, { n: game.found.length, solved: game.status === 'solved' }); }
+// seen: how many found pieces the player has moved past with "Next clue". The page never advances by itself.
+let seen = load(LS.seen);
+// Picks belong to one server session. They are shown again only after the server confirms that same session,
+// so a new or expired session (or another player on this device) never starts with earlier choices filled in.
+const storedPicks = (() => { const v = load(LS.picks); return v && typeof v.sid === 'string' && v.picks && typeof v.picks === 'object' ? v : null; })();
+let picks = {};
+let sessionId = null;
+function savePicks() { save(LS.picks, { sid: sessionId, picks }); }
+let hints = load(LS.hints) || {};
+const feedback = {};
+let busy = false;
+const openRows = new Set(); // finished stages the player has reopened (kept across re-renders)
+/* Animation clocks (only the fragment fill and the final crow reveal animate). Renders rebuild the DOM,
+   so a running animation continues from where it was (negative delay). */
+const anim = { frag: null, door: null };
+function live(node, cls, t, dur) {
+  if (!t || reduceMotion()) return false;
+  const ago = performance.now() - t;
+  if (ago >= dur) return false;
+  node.classList.add(cls); node.style.setProperty('--ago', `-${Math.round(ago)}ms`); return true;
+}
+const CROW_SVG = '<svg viewBox="0 0 60 40" aria-hidden="true"><use href="#crow"/></svg>';
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const pending = () => game.confirmed && game.status !== 'solved' && game.found.length > seen;
+function setSeen(n) { seen = n; save(LS.seen, n); }
+function syncSeen() { if (typeof seen !== 'number' || seen > game.found.length) setSeen(game.found.length); }
+const COLOURS = { teal: '#1f8a8a', mustard: '#d4a017', maroon: '#7a1f2b', white: '#ececec', green: '#2e7d4f', blue: '#3b6ea5', grey: '#8e8b84' };
+const KIND = { colour: 'Colour', number: 'Number', sign: 'Sign' };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const fragText = f => `${KIND[f.kind]}: ${f.kind === 'number' ? f.value : cap(f.value)}`;
+function fragArt(f) {
+  const art = el('span', { class: 'frag-art', 'aria-hidden': 'true' });
+  if (f.kind === 'colour') { art.style.background = COLOURS[f.value.toLowerCase()] || '#777'; }
+  else if (f.kind === 'number') art.textContent = f.value;
+  else { const t = $(`tpl-icon-${f.value.toLowerCase()}`); if (t) art.append(t.content.cloneNode(true)); }
+  return art;
+}
+function fragNode(f, stage) {
+  const n = el('span', { class: `frag frag-${f.kind}` });
+  const art = fragArt(f); n.append(art, el('span', { class: 'frag-text' }, fragText(f)));
+  if (anim.frag && anim.frag.stage === stage) live(n, 'fill-in', anim.frag.t, 700);
+  return n;
+}
+const countText = n => n >= 3 ? 'All pieces found.' : `Piece ${n} of 3`;
+function currentStage() {
+  if (!game.confirmed) return savedProgress.solved ? 0 : Math.min(savedProgress.n + 1, 4);
+  if (game.status === 'solved') return 5;
+  return Math.min(game.found.length + 1, 4);
+}
+function el(tag, attrs = {}, text) {
+  const node = document.createElement(tag);
+  Object.entries(attrs).forEach(([k, v]) => { if (k === 'class') node.className = v; else if (v !== null && v !== undefined) node.setAttribute(k, v); });
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+/* ---------- Status (Checking until the server confirms) ---------- */
+function setStatus(kind) {
+  const stamp = $('case-stamp'); const line = $('case-number');
+  const map = { checking: ['Checking', 'Case 001 · Checking case status…'], open: ['Open', 'Case 001 · Hunt open'],
+    solved: ['Solved', 'Case 001 · Drop found'], unconfirmed: ['Unconfirmed', 'Case 001 · Case status not confirmed'] };
+  game.statusKind = kind;
+  const [s, l] = map[kind]; line.textContent = l;
+  [stamp, $('case-stamp-2')].forEach((el) => { if (!el) return; el.textContent = s; el.classList.toggle('solved', kind === 'solved'); });
+}
+let unconfirmedTimer = setTimeout(() => { if (!game.confirmed) showUnconfirmed(); }, 10000);
+function showUnconfirmed() { if (game.confirmed) return; setStatus('unconfirmed'); renderAll(); }
+
+function applyServerState(state) {
+  if (!state) return;
+  game.confirmed = true; clearTimeout(unconfirmedTimer);
+  game.status = state.status === 'solved' ? 'solved' : 'playing';
+  game.attempts = Number(state.attempts) || 0;
+  game.found = Array.isArray(state.stages_found) ? state.stages_found.slice(0, 3) : [];
+  game.fragments = Array.isArray(state.fragments) ? state.fragments.slice(0, game.found.length) : [];
+  syncSeen();
+  const sid = typeof state.session_id === 'string' ? state.session_id : null;
+  if (sid && sid !== sessionId) {
+    if (sessionId === null) {
+      // First answer on this page load: bring back this same session's own earlier picks (not over new ones).
+      if (storedPicks && storedPicks.sid === sid) Object.entries(storedPicks.picks).forEach(([st, v]) => { if (!(st in picks) && typeof v === 'string') picks[st] = v; });
+    } else picks = {}; // the session changed while the page was open: start clean
+    sessionId = sid;
+  }
+  if (earlyPicks.size) {
+    const live = currentStage();
+    earlyPicks.forEach(st => { if (st !== live) delete picks[st]; });
+    earlyPicks.clear();
+  }
+  savePicks();
+  setStatus(game.status === 'solved' ? 'solved' : 'open');
+  renderAll();
+  if (game.status === 'solved' && !game.solution) loadSolution();
+}
+window.addEventListener('case-room-secure-ready', event => applyServerState(event.detail));
+
+/* ---------- Tabs ---------- */
+const TABS = ['trail', 'map', 'finds'];
+function selectTab(name, focus) {
+  TABS.forEach(t => {
+    const tab = $(`tab-${t}`), panel = $(`panel-${t}`), on = t === name;
+    tab.setAttribute('aria-selected', String(on)); tab.tabIndex = on ? 0 : -1; panel.hidden = !on;
+  });
+  save(LS.tab, name); document.body.dataset.tab = name;
+  if (focus) $(`tab-${name}`).focus();
+}
+TABS.forEach((t, i) => {
+  $(`tab-${t}`).addEventListener('click', () => selectTab(t));
+  $(`tab-${t}`).addEventListener('keydown', e => {
+    let next = null;
+    if (e.key === 'ArrowRight') next = TABS[(i + 1) % TABS.length];
+    if (e.key === 'ArrowLeft') next = TABS[(i + TABS.length - 1) % TABS.length];
+    if (e.key === 'Home') next = TABS[0];
+    if (e.key === 'End') next = TABS[TABS.length - 1];
+    if (next) { e.preventDefault(); selectTab(next, true); }
+  });
+});
+$('start-link').addEventListener('click', e => {
+  e.preventDefault(); selectTab('trail');
+  const cur = currentStage(); const s = $(`stage-${cur >= 1 && cur <= 4 ? cur : 1}`) || $('stage-1');
+  if (s) { s.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); s.tabIndex = -1; s.focus({ preventScroll: true }); }
+});
+
+/* ---------- How to play (opened only by the player) ---------- */
+/* Case file card: phones show one line that opens the full card; laptops always show it (CSS). */
+$('dossier-toggle').addEventListener('click', () => {
+  const t = $('dossier-toggle'); const open = t.getAttribute('aria-expanded') !== 'true';
+  t.setAttribute('aria-expanded', String(open)); t.closest('.case-dossier').classList.toggle('open', open);
+});
+const howto = $('howto'), howtoBtn = $('howto-btn');
+function openHowto() {
+  howto.hidden = false; howtoBtn.setAttribute('aria-expanded', 'true'); document.body.classList.add('modal-open');
+  $('howto-close').focus();
+}
+function closeHowto() {
+  if (howto.hidden) return;
+  howto.hidden = true; howtoBtn.setAttribute('aria-expanded', 'false'); document.body.classList.remove('modal-open');
+  howtoBtn.focus();
+}
+howtoBtn.addEventListener('click', openHowto);
+$('howto-close').addEventListener('click', closeHowto);
+howto.addEventListener('click', e => { if (e.target === howto) closeHowto(); });
+howto.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.preventDefault(); closeHowto(); return; }
+  if (e.key === 'Tab') { e.preventDefault(); $('howto-close').focus(); } // the panel has one control: keep focus inside
+});
+
+$('go-street').addEventListener('click', () => { selectTab('map'); $('street-view').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); });
+
+/* ---------- Close-up sheet (one at a time; Back, outside tap or Escape closes) ---------- */
+const sheet = $('closeup'); let sheetFor = null;
+function factRow(dl, term, value) { dl.append(el('dt', {}, term)); const dd = el('dd'); if (value instanceof Node) dd.append(value); else dd.textContent = value; dl.append(dd); }
+function openCloseup(id) {
+  const p = PLACES.find(x => x.id === id); const btn = $(`shop-${id}`); if (!p || !btn) return;
+  sheetFor = id;
+  const cur = currentStage();
+  const meta = cur >= 1 && cur <= 3 ? STAGES[cur] : cur === 4 ? FINAL : null;
+  $('closeup-clue').hidden = !meta;
+  if (meta) { $('closeup-clue-label').textContent = cur === 4 ? 'Find the door' : `Find piece ${cur}`; $('closeup-clue-text').textContent = meta.bar; }
+  const art = btn.querySelector('svg'); $('closeup-art').replaceChildren(art ? art.cloneNode(true) : '');
+  $('closeup-title').textContent = p.name;
+  // Compact caption: number and front, sign, hours. The same facts are in the front's alt text.
+  const lines = $('closeup-facts'); lines.replaceChildren();
+  const num = p.no ? `No. ${p.no}${p.noNote ? `, ${p.noNote}` : ''}` : 'No number';
+  lines.append(el('p', { class: 'cap-front' }, `${num} · ${p.look}`));
+  if (p.sign) {
+    const sg = el('p', { class: 'cap-sign' }); const tpl = $(`tpl-icon-${p.sign}`); if (tpl) sg.append(tpl.content.cloneNode(true));
+    sg.append(document.createTextNode(`${p.signName} sign`)); lines.append(sg);
+  } else if (p.signName) lines.append(el('p', { class: 'cap-sign' }, 'No sign'));
+  lines.append(el('p', { class: 'cap-hours' }, p.home ? 'Home, not a shop' : (p.closed === 'Never' ? `Open ${p.hours}, every day` : `Open ${p.hours} · Closed ${p.closed}`)));
+  const choosing = !busy && cur >= 1 && cur <= 3;
+  const at = game.found.indexOf(id), foundLine = $('closeup-found');
+  foundLine.replaceChildren(); foundLine.hidden = at < 0;
+  if (at >= 0) { foundLine.append(el('span', {}, `Piece ${WORD[at + 1]} was here.`)); if (game.fragments[at]) foundLine.append(fragNode(game.fragments[at], 0)); }
+  const ch = $('closeup-choose'); ch.hidden = !choosing || pending();
+  if (choosing) {
+    const already = picks[cur] === id;
+    ch.textContent = already ? `Chosen for piece ${cur}` : `Choose for piece ${cur}`; ch.disabled = already;
+  }
+  sheet.hidden = false; document.body.classList.add('modal-open');
+  $('closeup-panel').scrollTop = 0; $('closeup-panel').focus();
+}
+function closeCloseup() {
+  if (sheet.hidden) return;
+  const id = sheetFor; sheet.hidden = true; sheetFor = null; document.body.classList.remove('modal-open');
+  const b = id && $(`shop-${id}`); if (b) b.focus({ preventScroll: true });
+}
+document.querySelectorAll('#street .shop').forEach(b => b.addEventListener('click', () => openCloseup(b.dataset.id)));
+$('closeup-back').addEventListener('click', closeCloseup);
+$('closeup-choose').addEventListener('click', () => { const id = sheetFor, cur = currentStage(); closeCloseup(); if (id) pick(cur, id); });
+sheet.addEventListener('click', e => { if (e.target === sheet) closeCloseup(); });
+sheet.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.preventDefault(); closeCloseup(); return; }
+  if (e.key !== 'Tab') return;
+  const f = [...sheet.querySelectorAll('button')].filter(b => !b.hidden && !b.disabled);
+  if (!f.length) { e.preventDefault(); return; }
+  const i = f.indexOf(document.activeElement);
+  if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && (i === -1 || i === f.length - 1)) { e.preventDefault(); f[0].focus(); }
+});
+
+/* ---------- Picking ---------- */
+function pick(stage, value) {
+  if (busy || pending() || currentStage() !== stage) return;
+  if (!game.confirmed) earlyPicks.add(stage);
+  picks[stage] = value; savePicks();
+  feedback[stage] = null;
+  renderAll();
+}
+
+/* ---------- Actions ---------- */
+async function submitStage(stage, fromBar) {
+  if (busy || !game.confirmed || pending() || currentStage() !== stage || stage > 3) return;
+  const choice = picks[stage];
+  if (!choice) { feedback[stage] = ['wrong', 'Pick a place first.']; renderAll(); return; }
+  const secure = window.CaseRoomSecureGame;
+  busy = true; feedback[stage] = ['pending', 'Checking…']; renderAll();
+  let newlyFound = false;
+  try {
+    const reply = await secure.check(stage, choice);
+    game.found = reply.stages_found.slice(0, 3);
+    if (Array.isArray(reply.fragments)) game.fragments = reply.fragments.slice(0, game.found.length);
+    if (reply.correct && reply.fragment) { newlyFound = true; anim.frag = { stage, t: performance.now() }; feedback[stage] = null; }
+    else if (reply.correct) feedback[stage] = null;
+    else feedback[stage] = ['wrong', 'Not this one.'];
+    syncSeen();
+  } catch (error) {
+    if (error && error.status === 409 && error.data && Array.isArray(error.data.stages_found)) {
+      game.found = error.data.stages_found.slice(0, 3);
+      if (Array.isArray(error.data.fragments)) game.fragments = error.data.fragments.slice(0, game.found.length);
+      syncSeen();
+      feedback[stage] = ['wrong', 'Find the earlier piece first.'];
+    } else if (error && error.status === 429) {
+      feedback[stage] = ['wrong', error.message];
+    } else {
+      feedback[stage] = ['pending', 'Checking with the server…'];
+      game.confirmed = false; renderAll();
+      if (secure && typeof secure.recoverStatus === 'function') await secure.recoverStatus(() => { feedback[stage] = ['pending', 'Still checking. Retrying…']; renderAll(); });
+      feedback[stage] = ['wrong', 'Not saved. Try again.'];
+    }
+  } finally {
+    busy = false; renderAll();
+    // Nothing moves on by itself: focus goes to the one next action, where the player already is.
+    if (newlyFound) {
+      const t = fromBar ? $('clue-check') : $(`next-${stage}`);
+      if (t) {
+        t.focus({ preventScroll: true });
+        // keep the found piece and its Next clue on screen (the card got shorter); never jump to the next clue
+        if (!fromBar) { const card = $(`stage-${stage}`); const r = card.getBoundingClientRect(); const top = $('sticky').getBoundingClientRect().bottom;
+          if (r.top < top || r.bottom > innerHeight) card.scrollIntoView({ block: 'center', behavior: 'auto' }); }
+      }
+    }
+  }
+}
+function nextClue() {
+  if (!pending()) return;
+  setSeen(game.found.length); renderAll();
+  selectTab('trail');
+  const card = $(`stage-${Math.min(game.found.length + 1, 4)}`);
+  if (card) { card.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); const h = card.querySelector('h3'); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
+}
+async function submitDoor() {
+  if (busy || !game.confirmed || currentStage() !== 4) return;
+  const door = picks[4];
+  if (!door) { feedback[4] = ['wrong', 'Pick a door first.']; renderAll(); return; }
+  const secure = window.CaseRoomSecureGame;
+  const before = game.attempts;
+  busy = true; feedback[4] = ['pending', 'Opening the door…']; renderAll();
+  try {
+    const result = await secure.accuse({ choice: door });
+    game.attempts = Number(result.attempts) || game.attempts;
+    if (result.status === 'solved') { anim.door = performance.now(); game.status = 'solved'; setStatus('solved'); feedback[4] = null; renderAll(); await loadSolution(); }
+    else feedback[4] = ['wrong', 'Not this door.'];
+  } catch (error) {
+    if (error && error.status === 409 && error.data && Array.isArray(error.data.stages_found)) {
+      game.found = error.data.stages_found.slice(0, 3); feedback[4] = ['wrong', 'Find all three pieces first.'];
+      if (Array.isArray(error.data.fragments)) game.fragments = error.data.fragments.slice(0, game.found.length);
+    } else if (error && (error.status === 400 || error.status === 429) && error.message) {
+      feedback[4] = ['wrong', `${error.message} Not counted.`];
+    } else {
+      feedback[4] = ['pending', 'Checking with the server…'];
+      game.confirmed = false; renderAll();
+      let state = null;
+      if (secure && typeof secure.recoverStatus === 'function') state = await secure.recoverStatus(() => { feedback[4] = ['pending', 'Still checking. Retrying…']; renderAll(); });
+      if (game.status !== 'solved') feedback[4] = state && Number(state.attempts) > before
+        ? ['wrong', 'Not this door.']
+        : ['wrong', 'Not saved. Try again.'];
+    }
+  } finally { busy = false; renderAll(); }
+}
+async function loadSolution() {
+  try { const r = await window.CaseRoomSecureGame.reveal(); game.solution = r.solution; }
+  catch (_) { game.solution = null; }
+  renderAll();
+}
+/* ---------- Rendering ---------- */
+function chipsFor(stage, enabled) {
+  const wrap = el('div', { class: 'chips', role: 'group', 'aria-label': `Places for ${STAGES[stage].label.toLowerCase()}` });
+  PLACES.forEach(p => {
+    const b = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(picks[stage] === p.id) });
+    b.append(document.createTextNode(p.name)); b.append(el('small', {}, p.no ? `No. ${p.no}` : 'no number'));
+    b.disabled = !enabled; b.addEventListener('click', () => pick(stage, p.id));
+    wrap.append(b);
+  });
+  return wrap;
+}
+function hintsFor(stage, list) {
+  const box = el('div', { class: 'hints' });
+  box.append(el('p', { class: 'hint-note' }, 'Hints are free.'));
+  const shown = hints[stage] || 0;
+  list.forEach((text, i) => {
+    const b = el('button', { type: 'button', class: 'hint-btn', 'aria-expanded': String(shown > i) }, `Hint ${i + 1}`);
+    b.disabled = shown < i;
+    b.addEventListener('click', () => { hints[stage] = Math.max(hints[stage] || 0, i + 1); save(LS.hints, hints); renderAll(); });
+    box.append(b);
+  });
+  list.forEach((text, i) => { if (shown > i) box.append(el('p', { class: 'hint-text' }, `Hint ${i + 1}: ${text}`)); });
+  return box;
+}
+function doorScene() {
+  // The door the player opened swings open on the hinge and the crow appears behind it.
+  const scene = el('div', { class: 'door-scene', 'aria-hidden': 'true' });
+  scene.innerHTML = '<svg viewBox="0 0 80 120"><rect x="0" y="0" width="80" height="120" fill="#8e8b84"/><path d="M0 30h80M0 60h80M0 90h80M20 0v30M60 30v30M30 60v30M50 90v30" stroke="#7a776f" stroke-width="1"/>'
+    + '<rect x="16" y="4" width="48" height="114" fill="#1b140c" stroke="#222"/><rect x="18" y="98" width="44" height="20" fill="#2a2014"/>'
+    + '<g class="door-crow"><ellipse cx="40" cy="108" rx="16" ry="3" fill="#000" opacity=".5"/>'
+    + '<use href="#crow" x="19" y="80" width="42" height="28" fill="#b65a32"/><circle cx="31" cy="93" r="1.3" fill="#f1dcb5"/><circle cx="36" cy="96" r="1.3" fill="#f1dcb5"/><circle cx="41" cy="93" r="1.3" fill="#f1dcb5"/></g></svg>';
+  const door = picks[4] && $(`tpl-door-${picks[4]}`);
+  const art = door && door.content.querySelector('svg');
+  if (art) {
+    const leaf = el('div', { class: 'door-leaf' });
+    const svg = art.cloneNode(true); svg.setAttribute('viewBox', '16 4 48 114'); svg.setAttribute('preserveAspectRatio', 'none'); svg.classList.add('door-front');
+    const panel = art.querySelector('rect');
+    const back = el('div', { class: 'door-back' }); back.style.background = (panel && panel.getAttribute('fill')) || '#6b4f2e';
+    leaf.append(svg, back); scene.append(leaf);
+  }
+  live(scene, 'opening', anim.door, 2300);
+  return scene;
+}
+function fillLines(node, text) { node.replaceChildren(...String(text).split('\n').filter(Boolean).map(l => el('span', {}, l))); }
+// Shown under Check / Open only while the server has not answered yet.
+function waitNote() {
+  if (game.confirmed || busy) return document.createTextNode('');
+  if (game.statusKind !== 'unconfirmed') return el('p', { class: 'wait-note', role: 'status' }, 'Connecting. You can pick a place now.');
+  const box = el('div', { class: 'wait-note', role: 'status' });
+  box.append(el('span', {}, 'Can\u2019t reach the server yet. Keep looking.'));
+  const b = el('button', { type: 'button', class: 'retry-btn' }, retrying ? 'Retrying\u2026' : 'Retry');
+  b.disabled = retrying; b.addEventListener('click', retryConnection); box.append(b);
+  return box;
+}
+// Retry only asks the server for the case status again. It never sends the player's pick.
+let retrying = false;
+function retryConnection() {
+  const secure = window.CaseRoomSecureGame;
+  if (game.confirmed || retrying || !secure || typeof secure.retryNow !== 'function') return;
+  retrying = true; renderAll();
+  secure.retryNow();
+  setTimeout(() => { retrying = false; if (!game.confirmed) renderAll(); }, 2500);
+}
+function feedbackNode(stage) {
+  const f = feedback[stage];
+  const p = el('p', { class: `feedback ${f ? f[0] : ''}`, role: 'status', 'aria-live': 'polite', id: `feedback-${stage}` }, f ? f[1] : '');
+  return p;
+}
+function photoNode(id) {
+  const tpl = $(`tpl-${id}`);
+  const div = el('div', { class: 'photo' });
+  if (tpl) div.append(tpl.content.cloneNode(true));
+  return div;
+}
+function postNode(meta) {
+  const post = el('div');
+  const ph = el('div', { class: 'post-head' });
+  const av = el('span', { class: 'avatar', 'aria-hidden': 'true' }); av.innerHTML = '<svg viewBox="0 0 60 40" width="22" fill="#111"><use href="#crow"/></svg>';
+  ph.append(av, el('span', {}, 'kaavla'));
+  post.append(ph);
+  if (meta.photo) post.append(photoNode(meta.photo));
+  const cap = el('p', { class: 'caption' }); meta.lines.forEach(l => cap.append(el('span', {}, l))); post.append(cap);
+  return post;
+}
+function doneRow(stage, meta) {
+  // A finished stage collapses to a short row; opening it shows the original post again.
+  const card = el('article', { class: 'stage-card done-row', id: `stage-${stage}`, 'aria-labelledby': `stage-title-${stage}` });
+  const det = el('details'); if (openRows.has(stage)) det.open = true;
+  det.addEventListener('toggle', () => { if (det.open) openRows.add(stage); else openRows.delete(stage); });
+  const sum = el('summary', { class: 'row-summary' });
+  const mark = el('span', { class: 'row-mark', 'aria-hidden': 'true' }); mark.innerHTML = CROW_SVG;
+  const title = el('span', { class: 'row-title' }); title.append(el('span', { class: 'row-num' }, `Piece ${stage}`), el('h3', { class: 'stage-title', id: `stage-title-${stage}` }, meta.title));
+  const found = el('span', { class: 'row-found' }); found.append(el('b', {}, placeName(game.found[stage - 1])));
+  if (game.fragments[stage - 1]) found.append(fragNode(game.fragments[stage - 1], stage));
+  sum.append(mark, title, el('span', { class: 'row-chev', 'aria-hidden': 'true' }, '›'), found);
+  const body = el('div', { class: 'row-body' });
+  body.append(postNode(meta));
+  det.append(sum, body); card.append(det);
+  return card;
+}
+function renderStages() {
+  const root = $('stages'); root.replaceChildren();
+  const cur = currentStage();
+  const canAct = game.confirmed && !busy; // Check / Open: needs the server
+  const canPick = !busy;                   // choosing a place or door: works while the server wakes up
+  const wait = pending(), nFound = game.found.length;
+  [1, 2, 3, 4].forEach(stage => {
+    const meta = stage === 4 ? FINAL : STAGES[stage];
+    const done0 = stage < 4 ? nFound >= stage : game.status === 'solved';
+    if (done0 && stage < 4 && !(wait && stage === nFound)) { root.append(doneRow(stage, meta)); return; }
+    const focus = wait ? stage === nFound : stage === cur;
+    const card = el('article', { class: 'stage-card' + (focus ? ' current' : ''), id: `stage-${stage}`, 'aria-labelledby': `stage-title-${stage}` });
+    const head = el('div', { class: 'stage-head' });
+    const done = stage < 4 ? nFound >= stage : game.status === 'solved';
+    let tag;
+    if (done && stage < 4) {
+      tag = el('span', { class: 'found-stamp' }); tag.innerHTML = CROW_SVG; tag.append(document.createTextNode('Found'));
+    } else tag = el('span', { class: 'stage-tag' }, stage === 4 ? 'Final' : meta.label);
+    head.append(el('h3', { class: 'stage-title', id: `stage-title-${stage}` }, meta.title), tag);
+    card.append(head);
+    if (!game.confirmed && !done && stage < cur) {
+      card.append(el('p', { class: 'locked' }, 'Checking…'));
+    } else if (done && stage < 4) {
+      const body = el('div', { class: 'found-body' });
+      const line = el('p', { class: 'found-line' });
+      line.append(document.createTextNode(`Piece ${WORD[stage]}: `), el('b', {}, placeName(game.found[stage - 1])));
+      body.append(line);
+      if (game.fragments[stage - 1]) body.append(fragNode(game.fragments[stage - 1], stage));
+      if (wait && stage === nFound) {
+        body.append(el('p', { class: 'count-line' }, countText(nFound)));
+        const nx = el('button', { type: 'button', class: 'act primary', id: `next-${stage}` }, 'Next clue');
+        nx.addEventListener('click', nextClue); body.append(nx);
+      }
+      card.append(body);
+    } else if (wait && stage === nFound + 1) {
+      card.classList.add('waiting'); card.append(el('p', { class: 'locked up-next' }, 'Up next.'));
+    } else if (stage > cur || (wait && stage > nFound)) {
+      card.classList.add('waiting');
+      card.append(el('p', { class: 'locked' }, stage === 4 ? 'Locked until all three pieces are found.' : `Locked until piece ${WORD[stage - 1]} is found.`));
+    } else if (stage === 4 && game.status === 'solved') {
+      const body = el('div', { class: 'stage-body' });
+      const rv = el('p', { class: 'reveal-text' }); fillLines(rv, game.solution || 'Loading the drop…');
+      const scene = doorScene();
+      body.append(scene, el('p', { class: 'closed-head' }, 'Case closed.'), rv);
+      if (scene.classList.contains('opening')) body.style.setProperty('--ago', scene.style.getPropertyValue('--ago'));
+      const go = el('button', { type: 'button', class: 'act' }, 'Share your result');
+      go.addEventListener('click', () => selectTab('finds', true));
+      body.append(go); card.append(body);
+    } else {
+      const body = el('div', { class: 'stage-body' });
+      body.append(postNode(meta));
+      if (stage < 4) {
+        body.append(el('p', { class: 'ask' }, `Where is ${meta.label.toLowerCase()}?`), chipsFor(stage, canPick));
+        const btn = el('button', { type: 'button', class: 'act' + (picks[stage] && canAct ? ' primary' : ''), id: `check-${stage}` }, 'Check'); btn.disabled = !canAct;
+        btn.addEventListener('click', () => submitStage(stage)); body.append(btn, feedbackNode(stage), waitNote());
+      } else {
+        const yours = el('div', { class: 'your-pieces', role: 'group', 'aria-label': 'Your pieces' });
+        yours.append(el('p', { class: 'ask' }, 'Your pieces'));
+        const row = el('div', { class: 'frag-row' }); game.fragments.forEach((f, i) => row.append(fragNode(f, i + 1))); yours.append(row);
+        if (!game.confirmed) yours.append(el('p', { class: 'hint-note' }, 'Loading your pieces…'));
+        body.append(yours, el('p', { class: 'ask' }, 'Pothi Lane doors'));
+        const grid = el('div', { class: 'doors', role: 'group', 'aria-label': 'Pothi Lane doors' });
+        DOORS.forEach(d => {
+          const tpl = $(`tpl-door-${d}`);
+          const b = el('button', { type: 'button', class: 'door-btn', 'aria-pressed': String(picks[4] === d), id: `door-${d}` });
+          if (tpl) b.append(tpl.content.cloneNode(true));
+          b.disabled = !canPick; b.addEventListener('click', () => pick(4, d));
+          grid.append(b);
+        });
+        body.append(grid);
+        const btn = el('button', { type: 'button', class: 'act' + (picks[4] && canAct ? ' primary' : ''), id: 'open-door' }, 'Open this door'); btn.disabled = !canAct;
+        btn.addEventListener('click', submitDoor); body.append(btn, feedbackNode(4), waitNote());
+        if (game.attempts) body.append(el('p', { class: 'hint-note' }, `Tries: ${game.attempts}`));
+      }
+      body.append(hintsFor(stage, meta.hints));
+      card.append(body);
+    }
+    root.append(card);
+  });
+}
+function renderMap() {
+  const cur = currentStage();
+  const choosing = !pending() && cur >= 1 && cur <= 3;
+  document.querySelectorAll('#street .shop').forEach(b => {
+    const id = b.dataset.id, chosen = choosing && picks[cur] === id, at = game.found.indexOf(id);
+    b.classList.toggle('chosen', chosen);
+    let label = b.dataset.label;
+    if (at >= 0) label += ` Piece ${WORD[at + 1]} was found here.`;
+    if (chosen) label += ` Your pick for piece ${WORD[cur]}.`;
+    b.setAttribute('aria-label', label);
+    b.querySelectorAll('.pin, .found-badge').forEach(n => n.remove());
+    if (chosen) { const pin = el('span', { class: 'pin', 'aria-hidden': 'true' }); pin.innerHTML = CROW_SVG; b.append(pin); }
+    if (at >= 0) { const badge = el('span', { class: 'found-badge', 'aria-hidden': 'true' }); badge.innerHTML = CROW_SVG; badge.append(document.createTextNode(String(at + 1))); b.append(badge); }
+  });
+}
+function renderMini() {
+  const box = $('mini-tray'); box.replaceChildren();
+  const n = game.found.length;
+  [0, 1, 2].forEach(i => {
+    const slot = el('span', { class: 'mini-slot' + (game.fragments[i] ? ' filled' : '') });
+    if (game.fragments[i]) { slot.append(fragArt(game.fragments[i])); if (anim.frag && anim.frag.stage === i + 1) live(slot, 'fill-in', anim.frag.t, 700); }
+    box.append(slot);
+  });
+  box.append(el('span', { class: 'mini-count', 'aria-hidden': 'true' }, `${n}/3`));
+  box.setAttribute('aria-label', `Pieces found: ${n} of 3.` + (n ? ' ' + game.fragments.map(fragText).join('. ') + '.' : ''));
+  box.hidden = !game.confirmed;
+}
+function renderClue() {
+  const cur = currentStage();
+  const label = $('clue-label'), text = $('clue-text'), row = $('clue-row'), pickEl = $('clue-pick'), btn = $('clue-check');
+  renderMini();
+  btn.classList.remove('primary', 'is-next', 'is-retry');
+  if (!game.confirmed && game.statusKind === 'unconfirmed') {
+    // Connection failed: say so in the bar and offer Retry; the clue stays readable underneath.
+    label.textContent = 'Can\u2019t reach the server'; text.textContent = cur >= 1 && cur <= 4 ? (cur === 4 ? FINAL : STAGES[cur]).bar : '';
+    row.hidden = false; pickEl.replaceChildren();
+    btn.textContent = retrying ? 'Retrying\u2026' : 'Retry'; btn.disabled = retrying; btn.classList.add('primary', 'is-retry');
+    return;
+  }
+  if (cur === 0) { label.textContent = 'Checking…'; text.textContent = ''; row.hidden = true; return; }
+  if (cur === 5) { label.textContent = 'Drop found'; text.textContent = ''; row.hidden = true; return; }
+  if (pending()) {
+    const n = game.found.length;
+    label.textContent = n >= 3 ? 'All 3 pieces found' : `${n} of 3 pieces found`;
+    text.textContent = game.fragments[n - 1] ? `${placeName(game.found[n - 1])} · ${fragText(game.fragments[n - 1])}` : placeName(game.found[n - 1]);
+    row.hidden = false; pickEl.replaceChildren();
+    btn.textContent = 'Next clue'; btn.disabled = false; btn.classList.add('primary', 'is-next');
+    return;
+  }
+  const meta = cur === 4 ? FINAL : STAGES[cur];
+  label.textContent = cur === 4 ? 'Find the door' : `Find piece ${cur}`; text.textContent = meta.bar;
+  pickEl.replaceChildren();
+  row.hidden = !picks[cur];
+  if (picks[cur]) pickEl.append(document.createTextNode('Your pick: '), el('b', {}, cur === 4 ? `Door ${picks[cur]}` : placeName(picks[cur])));
+  btn.textContent = cur === 4 ? 'Open' : 'Check';
+  btn.disabled = !game.confirmed || busy || !picks[cur];
+  if (!btn.disabled) btn.classList.add('primary');
+}
+$('clue-check').addEventListener('click', () => { if (!game.confirmed) { if (game.statusKind === 'unconfirmed') retryConnection(); return; } if (pending()) { nextClue(); return; } const cur = currentStage(); if (cur >= 1 && cur <= 3) submitStage(cur, true); else if (cur === 4) submitDoor(); });
+const CROW_OUTLINE = '<svg viewBox="0 0 60 40" aria-hidden="true"><use href="#crow"/></svg>';
+function renderFinds() {
+  const tray = $('tray'); tray.replaceChildren();
+  const n = game.found.length, solved = game.status === 'solved';
+  [1, 2, 3].forEach(i => {
+    const id = game.found[i - 1];
+    const slot = el('div', { class: 'slot' + (id ? ' found' : ''), id: `slot-${i}` });
+    const art = el('div', { class: 'slot-art' + (id ? '' : ' empty'), 'aria-hidden': 'true' });
+    const info = el('div', { class: 'slot-info' });
+    info.append(el('b', {}, `Piece ${i}`));
+    if (id) {
+      // the front as drawn on the street, with Kaavla's crow stencilled on it (shown only after the server confirmed it)
+      const front = document.querySelector(`#shop-${id} > svg`); if (front) art.append(front.cloneNode(true));
+      const crow = el('span'); crow.innerHTML = '<svg class="stencil" viewBox="0 0 60 40"><use href="#crow"/></svg>'; art.append(crow.firstChild);
+      info.append(el('span', { class: 'slot-place' }, placeName(id)));
+      if (game.fragments[i - 1]) info.append(fragNode(game.fragments[i - 1], i));
+    } else {
+      art.innerHTML = CROW_OUTLINE;
+      info.append(el('span', { class: 'slot-empty' }, 'Not found yet'));
+    }
+    slot.append(art, info); tray.append(slot);
+  });
+  $('finds-count').textContent = !game.confirmed ? '' : n >= 3 ? 'All 3 pieces found' : n ? `${n} of 3 pieces found` : 'No pieces found yet';
+  // one next action: back to the hunt (the clue bar already holds "Next clue" while a find is waiting)
+  const nx = $('finds-next'), cur = currentStage();
+  nx.hidden = !game.confirmed || solved || pending() || cur < 1 || cur > 4;
+  if (!nx.hidden) nx.textContent = cur === 4 ? 'Find the door' : `Find piece ${cur}`;
+  $('finds-page').classList.toggle('is-solved', solved);
+  $('finds-solved').hidden = !solved;
+  if (solved) {
+    fillLines($('finds-reveal'), game.solution || 'Loading the drop…');
+    $('finds-door').replaceChildren(doorScene());
+    $('stamp-card').textContent = ['🕵️ The Case Room · Case #001', 'The Hidden Drop', '', '🟩🟩🟩🚪',
+      `Found the drop in ${game.attempts} ${game.attempts === 1 ? 'try' : 'tries'}`, '', 'Can you read the street?', '→ https://thecaseroom.pixelandink.in/cases/hidden-drop/'].join('\n');
+  }
+}
+$('finds-next').addEventListener('click', () => {
+  selectTab('trail');
+  const card = $(`stage-${Math.min(Math.max(currentStage(), 1), 4)}`);
+  if (card) { card.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); const h = card.querySelector('h3'); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }
+});
+function renderAll() { rememberProgress(); renderStages(); renderMap(); renderClue(); renderFinds(); }
+
+$('copy-btn').addEventListener('click', async () => {
+  const text = $('stamp-card').textContent; const msg = $('share-confirm');
+  try { if (!navigator.clipboard || !window.isSecureContext) throw new Error('no clipboard'); await navigator.clipboard.writeText(text); msg.textContent = 'Copied'; }
+  catch (_) { const range = document.createRange(); range.selectNodeContents($('stamp-card')); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); msg.textContent = 'Selected. Copy it from here.'; }
+});
+
+/* Initial paint: neutral until the server confirms. */
+setStatus('checking');
+const savedTab = load(LS.tab); selectTab(TABS.includes(savedTab) ? savedTab : 'trail');
+renderAll();
+document.addEventListener('DOMContentLoaded', () => {
+  const secure = window.CaseRoomSecureGame;
+  if (!secure || !secure.ready) { showUnconfirmed(); return; }
+  Promise.resolve(secure.ready).then(state => {
+    if (state) return;
+    showUnconfirmed();
+    if (typeof secure.recoverStatus === 'function') return secure.recoverStatus();
+  }).catch(() => showUnconfirmed());
+});
+
+</script>
+<script>
+/* Secure guest gameplay + optional, consent-gated analytics.
+   The browser contains no answer key or solution narrative. Configure endpoint/key before deployment. */
+(() => {
+  'use strict';
+  const CASE_ID = '003';
+  const MECHANIC = 'hunt';
+  const GAME_ENDPOINT = 'https://hqibmotqlomwjlmpnchb.supabase.co/functions/v1/case-game';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_zep3M9z7xF-n476w_8kvMQ_AqEzH1xj';
+  const CONSENT_KEY = 'caseroom_analytics_consent_v1';
+  const GAME_SESSION_KEY = `caseroom_game_session_${CASE_ID}_v1`;
+  const ANALYTICS_SESSION_KEY = `caseroom_analytics_session_${CASE_ID}_v1`;
+  let memoryConsent = null;
+  let latestState = null;
+
+  function safeGet(store, key) { try { return window[store].getItem(key); } catch (_) { return null; } }
+  function safeSet(store, key, value) { try { window[store].setItem(key, value); return true; } catch (_) { return false; } }
+  function safeRemove(store, key) { try { window[store].removeItem(key); } catch (_) {} }
+  function consent() {
+    const saved = safeGet('localStorage', CONSENT_KEY);
+    return saved === 'accepted' || saved === 'declined' ? saved : memoryConsent;
+  }
+  function uuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    const bytes = new Uint8Array(16); window.crypto.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40; bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const h = [...bytes].map(b => b.toString(16).padStart(2, '0')).join('');
+    return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+  }
+  function analyticsSession(create) {
+    if (consent() !== 'accepted') return null;
+    let id = safeGet('sessionStorage', ANALYTICS_SESSION_KEY);
+    if (!id && create) { id = uuid(); safeSet('sessionStorage', ANALYTICS_SESSION_KEY, id); }
+    return id || null;
+  }
+  function endpointReady() {
+    return /^https:\/\/[^/]+\/functions\/v1\/case-game\/?$/.test(GAME_ENDPOINT)
+      && SUPABASE_PUBLISHABLE_KEY.trim().length > 0
+      && !SUPABASE_PUBLISHABLE_KEY.startsWith('YOUR_');
+  }
+  function serverMessage(text) {
+    let el = document.getElementById('cr-game-server-warning');
+    if (!el) {
+      el = document.createElement('div'); el.id = 'cr-game-server-warning'; el.setAttribute('role', 'status');
+      el.style.cssText = 'box-sizing:border-box;width:min(760px,calc(100% - 24px));margin:10px auto;padding:12px 14px;border:1px solid #8a4a43;border-radius:8px;background:#261715;color:#f4d9d4;font:13px/1.5 system-ui,sans-serif;';
+      const anchor = document.querySelector('main') || document.body.firstElementChild || document.body;
+      anchor.parentNode.insertBefore(el, anchor);
+    }
+    el.textContent = text; el.hidden = !text;
+  }
+  async function request(payload) {
+    if (!endpointReady()) throw new Error('The secure case server is not configured yet. Configure the Supabase case-game endpoint and publishable key before deploying this page.');
+    const response = await fetch(GAME_ENDPOINT, {
+      method: 'POST', mode: 'cors', cache: 'no-store',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_PUBLISHABLE_KEY },
+      body: JSON.stringify(payload)
+    });
+    let data = null;
+    try { data = await response.json(); } catch (_) {}
+    if (!response.ok) {
+      const error = new Error(data && typeof data.error === 'string' ? data.error : `Secure case request failed (${response.status}).`);
+      error.status = response.status; error.data = data; throw error;
+    }
+    return data;
+  }
+
+  // Reliability fix: validate every server reply before the page acts on it.
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const STATUSES = ['playing', 'solved', 'failed'];
+  const MAX_ATTEMPTS = CASE_ID === '001' ? 2 : null;
+  let serverOffsetMs = 0;
+  function badResponse(what) {
+    const error = new Error(`The secure case server sent an unexpected ${what}.`);
+    error.code = 'bad_response'; return error;
+  }
+  function isObject(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
+  function validAttempts(n) { return Number.isInteger(n) && n >= 0 && (MAX_ATTEMPTS === null || n <= MAX_ATTEMPTS); }
+  function validTime(value) { return value === undefined || value === null || (typeof value === 'string' && Number.isFinite(Date.parse(value))); }
+  function consistent(status, attempts) {
+    if (status === 'solved') return attempts >= 1;
+    if (status === 'failed') return MAX_ATTEMPTS !== null && attempts === MAX_ATTEMPTS;
+    return MAX_ATTEMPTS === null || attempts < MAX_ATTEMPTS;
+  }
+  function checkSession(data) {
+    if (!isObject(data) || typeof data.session_id !== 'string' || !UUID_RE.test(data.session_id)) throw badResponse('session');
+    if (data.case_id !== undefined && data.case_id !== CASE_ID) throw badResponse('session');
+    if (!STATUSES.includes(data.status) || !validAttempts(data.attempts) || !consistent(data.status, data.attempts)) throw badResponse('session');
+    if (!validTime(data.started_at) || !validTime(data.completed_at) || !validTime(data.server_now)) throw badResponse('session');
+    if (typeof data.server_now === 'string') serverOffsetMs = Date.parse(data.server_now) - Date.now();
+    if (data.stages_found !== undefined && !validFound(data.stages_found)) throw badResponse('session');
+    if (data.fragments !== undefined && !validFragments(data.fragments, data.stages_found)) throw badResponse('session');
+    return data;
+  }
+  // Case 003: stages found so far, in order (place IDs). The server is the source of truth.
+  const PLACE_IDS = ['noor', 'stitch', 'vachan', 'shinde', 'laxmi', 'ketkar', 'tank', 'kulkarni'];
+  function validFound(list) { return Array.isArray(list) && list.length <= 3 && list.every(id => PLACE_IDS.includes(id)); }
+  // Fragments arrive only for stages the server has confirmed: one per confirmed stage, in order.
+  const FRAGMENT_KINDS = ['colour', 'number', 'sign'];
+  function validFragment(f) { return isObject(f) && FRAGMENT_KINDS.includes(f.kind) && typeof f.value === 'string' && f.value.length > 0 && f.value.length <= 20 && /^[a-z0-9 ]+$/i.test(f.value); }
+  function validFragments(list, found) { return Array.isArray(list) && Array.isArray(found) && list.length === found.length && list.every(validFragment); }
+  function checkStageReply(data, stage) {
+    if (!isObject(data) || data.stage !== stage || typeof data.correct !== 'boolean' || !validFound(data.stages_found)) throw badResponse('stage reply');
+    if (data.correct && data.stages_found.length < stage) throw badResponse('stage reply');
+    if (data.fragments !== undefined && !validFragments(data.fragments, data.stages_found)) throw badResponse('stage reply');
+    if (data.fragment !== undefined && (!data.correct || !validFragment(data.fragment))) throw badResponse('stage reply');
+    return data;
+  }
+  function checkVerdict(data) {
+    if (!isObject(data) || typeof data.correct !== 'boolean' || !STATUSES.includes(data.status)) throw badResponse('verdict');
+    if (!validAttempts(data.attempts) || data.attempts < 1 || !consistent(data.status, data.attempts)) throw badResponse('verdict');
+    if (data.correct !== (data.status === 'solved')) throw badResponse('verdict');
+    return data;
+  }
+  function checkReveal(data) {
+    if (!isObject(data) || typeof data.solution !== 'string' || !data.solution.trim()) throw badResponse('solution');
+    return data;
+  }
+  function serverNow() { return Date.now() + serverOffsetMs; }
+
+  // Reliability fix: the browser type is only sent when analytics is accepted.
+  function trackingFields() {
+    if (consent() !== 'accepted') return { analytics_opt_in: false, analytics_session_id: null };
+    return {
+      analytics_opt_in: true,
+      analytics_session_id: analyticsSession(true),
+      user_agent_class: window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop'
+    };
+  }
+  let startSeq = 0;
+  async function startSession(fresh = false) {
+    const mine = ++startSeq;
+    if (fresh) safeRemove('localStorage', GAME_SESSION_KEY);
+    let sessionId = fresh ? null : safeGet('localStorage', GAME_SESSION_KEY);
+    const payload = {
+      action: 'start', case_id: CASE_ID, mechanic: MECHANIC, session_id: sessionId,
+      ...trackingFields()
+    };
+    let data;
+    try {
+      data = await request(payload);
+    } catch (error) {
+      if (sessionId && (error.status === 410 || error.status === 404)) {
+        safeRemove('localStorage', GAME_SESSION_KEY);
+        return startSession(true);
+      }
+      throw error;
+    }
+    checkSession(data);
+    // A slow reply from an older start attempt must not replace the session a newer attempt already set up.
+    if (mine !== startSeq && latestState) return latestState;
+    safeSet('localStorage', GAME_SESSION_KEY, data.session_id);
+    latestState = data;
+    serverMessage('');
+    window.dispatchEvent(new CustomEvent('case-room-secure-ready', { detail: data }));
+    return data;
+  }
+  const ready = startSession(false).catch(error => {
+    serverMessage(error.message || 'The case server is unavailable. Your accusation has not been submitted.');
+    return null;
+  });
+  async function needSession() {
+    let state = latestState || await ready;
+    if (!state) {
+      state = await startSession(false);
+      latestState = state;
+    }
+    if (!state) throw new Error('Could not connect to the secure case server. Please retry.');
+    return state;
+  }
+
+  // Reliability fix: only one accusation can be on its way to the server at a time.
+  let accuseInFlight = null;
+  function accuse(options) {
+    if (accuseInFlight) return accuseInFlight;
+    accuseInFlight = (async () => {
+      const state = await needSession();
+      const result = checkVerdict(await request({
+        action: 'accuse', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+        ...options, ...trackingFields()
+      }));
+      latestState = { ...state, ...result };
+      if (result.status !== 'playing' && !latestState.completed_at) latestState.completed_at = new Date(serverNow()).toISOString();
+      return result;
+    })();
+    accuseInFlight.then(() => { accuseInFlight = null; }, () => { accuseInFlight = null; });
+    return accuseInFlight;
+  }
+  // Case 003: check one stage choice. Only one check can be in flight at a time.
+  let checkInFlight = null;
+  function check(stage, choice) {
+    if (checkInFlight) return checkInFlight;
+    checkInFlight = (async () => {
+      const state = await needSession();
+      const result = checkStageReply(await request({
+        action: 'check', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+        stage, choice, ...trackingFields()
+      }), stage);
+      latestState = { ...(latestState || state), stages_found: result.stages_found, fragments: Array.isArray(result.fragments) ? result.fragments : (latestState || state).fragments };
+      return result;
+    })();
+    checkInFlight.then(() => { checkInFlight = null; }, () => { checkInFlight = null; });
+    return checkInFlight;
+  }
+  async function reveal() {
+    const state = await needSession();
+    return checkReveal(await request({
+      action: 'reveal', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+      ...trackingFields()
+    }));
+  }
+  async function refresh() {
+    const state = await needSession();
+    let result;
+    try {
+      result = checkSession(await request({
+        action: 'start', case_id: CASE_ID, mechanic: MECHANIC, session_id: state.session_id,
+        ...trackingFields()
+      }));
+    } catch (error) {
+      // An expired or unknown token cannot be refreshed; start a new guest session, as a page reload would.
+      if (error.status === 410 || error.status === 404) return startSession(true);
+      throw error;
+    }
+    latestState = result;
+    window.dispatchEvent(new CustomEvent('case-room-secure-ready', { detail: result }));
+    return result;
+  }
+  // Reliability fix: after an uncertain result, keep asking the server for the case status
+  // (backing off up to 30 seconds, and immediately when the connection returns) until it answers.
+  let wakeRetry = null, recovering = 0;
+  function waitForRetry(ms) {
+    return new Promise(resolve => {
+      let timer = null;
+      const done = () => { clearTimeout(timer); window.removeEventListener('online', done); if (wakeRetry === done) wakeRetry = null; resolve(); };
+      timer = setTimeout(done, ms);
+      window.addEventListener('online', done);
+      wakeRetry = done;
+    });
+  }
+  async function recoverStatus(onRetry) {
+    let delay = 2000;
+    recovering += 1;
+    try {
+      for (;;) {
+        try { return await refresh(); }
+        catch (error) {
+          if (typeof onRetry === 'function') { try { onRetry(error); } catch (_) {} }
+          await waitForRetry(delay);
+          delay = Math.min(delay * 2, 30000);
+        }
+      }
+    } finally { recovering -= 1; }
+  }
+  // Player-pressed Retry: only asks the server for the case status. It never submits a choice.
+  // If a background retry is waiting, run it now. Otherwise (the first request failed or is hanging)
+  // start a fresh status request, then keep retrying in the background if that fails too.
+  let manualTry = null;
+  function retryNow() {
+    if (wakeRetry) { wakeRetry(); return; }
+    if (recovering || manualTry) return;
+    const known = latestState && latestState.session_id;
+    manualTry = (known ? refresh() : startSession(false))
+      .catch(() => recoverStatus())
+      .catch(() => null)
+      .finally(() => { manualTry = null; });
+  }
+  async function resetSession() {
+    const state = await startSession(true);
+    latestState = state;
+    return state;
+  }
+
+  const css = document.createElement('style');
+  css.textContent = `
+    #cr-analytics-consent[hidden], #cr-game-server-warning[hidden] { display:none !important; }
+    #cr-analytics-consent { position:relative; z-index:2; margin:12px auto 16px; width:min(420px,calc(100% - 24px)); box-sizing:border-box; padding:12px; border:1px solid rgba(200,164,90,.72); border-radius:10px; background:#171611; color:#f0e6d0; box-shadow:0 8px 24px rgba(0,0,0,.4); font:12px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    #cr-analytics-consent * { box-sizing:border-box; }
+    #cr-analytics-consent h2 { margin:0 0 5px; color:#f4e7c9; font:600 13px/1.3 Georgia,serif; }
+    #cr-analytics-consent p { margin:0 0 12px; color:#d0c8b7; }
+    #cr-analytics-consent .cr-analytics-actions { display:flex; flex-wrap:wrap; gap:8px; }
+    #cr-analytics-consent button { flex:1 1 160px; min-height:40px; padding:9px 13px; border-radius:6px; border:1px solid #75633b; cursor:pointer; font:600 12px/1.2 system-ui,-apple-system,sans-serif; }
+    #cr-analytics-consent .cr-accept { background:transparent; color:#f0e6d0; border-color:#75633b; }
+    #cr-analytics-consent .cr-decline { background:transparent; color:#f0e6d0; border-color:#75633b; }
+    #cr-analytics-consent .cr-decline { background:transparent; color:#f0e6d0; }
+    #cr-analytics-consent .cr-status { display:block; margin-top:10px; color:#aaa18e; font-size:11px; }
+    #cr-privacy-settings { margin:8px 0 0; padding:4px 0; border:0; background:transparent; color:#c8a45a; font:600 11px/1.4 system-ui,-apple-system,sans-serif; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+    #cr-privacy-settings:focus-visible, #cr-analytics-consent button:focus-visible { outline:2px solid #f0d68b; outline-offset:3px; }
+    @media(max-width:480px) { #cr-analytics-consent { margin:8px auto 12px; padding:14px; } }
+    @media(max-width:360px) { #cr-analytics-consent .cr-analytics-actions { flex-direction:column; } #cr-analytics-consent button { width:100%; flex-basis:auto; } }
+    @media(prefers-reduced-motion:reduce) { #cr-analytics-consent *, #cr-privacy-settings { animation:none !important; transition:none !important; } }
+  `;
+  document.head.appendChild(css);
+  const panel = document.createElement('section');
+  panel.id = 'cr-analytics-consent'; panel.hidden = true; panel.setAttribute('role', 'region'); panel.setAttribute('aria-labelledby', 'cr-analytics-title');
+    panel.innerHTML = `
+    <h2 id="cr-analytics-title">Help improve future cases?</h2>
+    <p>Allow optional gameplay analytics linked to a random session ID. We never collect your notebook contents.</p>
+    <div class="cr-analytics-actions"><button type="button" class="cr-accept">Allow analytics</button><button type="button" class="cr-decline">No thanks</button></div>
+    <span class="cr-status" id="cr-analytics-status">Optional. Change your choice in Privacy &amp; analytics.</span>
+  `;
+  document.body.appendChild(panel);
+  const settings = document.createElement('button'); settings.type = 'button'; settings.id = 'cr-privacy-settings';
+  settings.textContent = 'Privacy & analytics'; settings.setAttribute('aria-controls', panel.id); settings.setAttribute('aria-expanded', 'false');
+  const footer = document.querySelector('.foot, footer'); if (footer) footer.appendChild(settings);
+  function setConsent(value) {
+    memoryConsent = value; safeSet('localStorage', CONSENT_KEY, value);
+    if (value === 'accepted') analyticsSession(true);
+    else safeRemove('sessionStorage', ANALYTICS_SESSION_KEY);
+    panel.hidden = true; settings.setAttribute('aria-expanded', 'false');
+    const status = document.getElementById('cr-analytics-status');
+    if (status) status.textContent = value === 'accepted'
+      ? 'Analytics enabled for this browser session. Choose “Play without analytics” to stop future events.'
+      : 'Analytics disabled. Gameplay is unchanged.';
+  }
+  panel.querySelector('.cr-accept').addEventListener('click', () => setConsent('accepted'));
+  panel.querySelector('.cr-decline').addEventListener('click', () => setConsent('declined'));
+  settings.addEventListener('click', () => {
+    const open = panel.hidden; panel.hidden = !open; settings.setAttribute('aria-expanded', String(open));
+    if (open) { panel.scrollIntoView({ behavior: 'auto', block: 'nearest' }); panel.querySelector(consent() === 'accepted' ? '.cr-accept' : '.cr-decline').focus({ preventScroll: true }); }
+  });
+  const savedConsent = consent();
+  if (savedConsent === 'accepted') { panel.hidden = true; analyticsSession(true); }
+  else if (savedConsent === 'declined') panel.hidden = true;
+  else panel.hidden = false;
+
+  window.CaseRoomSecureGame = {
+    caseId: CASE_ID, ready, accuse, check, reveal, refresh, recoverStatus, retryNow, resetSession, serverNow,
+    isAccusing: () => Boolean(accuseInFlight), isChecking: () => Boolean(checkInFlight),
+    getState: () => latestState,
+    getAnalyticsConsent: () => consent()
+  };
+})();
+</script>
+</body>
+</html>

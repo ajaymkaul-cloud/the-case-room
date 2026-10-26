@@ -59,6 +59,8 @@
     transition: opacity 1.2s ease;
   }
   #gate.out { opacity: 0; pointer-events: none; }
+  #gate[hidden], #intro[hidden] { display: none; } /* once the intro is over, the gate leaves the page (and keyboard / screen-reader order) */
+  .arrive-cases #landing, .arrive-cases #landing * { animation-duration: 0s !important; animation-delay: 0s !important; transition: none !important; }
   #gate:focus-visible { outline: 2px solid var(--gold); outline-offset: -8px; }
 
   .gate-pulse {
@@ -317,6 +319,36 @@
     position: relative; z-index: 1;
   }
 
+  /* Hero copy and actions */
+  .hero-lead {
+    font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700;
+    font-size: clamp(22px, 3.2vw, 30px); line-height: 1.25; color: var(--fg); margin: 0 auto 10px; max-width: 560px;
+    opacity: 0; animation: up 0.7s ease 0.8s forwards; position: relative; z-index: 1;
+  }
+  .tag-close { color: var(--gold); }
+  .hero-actions {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 24px; margin-top: 22px;
+    opacity: 0; animation: up 0.7s ease 0.95s forwards; position: relative; z-index: 1;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px;
+    background: var(--gold); color: #080604; font-family: 'Courier Prime', monospace; font-weight: 700; font-size: 14px;
+    letter-spacing: .1em; text-transform: uppercase; text-decoration: none; transition: filter .2s, transform .2s;
+  }
+  .hero-cta:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .hero-link {
+    display: inline-flex; align-items: center; min-height: 44px; color: var(--fg); font-size: 15px;
+    text-decoration: underline; text-underline-offset: 5px; text-decoration-color: var(--gold-dim);
+  }
+  .hero-link:hover { text-decoration-color: var(--gold); }
+  .hero-cta:focus-visible, .hero-link:focus-visible, .case-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  #cases { scroll-margin-top: 12px; }
+  .case-card .case-setting-text { flex-wrap: nowrap; align-items: baseline; }
+  .case-card .case-setting-text::before { flex: none; }
+  .case-exp { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); line-height: 1.4; }
+  .case-status.start { color: #080604; background: var(--gold); border-color: var(--gold); font-weight: 700; }
+  @media (prefers-reduced-motion: reduce) { .hero-cta, .hero-cta:hover { transition: none; transform: none; } }
+
   /* How It Works */
   .how-band {
     padding: 28px max(40px, env(safe-area-inset-left, 16px)) 32px;
@@ -326,7 +358,7 @@
   }
   .how-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
   }
   .how-step {
@@ -567,7 +599,7 @@
   .foot-num { color: var(--gold); }
 
   @media (max-width: 900px) {
-    .how-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .how-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 
   @media (max-width: 600px) {
@@ -583,7 +615,7 @@
     /* Compact How It Works on phones: two columns, smaller cards */
     .how-band { padding: 20px 16px 22px; }
     .how-band .cases-label { margin-bottom: 14px; }
-    .how-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .how-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
     .how-step { padding: 14px; }
     .how-num { font-size: 11px; margin-bottom: 6px; }
     .how-title { font-size: 18px; line-height: 1.25; margin-bottom: 6px; }
@@ -631,11 +663,11 @@
 <canvas id="bg"></canvas>
 
 <!-- INTRO SEQUENCE -->
-<div id="intro">
+<div id="intro" inert>
   <div id="caption">
-    <div class="cap-line" id="cap1">Every crime leaves something behind.</div>
-    <div class="cap-line" id="cap2">Everyone had a reason. One had the nerve.</div>
-    <div class="cap-line" id="cap3">The truth is already in the room.</div>
+    <div class="cap-line" id="cap1">Every mystery leaves a trace.</div>
+    <div class="cap-line" id="cap2">Everyone has a version. One detail doesn’t fit.</div>
+    <div class="cap-line" id="cap3">The truth is already here. Find it.</div>
   </div>
   <button id="skip-intro" type="button" aria-label="Skip intro and show the case files">Skip intro →</button>
   <div id="thief-wrap">
@@ -661,7 +693,7 @@
 </div>
 
 <!-- LANDING PAGE -->
-<div id="landing">
+<div id="landing" inert>
   <div class="top-bar">
     <span class="bar-label">Pixel &amp; Ink · Investigation Series</span>
     <span class="bar-stamp">Classified</span>
@@ -671,7 +703,12 @@
     <div class="eyebrow">Interactive Detective Mysteries</div>
     <h1>The Case<em>Room</em></h1>
     <div class="rule"><span class="rule-diamond"></span></div>
-    <p class="tagline">The truth is already here.<br>Whether you find it depends<br>on what you choose to look at.</p>
+    <p class="hero-lead">Every mystery leaves a trace.</p>
+    <p class="tagline">Everyone has a version. One detail doesn’t fit.<br><span class="tag-close">The truth is already here. Find it.</span></p>
+    <div class="hero-actions">
+      <a class="hero-cta" href="cases/hidden-drop/">Start with The Hidden Drop</a>
+      <a class="hero-link" href="#cases">Explore all cases</a>
+    </div>
   </div>
 
   <section class="how-band" aria-labelledby="how-heading">
@@ -679,75 +716,73 @@
     <div class="how-grid">
       <div class="how-step">
         <div class="how-num">01</div>
-        <div class="how-title">Read the brief</div>
-        <p class="how-text">Start with the crime, location, and people involved.</p>
+        <div class="how-title">Choose a case</div>
+        <p class="how-text">Start with The Hidden Drop, or pick any story.</p>
       </div>
       <div class="how-step">
         <div class="how-num">02</div>
-        <div class="how-title">Examine evidence</div>
-        <p class="how-text">Open records, clues, and witness statements.</p>
+        <div class="how-title">Follow the clues</div>
+        <p class="how-text">Explore places, examine evidence, and connect the details.</p>
       </div>
       <div class="how-step">
         <div class="how-num">03</div>
-        <div class="how-title">Rule things out</div>
-        <p class="how-text">Use the elimination grid to test possibilities.</p>
-      </div>
-      <div class="how-step">
-        <div class="how-num">04</div>
-        <div class="how-title">Close the case</div>
-        <p class="how-text">Accuse the culprit, method, and location. Two attempts.</p>
+        <div class="how-title">Find the answer</div>
+        <p class="how-text">Solve the mystery and uncover the reveal.</p>
       </div>
     </div>
   </section>
 
-  <div class="cases-band">
-    <div class="cases-label">Active Case Files</div>
+  <div class="cases-band" id="cases">
+    <h2 class="cases-label">Choose a case</h2>
     <div class="cases-grid">
 
-      <!-- Case 001 -->
-      <a class="case-card" href="./case-001.html">
-        <div class="case-card-band band-001" data-num="001"></div>
+      <!-- Case 001 · The Hidden Drop (internal ID 003) -->
+      <a class="case-card" href="cases/hidden-drop/">
+        <div class="case-card-band band-003" data-num="001"></div>
         <div class="case-card-body">
           <div class="case-card-top">
             <span class="case-num">Case No. 001</span>
-            <span class="case-status open">Open</span>
+            <span class="case-status start">Start here</span>
           </div>
-          <div class="case-title-text">The Missing Envelope</div>
-          <div class="case-setting-text">Bengaluru · Law Firm · Free · 10–20 min</div>
+          <div class="case-title-text">The Hidden Drop</div>
+          <div class="case-exp">Explore &amp; discover</div>
+          <div class="case-setting-text">Pune · Street hunt · Free · 15–20 min</div>
           <div class="case-divider"></div>
-          <div class="case-brief-text">A confidential settlement offer vanished from a senior partner's office overnight. Three people had access. The deal closes in 24 hours.</div>
+          <div class="case-brief-text">A street artist who signs with a crow has hidden something in Kesari Peth. Three painted pieces lead to one door. Read the street.</div>
           <div class="case-cta">Investigate Case 001</div>
         </div>
       </a>
 
-      <!-- Case 002 -->
-      <a class="case-card" href="./case-002.html">
-        <div class="case-card-band band-002" data-num="002"></div>
+      <!-- Case 002 · The Missing Envelope (internal ID 001) -->
+      <a class="case-card" href="cases/missing-envelope/">
+        <div class="case-card-band band-001" data-num="002"></div>
         <div class="case-card-body">
           <div class="case-card-top">
             <span class="case-num">Case No. 002</span>
-            <span class="case-status new">New</span>
+            <span class="case-status open">Open</span>
           </div>
-          <div class="case-title-text">The Last Shot</div>
-          <div class="case-setting-text">Mumbai · Film Set · Free · 15–25 min</div>
+          <div class="case-title-text">The Missing Envelope</div>
+          <div class="case-exp">Eliminate &amp; deduce</div>
+          <div class="case-setting-text">Bengaluru · Law Firm · Free · 10–20 min</div>
           <div class="case-divider"></div>
-          <div class="case-brief-text">The lead actor was found unconscious in his trailer 13 minutes before the final scene. Someone had tampered with his drink. The production insurance pays triple if it's sabotage.</div>
+          <div class="case-brief-text">A signed acquisition contract vanished from a sealed envelope overnight. A decoy was left in its place. Three people were in the building.</div>
           <div class="case-cta">Investigate Case 002</div>
         </div>
       </a>
 
-      <!-- Case 003 -->
-      <a class="case-card" href="./case-003.html">
-        <div class="case-card-band band-003" data-num="003"></div>
+      <!-- Case 003 · The Last Shot (internal ID 002) -->
+      <a class="case-card" href="cases/last-shot/">
+        <div class="case-card-band band-002" data-num="003"></div>
         <div class="case-card-body">
           <div class="case-card-top">
             <span class="case-num">Case No. 003</span>
-            <span class="case-status new">New</span>
+            <span class="case-status open">Open</span>
           </div>
-          <div class="case-title-text">The Hidden Drop</div>
-          <div class="case-setting-text">Pune · Street hunt · Free · 15–20 min</div>
+          <div class="case-title-text">The Last Shot</div>
+          <div class="case-exp">Examine &amp; connect</div>
+          <div class="case-setting-text">Mumbai · Film Set · Free · 15–25 min</div>
           <div class="case-divider"></div>
-          <div class="case-brief-text">A street artist who signs with a crow has hidden something in Kesari Peth. Three painted pieces lead to one door. Read the street.</div>
+          <div class="case-brief-text">The lead actor was found unconscious in his trailer 13 minutes before the final scene. Someone had tampered with his drink. The production insurance pays triple if it's sabotage.</div>
           <div class="case-cta">Investigate Case 003</div>
         </div>
       </a>
@@ -882,7 +917,7 @@ function finishIntro(skip = false) {
 
   gate.classList.add('out');
   intro.classList.add('out');
-  land.classList.add('show');
+  land.classList.add('show'); land.inert = false;
 
   if (skip) {
     audioCancelled = true;
@@ -912,8 +947,8 @@ function startExperience(withSound) {
   const cap2  = document.getElementById('cap2');
   const cap3  = document.getElementById('cap3');
 
-  gate.classList.add('out');
-  scheduleIntro(() => { intro.classList.add('show'); }, 250);
+  gate.classList.add('out'); gate.inert = true;
+  scheduleIntro(() => { intro.classList.add('show'); intro.inert = false; }, 250);
 
   // Each caption gets time to be read; the case list is fully visible at ~6 seconds.
   scheduleIntro(() => { cap1.classList.add('show'); },    450);
@@ -947,6 +982,12 @@ silentBtn.addEventListener('click', e => {
   startExperience(false);
 });
 skipIntro.addEventListener('click', () => finishIntro(true));
+if (location.hash === '#cases') {
+  document.documentElement.classList.add('arrive-cases'); // no fade-ins: the list is ready (and focusable) at once
+  started = true; finishIntro(true);
+  document.getElementById('gate').hidden = true; document.getElementById('intro').hidden = true; // arriving from a case: no fade
+  requestAnimationFrame(() => { const list = document.getElementById('cases'); if (list) list.scrollIntoView({ block: 'start' }); });
+}
 document.addEventListener('keydown', e => {
   if (started && !introFinished && e.key === 'Escape') finishIntro(true);
 });
