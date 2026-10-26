@@ -714,8 +714,7 @@
           <div class="drop-actions"><button class="finds-primary" id="copy-btn" type="button">Copy share text</button><span class="share-confirm" id="share-confirm" aria-live="polite"></span></div>
           <nav class="up-next" aria-labelledby="up-next-title">
             <h2 class="up-next-title" id="up-next-title">Another case?</h2>
-            <a class="next-case" href="../missing-envelope/"><span class="nc-num">Next · Case 002</span><span class="nc-title">The Missing Envelope</span><span class="nc-meta">Bengaluru · Law firm · 10–20 min</span></a>
-            <a class="next-case" href="../last-shot/"><span class="nc-num">Case 003</span><span class="nc-title">The Last Shot</span><span class="nc-meta">Mumbai · Film set · 15–25 min</span></a>
+            <a class="next-case" href="../missing-envelope/"><span class="nc-num">Case 002</span><span class="nc-title">Next: The Missing Envelope</span><span class="nc-meta">Bengaluru · Law firm · 10–20 min</span></a>
             <a class="finds-link all-cases" href="../../index.html#cases">See all cases</a>
           </nav>
         </div>
@@ -822,6 +821,8 @@ function fragNode(f, stage) {
   if (anim.frag && anim.frag.stage === stage) live(n, 'fill-in', anim.frag.t, 700);
   return n;
 }
+// Stage words exist only for pieces 1-3. Anything else is a bug: logged loudly (the tests fail on it), never printed as 'undefined'.
+function pieceWord(n) { if (WORD[n]) return WORD[n]; console.error(`[case] no piece ${n}`); return 'the previous'; }
 const countText = n => n >= 3 ? 'All pieces found.' : `Piece ${n} of 3`;
 function currentStage() {
   if (!game.confirmed) return savedProgress.solved ? 0 : Math.min(savedProgress.n + 1, 4);
@@ -1194,8 +1195,10 @@ function renderStages() {
     } else tag = el('span', { class: 'stage-tag' }, stage === 4 ? 'Final' : meta.label);
     head.append(el('h3', { class: 'stage-title', id: `stage-title-${stage}` }, meta.title), tag);
     card.append(head);
-    if (!game.confirmed && !done && stage < cur) {
-      card.append(el('p', { class: 'locked' }, 'Checking…'));
+    // Before the server answers, the page may not know where the player is (cur === 0: e.g. this browser remembers a
+    // solved game). Unknown progress is shown as such; it is never treated as a stage number.
+    if (!game.confirmed && !done && (cur === 0 || stage < cur)) {
+      card.append(el('p', { class: 'locked' }, game.statusKind === 'unconfirmed' ? 'Progress not loaded yet.' : 'Checking…'));
     } else if (done && stage < 4) {
       const body = el('div', { class: 'found-body' });
       const line = el('p', { class: 'found-line' });
@@ -1212,7 +1215,7 @@ function renderStages() {
       card.classList.add('waiting'); card.append(el('p', { class: 'locked up-next' }, 'Up next.'));
     } else if (stage > cur || (wait && stage > nFound)) {
       card.classList.add('waiting');
-      card.append(el('p', { class: 'locked' }, stage === 4 ? 'Locked until all three pieces are found.' : `Locked until piece ${WORD[stage - 1]} is found.`));
+      card.append(el('p', { class: 'locked' }, stage === 4 ? 'Locked until all three pieces are found.' : `Locked until piece ${pieceWord(stage - 1)} is found.`));
     } else if (stage === 4 && game.status === 'solved') {
       const body = el('div', { class: 'stage-body' });
       const rv = el('p', { class: 'reveal-text' }); fillLines(rv, game.solution || 'Loading the drop…');
@@ -1534,7 +1537,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return data;
   }
   const ready = startSession(false).catch(error => {
-    serverMessage(error.message || 'The case server is unavailable. Your accusation has not been submitted.');
+    // Plain words, never the browser's raw error ("Failed to fetch"). Cleared when a status request later succeeds.
+    serverMessage(error && error.status
+      ? 'The case server could not load this session yet. Use Retry, or reload the page.'
+      : 'Can’t reach the case server. Check your connection, then use Retry. Nothing has been submitted.');
     return null;
   });
   async function needSession() {
