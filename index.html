@@ -650,6 +650,50 @@
   }
 
 </style>
+
+<style id="stage3-cards">
+  /* Stage 3 cards: cover from each case's own opening picture; one action per card (the existing Investigate Case link), the whole card clickable through it. */
+  .cases-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .case-card { position: relative; display: flex; flex-direction: column; background: #0f0d0a; border: 1px solid #2a2418; padding: 0; transition: border-color .18s ease, transform .18s ease; }
+  .case-card::before, .case-card::after { content: none !important; }
+  .case-card:hover, .case-card:focus-within { border-color: var(--gold); transform: translateY(-2px); }
+  .cc-cover { aspect-ratio: 16 / 9; overflow: hidden; background: #1a1710; border-bottom: 1px solid #2a2418; }
+  .cc-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cc-body { display: grid; gap: 7px; padding: 16px 16px 18px; flex: 1; align-content: start; }
+  .cc-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 28px; }
+  .case-card .case-num { font-size: 12px; letter-spacing: .3em; }
+  .case-card .case-status { font-size: 12px; letter-spacing: .14em; padding: 4px 9px; }
+  .case-card .case-title-text { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; font-size: 24px; line-height: 1.2; color: #f0e6d0; }
+  .case-card .case-exp { font-size: 13px; }
+  .case-card .case-setting-text { font-size: 13px; letter-spacing: .08em; color: #a8987a; text-transform: uppercase; }
+  .case-card .case-setting-text::before { content: none; }
+  .case-card .case-brief-text { font-size: 15px; line-height: 1.6; color: #d9cfb8; margin: 2px 0 6px; }
+  .case-card .case-cta { justify-self: start; align-self: end; display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; margin-top: auto;
+    background: var(--gold); color: #080604; font-weight: 700; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+  .case-card .case-cta::after { content: ''; position: absolute; inset: 0; } /* the whole card opens the case, through this one link */
+  .case-card .case-cta:focus-visible { outline: none; }
+  .case-card:focus-within { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .case-card .case-cta:hover { background: #e0bf72; }
+  .case-card .cta-arrow { margin-left: 8px; transition: transform 0.2s; }
+  .case-card:hover .cta-arrow { transform: translateX(4px); }
+  @media (prefers-reduced-motion: reduce) { .case-card .cta-arrow { transition: none; } }
+  .case-card .case-cta { white-space: nowrap; }
+  @media (max-width: 380px) { .case-card .case-cta { letter-spacing: 0.08em; padding: 0 16px; } .case-card .cta-arrow { margin-left: 6px; } }
+  .visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+  /* Coming soon: after the cases, outside the numbered list, quieter, not interactive */
+  .coming-soon { margin-top: 16px; display: grid; grid-template-columns: 1fr; border: 1px dashed #3a3122; background: rgba(15, 13, 10, .6); color: #a8987a; }
+  .cs-cover { aspect-ratio: 16 / 9; overflow: hidden; opacity: .8; filter: saturate(.6); border-bottom: 1px dashed #3a3122; }
+  .cs-cover svg { width: 100%; height: 100%; display: block; }
+  .cs-body { padding: 14px 16px 18px; display: grid; gap: 6px; }
+  .cs-label { font-size: 12px; letter-spacing: .26em; text-transform: uppercase; color: #8a7a5a; }
+  .cs-title { margin: 0; font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 20px; line-height: 1.3; color: #cfc3a8; }
+  @media (min-width: 900px) {
+    .coming-soon { grid-template-columns: minmax(0, 320px) minmax(0, 1fr); align-items: center; }
+    .cs-cover { border-bottom: 0; border-right: 1px dashed #3a3122; }
+    .cs-body { padding: 18px 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .case-card { transition: none; } .case-card:hover, .case-card:focus-within { transform: none; } }
+</style>
 </head>
 <body>
 <!-- GATE -->
@@ -736,58 +780,64 @@
     <h2 class="cases-label">Choose a case</h2>
     <div class="cases-grid">
 
-      <!-- Case 001 · The Hidden Drop (internal ID 003) -->
-      <a class="case-card" href="cases/hidden-drop/">
-        <div class="case-card-band band-003" data-num="001"></div>
-        <div class="case-card-body">
-          <div class="case-card-top">
-            <span class="case-num">Case No. 001</span>
-            <span class="case-status start">Start here</span>
-          </div>
-          <div class="case-title-text">The Hidden Drop</div>
+      <article class="case-card" aria-labelledby="t-hidden-drop">
+        <div class="cc-cover"><img src="covers/hidden-drop.jpg" alt="" width="960" height="540" loading="lazy" decoding="async"></div>
+        <div class="cc-body">
+          <div class="cc-top"><span class="case-num">Case No. 001</span><span class="case-status start">Start here</span></div>
+          <h3 class="case-title-text" id="t-hidden-drop">The Hidden Drop</h3>
           <div class="case-exp">Explore &amp; discover</div>
-          <div class="case-setting-text">Pune · Street hunt · Free · 15–20 min</div>
-          <div class="case-divider"></div>
-          <div class="case-brief-text">A street artist who signs with a crow has hidden something in Kesari Peth. Three painted pieces lead to one door. Read the street.</div>
-          <div class="case-cta">Investigate Case 001</div>
+          <div class="case-setting-text">Pune · Street hunt · Free</div>
+          <p class="case-brief-text">A street artist who signs with a crow has hidden something in Kesari Peth. Three painted pieces lead to one door. Read the street.</p>
+          <a class="case-cta" href="cases/hidden-drop/">Investigate Case 001<span class="cta-arrow" aria-hidden="true">→</span></a>
         </div>
-      </a>
+      </article>
 
-      <!-- Case 002 · The Missing Envelope (internal ID 001) -->
-      <a class="case-card" href="cases/missing-envelope/">
-        <div class="case-card-band band-001" data-num="002"></div>
-        <div class="case-card-body">
-          <div class="case-card-top">
-            <span class="case-num">Case No. 002</span>
-            <span class="case-status open">Open</span>
-          </div>
-          <div class="case-title-text">The Missing Envelope</div>
+      <article class="case-card" aria-labelledby="t-missing-envelope">
+        <div class="cc-cover"><img src="covers/missing-envelope.jpg" alt="" width="960" height="540" loading="lazy" decoding="async"></div>
+        <div class="cc-body">
+          <div class="cc-top"><span class="case-num">Case No. 002</span><span class="case-status open">Open</span></div>
+          <h3 class="case-title-text" id="t-missing-envelope">The Missing Envelope</h3>
           <div class="case-exp">Eliminate &amp; deduce</div>
-          <div class="case-setting-text">Bengaluru · Law Firm · Free · 10–20 min</div>
-          <div class="case-divider"></div>
-          <div class="case-brief-text">A signed acquisition contract vanished from a sealed envelope overnight. A decoy was left in its place. Three people were in the building.</div>
-          <div class="case-cta">Investigate Case 002</div>
+          <div class="case-setting-text">Bengaluru · Law firm · Free</div>
+          <p class="case-brief-text">A signed acquisition contract left on the partners’ desk in a sealed envelope was gone by morning. Three people were in the building.</p>
+          <a class="case-cta" href="cases/missing-envelope/">Investigate Case 002<span class="cta-arrow" aria-hidden="true">→</span></a>
         </div>
-      </a>
+      </article>
 
-      <!-- Case 003 · The Last Shot (internal ID 002) -->
-      <a class="case-card" href="cases/last-shot/">
-        <div class="case-card-band band-002" data-num="003"></div>
-        <div class="case-card-body">
-          <div class="case-card-top">
-            <span class="case-num">Case No. 003</span>
-            <span class="case-status open">Open</span>
-          </div>
-          <div class="case-title-text">The Last Shot</div>
+      <article class="case-card" aria-labelledby="t-last-shot">
+        <div class="cc-cover"><img src="covers/last-shot.jpg" alt="" width="960" height="540" loading="lazy" decoding="async"></div>
+        <div class="cc-body">
+          <div class="cc-top"><span class="case-num">Case No. 003</span><span class="case-status open">Open</span></div>
+          <h3 class="case-title-text" id="t-last-shot">The Last Shot</h3>
           <div class="case-exp">Examine &amp; connect</div>
-          <div class="case-setting-text">Mumbai · Film Set · Free · 15–25 min</div>
-          <div class="case-divider"></div>
-          <div class="case-brief-text">The lead actor was found unconscious in his trailer 13 minutes before the final scene. Someone had tampered with his drink. The production insurance pays triple if it's sabotage.</div>
-          <div class="case-cta">Investigate Case 003</div>
+          <div class="case-setting-text">Mumbai · Film set · Free</div>
+          <p class="case-brief-text">Lead actor Veer Kapoor is found unconscious in his trailer minutes before the final shot. His morning energy drink contained a sedative.</p>
+          <a class="case-cta" href="cases/last-shot/">Investigate Case 003<span class="cta-arrow" aria-hidden="true">→</span></a>
         </div>
-      </a>
+      </article>
 
     </div>
+
+    <aside class="coming-soon" aria-labelledby="soon-title">
+      <div class="cs-cover"><svg viewBox="0 0 320 180" aria-hidden="true" focusable="false">
+            <rect width="320" height="180" fill="#15130f"/>
+            <g transform="translate(160 96) rotate(-4)">
+              <rect x="-98" y="-58" width="196" height="124" rx="3" fill="#000" opacity=".45" transform="translate(6 8)"/>
+              <rect x="-92" y="-64" width="176" height="118" rx="2" fill="#d9d4c8" opacity=".55" transform="rotate(3)"/>
+              <path d="M-100 -60 h66 l10 -12 h44 l10 12 h70 v124 h-200 z" fill="#5e5340" stroke="#2b2519" stroke-width="2"/>
+              <rect x="-100" y="-48" width="200" height="112" rx="2" fill="#6f6249" stroke="#2b2519" stroke-width="2"/>
+              <path d="M-100 -36 h200" stroke="#2b2519" stroke-width="1" opacity=".5"/>
+              <rect x="-70" y="-6" width="96" height="9" fill="#2b2519" opacity=".75"/>
+              <rect x="-70" y="12" width="128" height="9" fill="#2b2519" opacity=".75"/>
+              <rect x="-70" y="30" width="72" height="9" fill="#2b2519" opacity=".75"/>
+              <path d="M70 -54 v-24 a8 8 0 0 1 16 0 v34" fill="none" stroke="#9a9a94" stroke-width="3" stroke-linecap="round"/>
+            </g>
+          </svg></div>
+      <div class="cs-body">
+        <div class="cs-label">New case · Coming soon</div>
+        <p class="cs-title" id="soon-title">A new mystery is being assembled.</p>
+      </div>
+    </aside>
   </div>
 
   <div class="foot">
