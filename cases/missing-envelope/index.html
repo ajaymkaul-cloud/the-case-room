@@ -24,568 +24,288 @@
 
 <style>
   :root {
-    --bg: #080604;
+    --bg: #0a0806;
     --fg: #f0e6d0;
-    --fg-mid: #9a8a6e;
-    --fg-low: #221e16;
+    --fg-mid: #a9997c;
+    --fg-low: #262016;
     --gold: #c8a45a;
     --gold-dim: #6a5228;
     --red: #e06a5b;
-    --card-bg: #110f0a;
-    --card-border: #2a2418;
+    --card-bg: #120f0b;
+    --card-border: #2c251a;
+    --paper: #f1eee7;
+    --paper-2: #e4dfd4;
+    --ink: #26221c;
+    --ink-mid: #5d574c;
+    --rule: #cdc6b6;
     color-scheme: dark;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
   .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; border: 0;
   }
-
-  button:focus-visible,
-  a:focus-visible,
-  select:focus-visible,
-  summary:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: 3px;
+  button:focus-visible, a:focus-visible, select:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--gold); outline-offset: 3px;
   }
-
+  html { scroll-padding-top: 16px; }
   body {
-    background: var(--bg);
+    background:
+      radial-gradient(90% 520px at 50% 0%, rgba(120, 92, 52, 0.18), transparent 70%),
+      var(--bg);
     color: var(--fg);
     font-family: 'Courier Prime', 'Courier New', monospace;
     line-height: 1.65;
     min-height: 100vh;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
 
   /* TOP BAR */
   .top-bar {
-    padding: 18px max(40px, 16px);
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
+    padding: 14px max(24px, 16px);
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
     border-bottom: 1px solid var(--fg-low);
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 50;
+    background: rgba(10, 8, 6, 0.96);
   }
-  .bar-left { display: flex; align-items: center; gap: 20px; }
-  .bar-center {
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-weight: 700; font-style: italic;
-    font-size: 13px;
-    color: var(--fg-mid);
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
+  .bar-left { display: flex; align-items: center; gap: 18px; }
+  .bar-center { text-align: center; font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; font-size: 13px; color: var(--fg-mid); letter-spacing: 0.04em; white-space: nowrap; }
   .bar-right { display: flex; align-items: center; gap: 14px; justify-content: flex-end; }
-  .bar-logo {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-style: italic;
-    font-size: 18px;
-    color: var(--fg);
-    text-decoration: none;
-    letter-spacing: -0.01em;
-  }
+  .bar-logo { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: 18px; color: var(--fg); text-decoration: none; letter-spacing: -0.01em; }
   .bar-logo em { color: var(--gold); font-style: italic; }
-  .bar-label { font-size: 11px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
-  .bar-stamp {
-    font-size: 11px; letter-spacing: 0.18em; color: var(--red);
-    text-transform: uppercase; border: 1px solid var(--red);
-    padding: 3px 10px; transform: rotate(2deg); display: inline-block; opacity: 0.8;
+  .bar-label { font-size: 12px; letter-spacing: 0.22em; color: var(--fg-mid); text-transform: uppercase; }
+  .bar-place { font-size: 12px; letter-spacing: 0.2em; color: var(--fg-mid); text-transform: uppercase; }
+  .bar-stamp, .dossier-stamp {
+    font-size: 12px; letter-spacing: 0.14em; color: var(--red); text-transform: uppercase;
+    border: 1px solid var(--red); padding: 3px 9px; transform: rotate(2deg); display: inline-block; opacity: 0.85; white-space: nowrap;
   }
   .bar-stamp[data-state="solved"], .dossier-stamp[data-state="solved"] { color: var(--gold); border-color: var(--gold-dim); }
   .bar-stamp[data-state="closed"], .dossier-stamp[data-state="closed"] { color: var(--red); border-color: var(--red); }
+  .dossier-stamp { transform: rotate(-3deg); }
 
-  /* CASE HEADER */
-  .case-header {
-    padding: 44px max(40px, 16px) 32px;
-    border-bottom: 1px solid var(--fg-low);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 40px;
-    align-items: start;
-  }
-  .case-header-text { min-width: 0; }
-  .case-number {
-    font-size: 12px; letter-spacing: 0.38em; color: var(--gold);
-    text-transform: uppercase; margin-bottom: 14px;
-  }
+  /* OPENING: the sealed envelope on the partners' desk */
+  .opening { max-width: 1100px; margin: 0 auto; }
+  .scene-wrap { position: relative; }
+  .scene { position: relative; height: 196px; overflow: hidden; border-bottom: 1px solid #2c2216; }
+  .scene-title { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 20px 12px; background: linear-gradient(180deg, transparent, rgba(10,8,6,.72) 45%, rgba(10,8,6,.92)); }
+  .scene svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .opening-text { padding: 14px 20px 0; }
+  .case-number { font-size: 12px; letter-spacing: 0.24em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
   .case-title {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900; font-style: italic;
-    font-size: clamp(32px, 6vw, 56px);
-    line-height: 1;
-    color: var(--fg);
-    margin-bottom: 18px;
-    text-wrap: balance;
+    font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic;
+    font-size: clamp(32px, 8.4vw, 58px); line-height: 1.02; color: var(--fg); text-wrap: balance; text-shadow: 0 2px 12px rgba(0,0,0,.6);
   }
-  .case-title-rule {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 14px 0 18px;
+  .case-setting { font-size: 15px; color: #ddd2bb; line-height: 1.6; max-width: 640px; }
+  .case-task {
+    margin-top: 12px; padding: 10px 14px; max-width: 640px;
+    border-left: 3px solid var(--gold); background: rgba(200, 164, 90, 0.07);
+    font-size: 15px; line-height: 1.6; color: var(--fg);
   }
-  .case-title-rule::before,
-  .case-title-rule::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold-dim));
+  .case-task b { color: var(--gold); }
+  .opening-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 12px; margin-top: 14px; }
+  .start-btn {
+    display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px;
+    background: var(--gold); color: #0a0806; text-decoration: none; font-weight: 700; font-size: 14px;
+    letter-spacing: 0.12em; text-transform: uppercase; border: 0;
+    transition: filter 0.2s, transform 0.2s;
   }
-  .case-title-rule::after {
-    background: linear-gradient(to left, transparent, var(--gold-dim));
+  .start-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .start-btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+  .case-file { margin-top: 16px; border: 1px solid var(--fg-low); background: rgba(17, 14, 10, 0.6); }
+  .case-file summary {
+    list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 46px; padding: 0 12px; cursor: pointer; font-size: 14px;
   }
-  .case-title-rule span {
-    font-size: 9px;
-    letter-spacing: 0.35em;
-    color: var(--gold);
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-  .case-setting {
-    font-size: 15px;
-    color: var(--fg-mid);
-    line-height: 1.8;
-    max-width: 560px;
-    font-style: italic;
-  }
-  /* DOSSIER PANEL */
-  .case-dossier {
-    border: 1px solid var(--fg-low);
-    padding: 20px 22px;
-    min-width: 200px;
-    max-width: 240px;
-    position: relative;
-    background: rgba(17,14,10,0.6);
-  }
-  .case-dossier::before {
-    content: '';
-    position: absolute;
-    inset: 4px;
-    border: 1px solid var(--gold-dim);
-    opacity: 0.3;
-    pointer-events: none;
-  }
-  .dossier-label {
-    font-size: 8px;
-    letter-spacing: 0.45em;
-    color: var(--fg-mid);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    opacity: 0.6;
-  }
-  .dossier-row {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin-bottom: 12px;
-  }
-  .dossier-row:last-child { margin-bottom: 0; }
-  .dossier-key {
-    font-size: 8px;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-    opacity: 0.6;
-  }
-  .dossier-val {
-    font-size: 11px;
-    color: var(--fg);
-    letter-spacing: 0.04em;
-    line-height: 1.4;
-  }
-  .dossier-divider {
-    height: 1px;
-    background: var(--fg-low);
-    margin: 10px 0;
-  }
-  .dossier-stamp {
-    margin-top: 14px;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    color: var(--red);
-    text-transform: uppercase;
-    border: 1px solid var(--red);
-    display: inline-block;
-    padding: 4px 10px;
-    transform: rotate(-3deg);
-    opacity: 0.75;
-  }
-  @media (max-width: 700px) {
-    .case-header { grid-template-columns: 1fr; }
-    .case-dossier { max-width: 100%; display: flex; flex-wrap: wrap; gap: 16px; }
-    .case-dossier::before { display: none; }
-    .dossier-label { width: 100%; }
-    .dossier-stamp { margin-top: 0; }
-  }
+  .case-file summary::-webkit-details-marker { display: none; }
+  .case-file .cf-k { font-size: 12px; letter-spacing: 0.22em; color: var(--fg-mid); text-transform: uppercase; }
+  .case-file .cf-k::before { content: '+'; display: inline-block; width: 16px; color: var(--gold); }
+  .case-file[open] .cf-k::before { content: '−'; }
+  .case-file dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; padding: 4px 14px 14px; }
+  .case-file dt { font-size: 12px; letter-spacing: 0.16em; color: var(--gold); text-transform: uppercase; }
+  .case-file dd { font-size: 14px; color: var(--fg); line-height: 1.4; }
 
-  /* MAIN LAYOUT */
-  .puzzle-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 0;
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .puzzle-left {
-    border-right: 1px solid var(--fg-low);
-    min-width: 0;
-    padding: 32px clamp(18px, 3vw, 40px);
-  }
-  .puzzle-right {
-    min-width: 0;
-    padding: 32px clamp(18px, 3vw, 40px);
-  }
-
-  /* SECTION LABELS */
+  /* LAYOUT */
+  .puzzle-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 1100px; margin: 0 auto; }
+  .puzzle-left, .puzzle-right { min-width: 0; padding: 26px 20px 8px; }
   .section-label {
-    font-size: 11px;
-    letter-spacing: 0.35em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    font-size: 13px; letter-spacing: 0.22em; color: var(--gold); text-transform: uppercase;
+    margin: 0 0 14px; display: flex; align-items: center; gap: 12px; font-weight: 400;
   }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--fg-low);
-  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--fg-low); }
+  .section-label.spaced { margin-top: 34px; }
+  .section-note { font-size: 14px; color: var(--fg-mid); margin: -6px 0 14px; }
 
-  /* EVIDENCE CARDS */
-  .card-group { margin-bottom: 36px; }
-  .card-group-title {
-    font-size: 11px; letter-spacing: 0.32em; color: var(--fg-mid);
-    text-transform: uppercase; margin-bottom: 12px;
+  /* RECORDS: each record drawn as the object it is. Paper is neutral grey-white: paper colour is part of the evidence. */
+  .records { display: grid; gap: 14px; }
+  .record {
+    position: relative; background: var(--paper); color: var(--ink);
+    padding: 12px 14px 14px; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 10px 22px rgba(0, 0, 0, 0.42);
+    border: 1px solid transparent; outline: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   }
-  .cards { display: flex; flex-direction: column; gap: 8px; }
-  .card {
-    appearance: none;
-    width: 100%;
-    text-align: left;
-    font: inherit;
-    color: inherit;
-    background:
-      linear-gradient(180deg, rgba(255, 244, 214, 0.03), rgba(0, 0, 0, 0.18)),
-      var(--card-bg);
-    border: 1px solid var(--card-border);
-    padding: 14px 18px;
-    cursor: pointer;
-    box-shadow:
-      0 1px 0 rgba(255, 244, 214, 0.04) inset,
-      0 8px 18px rgba(0, 0, 0, 0.28);
-    transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease,
-      border-color 0.18s ease,
-      background-color 0.18s ease;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
+  .record:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 16px 28px rgba(0, 0, 0, 0.5); }
+  .record:focus-visible { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200, 164, 90, 0.55), 0 16px 28px rgba(0, 0, 0, 0.5); }
+  .record-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed var(--rule); }
+  .record-tag {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink); font-weight: 700;
   }
-  .card:hover:not(.open),
-  .card:focus-visible:not(.open) {
-    transform: translateY(-2px);
-    border-color: var(--gold-dim);
-    box-shadow:
-      0 1px 0 rgba(255, 244, 214, 0.05) inset,
-      0 14px 26px rgba(0, 0, 0, 0.38);
-  }
-  .card.open {
-    transform: none;
-    border-color: var(--gold-dim);
-    background:
-      linear-gradient(180deg, rgba(255, 244, 214, 0.035), rgba(0, 0, 0, 0.14)),
-      #161209;
-    box-shadow:
-      0 1px 0 rgba(255, 244, 214, 0.05) inset,
-      0 8px 18px rgba(0, 0, 0, 0.3);
-  }
-  .card-icon  { display: block; font-size: 22px; flex-shrink: 0; line-height: 1.3; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif !important; }
-  .card-body  { display: block; flex: 1; min-width: 0; }
-  .card-name  {
-    display: block;
-    font-size: 15px; font-weight: 700; color: var(--fg);
-    letter-spacing: 0.02em; margin-bottom: 3px;
-  }
-  .card-role  { display: block; font-size: 12px; color: var(--gold); letter-spacing: 0.06em; margin-bottom: 8px; }
-  .card-detail {
-    display: block;
-    font-size: 14px; color: var(--fg-mid); line-height: 1.65;
-    max-height: 0; overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-  .card.open .card-detail { max-height: 480px; }
+  .record-tag .tag-no { display: inline-grid; place-items: center; min-width: 34px; height: 24px; padding: 0 6px; background: var(--ink); color: var(--paper); letter-spacing: 0.06em; }
+  .record-where { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mid); text-align: right; }
+  .record-body { display: flow-root; }
+  .record-art { float: left; width: 84px; aspect-ratio: 1 / 1; margin: 2px 14px 6px 0; background: var(--paper-2); border: 1px solid #d3cdbf; display: grid; place-items: center; }
+  .record-art svg { width: 88%; height: 88%; display: block; }
+  .record-text { font-size: 15px; line-height: 1.6; color: var(--ink); }
+  .record-text strong { display: block; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; color: #403a30; }
+  .record.dark { background: #1d2024; color: #e8e4dc; }
+  .record.dark .record-head { border-bottom-color: #3a3f45; }
+  .record.dark .record-tag { color: #e8e4dc; } .record.dark .record-tag .tag-no { background: #e8e4dc; color: #1d2024; }
+  .record.dark .record-where { color: #a8a39a; }
+  .record.dark .record-art { background: #262a2f; border-color: #3a3f45; }
+  .record.dark .record-text { color: #e8e4dc; } .record.dark .record-text strong { color: #c9c4ba; }
+  .record.report .record-head { background: var(--ink); margin: -12px -14px 10px; padding: 8px 14px; border-bottom: 0; }
+  .record.report .record-tag, .record.report .record-where { color: var(--paper); }
+  .record.report .record-tag .tag-no { background: var(--paper); color: var(--ink); }
 
-  /* CLUES */
-  .clue-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
-  .clue {
-    font-size: 14px; color: var(--fg-mid); line-height: 1.75;
-    padding: 14px 18px;
-    border-left: 2px solid var(--gold-dim);
-    background: var(--card-bg);
-  }
-  .clue-num { color: var(--gold); font-weight: 700; margin-right: 8px; }
+  /* STATEMENTS: typed witness sheets */
+  .statement-list { display: grid; gap: 12px; }
+  .statement { background: #e7e3da; color: var(--ink); padding: 0 16px 14px; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35); position: relative; }
+  .statement::before { content: ''; position: absolute; left: 50%; top: -6px; width: 44px; height: 12px; background: rgba(200, 190, 160, 0.55); transform: translateX(-50%) rotate(-2deg); }
+  .statement-name { display: flex; justify-content: space-between; gap: 10px; padding: 12px 0 8px; margin-bottom: 8px; border-bottom: 1px solid var(--rule); font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .statement-name small { font-weight: 400; letter-spacing: 0.08em; color: var(--ink-mid); font-size: 12px; }
+  .statement-text { font-size: 15px; line-height: 1.7; color: var(--ink); }
+  .statement-text::before { content: '\201C'; } .statement-text::after { content: '\201D'; }
 
-  /* STATEMENTS */
-  .statement-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
-  .statement {
-    padding: 14px 18px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-  }
-  .statement-name { font-size: 11px; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
-  .statement-text { font-size: 14px; color: var(--fg-mid); line-height: 1.7; font-style: italic; }
-  .statement-text::before { content: '\201C'; color: var(--gold-dim); }
-  .statement-text::after  { content: '\201D'; color: var(--gold-dim); }
+  /* PLACES: Meridian House floor guide (schematic) */
+  .floor-guide { background: #141311; border: 7px solid #3a2f22; box-shadow: inset 0 0 0 1px #000, 0 10px 22px rgba(0, 0, 0, 0.4); padding: 12px 14px 6px; }
+  .floor-guide h3 { text-align: center; font-size: 13px; letter-spacing: 0.34em; text-transform: uppercase; color: #efe9dc; font-weight: 700; padding-bottom: 8px; margin-bottom: 4px; border-bottom: 1px solid #3a3833; }
+  .floor-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 2px 12px; padding: 10px 0; border-bottom: 1px dotted #3a3833; }
+  .floor-row:last-child { border-bottom: 0; }
+  .floor-lv { color: var(--gold); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; padding-top: 3px; }
+  .floor-name { color: #f2ede2; font-size: 16px; }
+  .floor-dev { grid-column: 2; font-size: 13px; color: #a9a397; letter-spacing: 0.04em; }
+  .floor-detail { grid-column: 2; font-size: 14px; color: #ddd7cb; line-height: 1.55; margin-top: 2px; }
+  .guide-note { font-size: 13px; color: var(--fg-mid); margin: 8px 0 0; }
 
-  /* ELIMINATION GRID */
-  .grid-guide {
-    background: #151109;
-    border: 1px solid var(--gold-dim);
-    border-left: 3px solid var(--gold);
-    padding: 14px 16px;
-    margin: -6px 0 20px;
-    color: var(--fg-mid);
-    font-size: 14px;
-    line-height: 1.65;
-  }
-  .grid-guide strong { color: var(--fg); }
-  .grid-legend { margin-top: 8px; color: var(--fg); }
+  /* PEOPLE: staff badges */
+  .people { display: grid; gap: 12px; margin-top: 16px; }
+  .badge { position: relative; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 4px 12px; background: var(--paper); color: var(--ink); border-radius: 8px; padding: 18px 14px 14px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.38); }
+  .badge::before { content: ''; position: absolute; top: 7px; left: 50%; width: 30px; height: 6px; border-radius: 3px; background: #2b2722; transform: translateX(-50%); }
+  .badge-mono { grid-row: 1 / span 2; width: 52px; height: 60px; border-radius: 4px; background: linear-gradient(180deg, #cfd5d8, #b9c1c5); color: #3d464c; display: grid; place-items: center; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; border: 1px solid #a9b1b6; }
+  .badge-name { font-weight: 700; font-size: 16px; line-height: 1.25; align-self: end; }
+  .badge-role { font-size: 13px; color: var(--ink-mid); letter-spacing: 0.04em; }
+  .badge-detail { grid-column: 1 / -1; border-top: 1px solid var(--rule); margin-top: 8px; padding-top: 8px; font-size: 14px; line-height: 1.55; }
+
+  /* SOLVING */
+  .options { display: grid; gap: 10px; margin-bottom: 18px; }
+  .option { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 12px; padding: 12px 14px; background: var(--card-bg); border: 1px solid var(--card-border); }
+  .option svg { grid-row: 1 / span 2; width: 40px; height: 40px; }
+  .option-name { font-weight: 700; color: var(--fg); font-size: 15px; }
+  .option-detail { font-size: 14px; color: var(--fg-mid); line-height: 1.55; }
+  .grid-guide { color: var(--fg-mid); font-size: 14px; line-height: 1.6; margin: 0 0 14px; }
+  .grid-guide strong { color: var(--fg); font-weight: 700; }
+  .grid-legend { margin-top: 6px; color: var(--fg); }
   .grid-legend .cross { color: var(--red); font-weight: 700; }
   .grid-legend .tick { color: var(--gold); font-weight: 700; }
-  .grid-help { margin-top: 10px; }
-  .grid-help summary { color: var(--gold); cursor: pointer; width: fit-content; }
-  .grid-help p { margin-top: 8px; }
-  .elim-grids { display: flex; flex-direction: column; gap: 22px; margin-bottom: 36px; }
+  .grid-help { margin-top: 8px; }
+  .grid-help summary { color: var(--gold); cursor: pointer; width: fit-content; min-height: 36px; display: flex; align-items: center; }
+  .grid-help p { margin-top: 6px; }
+  .elim-grids { display: flex; flex-direction: column; gap: 22px; margin-bottom: 32px; }
   .grid-panel { min-width: 0; }
-  .grid-panel-title {
-    font-size: 13px;
-    color: var(--fg);
-    margin-bottom: 8px;
-    letter-spacing: 0.04em;
-  }
-  .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .elim-grid {
-    border-collapse: collapse;
-    font-size: 13px;
-    min-width: 440px;
-    table-layout: fixed;
-  }
-  .elim-grid caption {
-    text-align: left;
-    color: var(--fg-mid);
-    font-size: 12px;
-    margin-bottom: 8px;
-  }
-  .elim-grid th, .elim-grid td {
-    border: 1px solid var(--fg-low);
-    padding: 7px 6px;
-    text-align: center;
-    vertical-align: middle;
-    overflow-wrap: anywhere;
-  }
-  .elim-grid th {
-    color: var(--gold);
-    font-weight: 700;
-    text-transform: uppercase;
-    background: var(--card-bg);
-    font-size: 12px;
-    letter-spacing: 0.04em;
-  }
-  .elim-grid th[scope="row"] {
-    text-align: left;
-    color: var(--fg-mid);
-    width: 38%;
-    text-transform: none;
-    letter-spacing: 0;
-  }
+  .grid-panel-title { font-size: 14px; color: var(--fg); margin-bottom: 6px; letter-spacing: 0.04em; }
+  .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+  .elim-grid { border-collapse: collapse; font-size: 13px; width: 100%; table-layout: fixed; }
+  .elim-grid caption { text-align: left; color: var(--fg-mid); font-size: 12px; margin-bottom: 6px; }
+  .elim-grid th, .elim-grid td { border: 1px solid var(--fg-low); padding: 6px 3px; text-align: center; vertical-align: middle; overflow-wrap: anywhere; }
+  .elim-grid th { color: var(--gold); font-weight: 700; background: var(--card-bg); font-size: 12px; letter-spacing: 0.02em; }
+  .elim-grid thead th:first-child { width: 28%; }
+  .elim-grid th[scope="row"] { text-align: left; color: var(--fg-mid); font-weight: 400; }
   .grid-cell {
-    appearance: none;
-    position: relative;
-    isolation: isolate;
-    display: block;
-    width: 100%;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 4px;
-    border: 0;
-    border-radius: 2px;
-    background: transparent;
-    color: var(--fg-mid);
-    font: 700 20px/1 'Courier Prime', monospace;
-    cursor: pointer;
+    appearance: none; position: relative; isolation: isolate; display: block; width: 100%; min-width: 44px; min-height: 44px;
+    padding: 4px; border: 0; border-radius: 2px; background: transparent; color: var(--fg-mid);
+    font: 700 20px/1 'Courier Prime', monospace; cursor: pointer;
     transition: transform 0.12s ease, color 0.15s ease, background-color 0.15s ease;
   }
   .grid-cell:hover { background: #1a1610; }
   .grid-cell:active { transform: scale(0.94); }
-  .grid-cell[data-state="1"] {
-    color: var(--red);
-    background: rgba(224, 106, 91, 0.035);
-  }
-  .grid-cell[data-state="1"]::after {
-    content: '';
-    position: absolute;
-    left: 12%;
-    right: 12%;
-    top: 50%;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--red);
-    transform: rotate(-32deg);
-    pointer-events: none;
-  }
-  .grid-cell[data-state="2"] {
-    color: var(--gold);
-    background: rgba(200, 164, 90, 0.08);
-  }
+  .grid-cell[data-state="1"] { color: var(--red); background: rgba(224, 106, 91, 0.035); }
+  .grid-cell[data-state="1"]::after { content: ''; position: absolute; left: 12%; right: 12%; top: 50%; height: 2px; border-radius: 2px; background: var(--red); transform: rotate(-32deg); pointer-events: none; }
+  .grid-cell[data-state="2"] { color: var(--gold); background: rgba(200, 164, 90, 0.08); }
   .grid-cell.just-changed { animation: grid-state-pulse 0.2s ease-out; }
-  @keyframes grid-state-pulse {
-    0% { transform: scale(0.94); background-color: rgba(200, 164, 90, 0.2); }
-    100% { transform: scale(1); background-color: transparent; }
-  }
+  @keyframes grid-state-pulse { 0% { transform: scale(0.94); background-color: rgba(200, 164, 90, 0.2); } 100% { transform: scale(1); background-color: transparent; } }
   .grid-cell:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
 
-  /* INVESTIGATOR NOTES */
   #investigator-notes {
-    display: block;
-    width: 100%;
-    min-height: 160px;
-    margin: 0 0 36px;
-    padding: 14px 16px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 0;
-    color: var(--fg);
-    font: inherit;
-    line-height: 1.7;
-    resize: vertical;
+    display: block; width: 100%; min-height: 140px; margin: 0; padding: 14px 16px;
+    background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 0;
+    color: var(--fg); font: inherit; font-size: 16px; line-height: 1.7; resize: vertical;
   }
   #investigator-notes::placeholder { color: var(--fg-mid); opacity: 0.85; }
   #investigator-notes:focus { border-color: var(--gold); outline: 2px solid var(--gold-dim); outline-offset: 2px; }
-  .notes-status {
-    margin: -26px 0 32px;
-    color: var(--fg-mid);
-    font-size: 12px;
-    line-height: 1.5;
-  }
+  .notes-status { margin: 6px 0 30px; color: var(--fg-mid); font-size: 12px; line-height: 1.5; }
 
-  /* ACCUSATION FORM */
-  .accuse-form { display: flex; flex-direction: column; gap: 16px; }
-  .accuse-row { display: flex; flex-direction: column; gap: 7px; }
-  .accuse-label {
-    font-size: 11px; letter-spacing: 0.35em; color: var(--gold);
-    text-transform: uppercase;
-  }
+  .accuse-intro { font-size: 15px; color: var(--fg); margin-bottom: 12px; }
+  .accuse-form { display: flex; flex-direction: column; gap: 14px; }
+  .accuse-row { display: flex; flex-direction: column; gap: 6px; }
+  .accuse-label { font-size: 13px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
   .accuse-select {
-    appearance: none;
-    background: var(--card-bg);
-    border: 1px solid var(--gold-dim);
-    color: var(--fg);
-    font-family: 'Courier Prime', monospace;
-    font-size: 15px;
-    padding: 12px 18px;
-    cursor: pointer;
-    outline: none;
-    width: 100%;
-    transition: border-color 0.2s;
+    appearance: none; -webkit-appearance: none; width: 100%; min-height: 50px; padding: 12px 40px 12px 16px;
+    background: var(--card-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23c8a45a' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 16px center;
+    border: 1px solid var(--gold-dim); color: var(--fg); font-family: 'Courier Prime', monospace; font-size: 16px; cursor: pointer; transition: border-color 0.2s;
   }
   .accuse-select:focus { border-color: var(--gold); }
   .accuse-btn {
-    margin-top: 8px;
-    padding: 16px;
-    border: 1px solid var(--gold-dim);
-    background: transparent;
-    color: var(--gold);
-    font-family: 'Courier Prime', monospace;
-    font-size: 13px;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: color 0.3s;
+    margin-top: 6px; padding: 16px; min-height: 52px; border: 1px solid var(--gold-dim); background: transparent; color: var(--gold);
+    font-family: 'Courier Prime', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    cursor: pointer; position: relative; overflow: hidden; transition: color 0.3s;
   }
-  .accuse-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gold);
-    transform: translateX(-101%);
-    transition: transform 0.3s ease;
-    z-index: 0;
-  }
+  .accuse-btn::before { content: ''; position: absolute; inset: 0; background: var(--gold); transform: translateX(-101%); transition: transform 0.3s ease; z-index: 0; }
   .accuse-btn:hover:not(:disabled) { color: var(--bg); border-color: var(--gold); }
   .accuse-btn:hover:not(:disabled)::before { transform: translateX(0); }
   .accuse-btn:disabled { opacity: .4; cursor: not-allowed; }
   .accuse-btn span { position: relative; z-index: 1; }
-
-  /* TRIES */
-  .tries-row {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 20px;
-  }
-  .tries-label { font-size: 11px; letter-spacing: 0.25em; color: var(--fg-mid); text-transform: uppercase; }
+  .tries-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .tries-label { font-size: 13px; letter-spacing: 0.18em; color: var(--fg-mid); text-transform: uppercase; }
   .tries-pips { display: flex; gap: 6px; }
-  .pip {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--gold);
-    transition: background 0.3s;
-  }
+  .pip { width: 11px; height: 11px; border-radius: 50%; background: var(--gold); transition: background 0.3s; }
   .pip.used { background: var(--red); }
   .pip.gone { background: var(--fg-low); }
 
-  /* VERDICT */
-  #verdict {
-    display: none;
-    margin-top: 24px;
-    padding: 24px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
+  /* EVIDENCE BAR + SHEET (native modal dialog: Escape closes, focus stays inside, the page behind is inert) */
+  .evidence-bar {
+    position: sticky; bottom: 0; z-index: 30; margin: 26px -20px 0;
+    display: flex; align-items: center; gap: 12px; padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(10, 8, 6, 0.96); border-top: 1px solid var(--gold-dim);
   }
+  .evidence-bar span { flex: 1; font-size: 13px; color: var(--fg-mid); line-height: 1.4; }
+  .evidence-open { min-height: 46px; padding: 0 22px; background: var(--gold); color: #0a0806; border: 0; font: inherit; font-weight: 700; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+  .evidence-open:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+  dialog.sheet {
+    margin: auto 0 0; width: 100%; max-width: 100%; max-height: 86vh; padding: 0; border: 0; border-top: 2px solid var(--gold);
+    background: var(--bg); color: var(--fg); box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.7);
+  }
+  dialog.sheet::backdrop { background: rgba(0, 0, 0, 0.62); }
+  .sheet-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 20px; background: var(--bg); border-bottom: 1px solid var(--fg-low); }
+  .sheet-head h2 { font-size: 14px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold); font-weight: 400; }
+  .sheet-close { min-height: 44px; padding: 0 16px; background: transparent; border: 1px solid var(--gold-dim); color: var(--fg); font: inherit; font-size: 14px; cursor: pointer; }
+  .sheet-jump { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 20px 0; }
+  .sheet-jump a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border: 1px solid var(--fg-low); color: var(--fg); text-decoration: none; font-size: 13px; }
+  .sheet-jump a:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .sheet-body { padding: 14px 20px 26px; }
+  .sheet-body .section-label { margin-top: 22px; }
+  .sheet-body .section-label:first-child { margin-top: 4px; }
+
+  /* VERDICT + SHARE (behaviour unchanged) */
+  #verdict { display: none; margin-top: 24px; padding: 22px; border: 1px solid var(--card-border); background: var(--card-bg); }
   #verdict.correct { border-color: var(--gold); }
-  #verdict.wrong   { border-color: var(--red); }
-  #verdict.cold    { border-color: var(--fg-low); }
-  .verdict-headline {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 22px;
-    margin-bottom: 12px;
-  }
+  #verdict.wrong { border-color: var(--red); }
+  #verdict.cold { border-color: var(--fg-low); }
+  .verdict-headline { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; margin-bottom: 10px; }
   #verdict.correct .verdict-headline { color: var(--gold); }
-  #verdict.wrong   .verdict-headline { color: var(--red); }
-  #verdict.cold    .verdict-headline { color: var(--fg-mid); }
-  .verdict-body { font-size: 14px; color: var(--fg-mid); line-height: 1.8; }
-
-  /* SHARE STAMP */
-  .share-block {
-    display: none;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--fg-low);
-  }
+  #verdict.wrong .verdict-headline { color: var(--red); }
+  #verdict.cold .verdict-headline { color: var(--fg-mid); }
+  .verdict-body { font-size: 16px; color: var(--fg-mid); line-height: 1.8; }
+  .share-block { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--fg-low); }
   .share-block.visible { display: block; }
-
-  /* Next case after the result (player-facing order: 001 Hidden Drop, 002 Missing Envelope, 003 Last Shot) */
   .next-case-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--fg-low); }
   .next-case-link { position: relative; display: grid; gap: 2px; min-height: 48px; padding: 10px 40px 10px 14px; border: 1px solid rgba(200,164,90,.45); color: var(--fg); text-decoration: none; }
   .next-case-link::after { content: ''; position: absolute; right: 16px; top: 50%; width: 8px; height: 8px; border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); transform: translateY(-50%) rotate(45deg); }
@@ -594,312 +314,94 @@
   .nc-t { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 18px; line-height: 1.2; }
   .all-cases-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--fg); font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
   .next-case-link:focus-visible, .all-cases-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
-  .stamp-card {
-    background: var(--bg);
-    border: 1px solid var(--fg-low);
-    padding: 16px 18px;
-    font-family: 'Courier Prime', monospace;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    color: var(--fg-mid);
-    line-height: 1.9;
-    white-space: normal;
-    min-height: 112px;
-    margin-bottom: 12px;
-    user-select: all;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* OUTCOME STAMP OVERLAY */
-  .outcome-stamp {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 10;
-  }
-  .outcome-stamp-inner {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 7px 16px 6px;
-    border: 3px solid #e06a5b;
-    border-radius: 2px;
-    position: relative;
-    opacity: 0;
-    transform: scale(2.2) rotateX(-25deg) translateY(-20px);
-    filter: url(#stamp-worn);
-  }
-  .outcome-stamp-inner::before {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    border: 1.5px solid rgba(224,106,91,0.7);
-    border-radius: 1px;
-    pointer-events: none;
-  }
-  .outcome-stamp-inner .sl1,
-  .outcome-stamp-inner .sl2 {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-style: italic;
-    font-size: 22px;
-    color: #e06a5b;
-    letter-spacing: 0.1em;
-    line-height: 1.05;
-    text-shadow: 1px 1px 0 #8b1a10;
-  }
-  .outcome-stamp-inner .ssub {
-    font-size: 7px;
-    letter-spacing: 0.45em;
-    color: rgba(224,106,91,0.9);
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
-
-  /* solved tilts left, closed tilts right */
+  .stamp-card { background: var(--bg); border: 1px solid var(--fg-low); padding: 16px 18px; font-size: 14px; letter-spacing: 0.08em; color: var(--fg-mid); line-height: 1.9; min-height: 112px; margin-bottom: 12px; user-select: all; position: relative; overflow: hidden; }
+  .outcome-stamp { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 10; }
+  .outcome-stamp-inner { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; padding: 7px 16px 6px; border: 3px solid #e06a5b; border-radius: 2px; position: relative; opacity: 0; transform: scale(2.2) rotateX(-25deg) translateY(-20px); filter: url(#stamp-worn); }
+  .outcome-stamp-inner::before { content: ''; position: absolute; inset: 3px; border: 1.5px solid rgba(224,106,91,0.7); border-radius: 1px; pointer-events: none; }
+  .outcome-stamp-inner .sl1, .outcome-stamp-inner .sl2 { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: 22px; color: #e06a5b; letter-spacing: 0.1em; line-height: 1.05; text-shadow: 1px 1px 0 #8b1a10; }
+  .outcome-stamp-inner .ssub { font-size: 7px; letter-spacing: 0.45em; color: rgba(224,106,91,0.9); text-transform: uppercase; margin-top: 3px; }
   .outcome-stamp-inner.solved { --end-rot: -3deg; }
   .outcome-stamp-inner.closed { --end-rot: 2deg; }
-
-  @keyframes ostamp-slam-neg3 {
-    0%   { opacity: 0;   transform: rotate(-3deg) scale(2.2) rotateX(-25deg) translateY(-20px); }
-    52%  { opacity: 0.92; transform: rotate(-3deg) scale(0.90) rotateX(0deg) translateY(0); }
-    68%  { opacity: 0.92; transform: rotate(-3deg) scale(1.05) rotateX(0deg); }
-    80%  { opacity: 0.92; transform: rotate(-3deg) scale(0.97); }
-    100% { opacity: 0.92; transform: rotate(-3deg) scale(1.00); }
-  }
-  @keyframes ostamp-slam-pos2 {
-    0%   { opacity: 0;   transform: rotate(2deg) scale(2.2) rotateX(-25deg) translateY(-20px); }
-    52%  { opacity: 0.92; transform: rotate(2deg) scale(0.90) rotateX(0deg) translateY(0); }
-    68%  { opacity: 0.92; transform: rotate(2deg) scale(1.05) rotateX(0deg); }
-    80%  { opacity: 0.92; transform: rotate(2deg) scale(0.97); }
-    100% { opacity: 0.92; transform: rotate(2deg) scale(1.00); }
-  }
-  @keyframes ostamp-ring {
-    0%   { opacity: 0.5; transform: scale(0.92); }
-    100% { opacity: 0;   transform: scale(1.6); }
-  }
+  @keyframes ostamp-slam-neg3 { 0% { opacity: 0; transform: rotate(-3deg) scale(2.2) rotateX(-25deg) translateY(-20px); } 52% { opacity: 0.92; transform: rotate(-3deg) scale(0.90) rotateX(0deg) translateY(0); } 68% { opacity: 0.92; transform: rotate(-3deg) scale(1.05) rotateX(0deg); } 80% { opacity: 0.92; transform: rotate(-3deg) scale(0.97); } 100% { opacity: 0.92; transform: rotate(-3deg) scale(1.00); } }
+  @keyframes ostamp-slam-pos2 { 0% { opacity: 0; transform: rotate(2deg) scale(2.2) rotateX(-25deg) translateY(-20px); } 52% { opacity: 0.92; transform: rotate(2deg) scale(0.90) rotateX(0deg) translateY(0); } 68% { opacity: 0.92; transform: rotate(2deg) scale(1.05) rotateX(0deg); } 80% { opacity: 0.92; transform: rotate(2deg) scale(0.97); } 100% { opacity: 0.92; transform: rotate(2deg) scale(1.00); } }
+  @keyframes ostamp-ring { 0% { opacity: 0.5; transform: scale(0.92); } 100% { opacity: 0; transform: scale(1.6); } }
   .outcome-stamp-inner.solved.slam { animation: ostamp-slam-neg3 0.52s cubic-bezier(0.22,1,0.36,1) forwards; }
   .outcome-stamp-inner.closed.slam { animation: ostamp-slam-pos2 0.52s cubic-bezier(0.22,1,0.36,1) forwards; }
-
-  .ostamp-ring {
-    position: absolute;
-    inset: -6px;
-    border: 2px solid rgba(224,106,91,0.65);
-    border-radius: 2px;
-    opacity: 0;
-    pointer-events: none;
-  }
+  .ostamp-ring { position: absolute; inset: -6px; border: 2px solid rgba(224,106,91,0.65); border-radius: 2px; opacity: 0; pointer-events: none; }
   .ostamp-ring.pulse { animation: ostamp-ring 0.4s ease-out 0.46s forwards; }
-
-  /* UNSOLVED &#8212; transient wrong-guess stamp, shown over verdict */
-  .wrong-stamp-wrap {
-    display: flex; align-items: center; justify-content: center;
-    margin: 16px 0 0;
-    pointer-events: none;
-  }
-  .wrong-stamp-inner {
-    display: inline-flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 7px 18px 6px;
-    border: 3px dashed #e06a5b; border-radius: 2px;
-    position: relative; opacity: 0;
-    transform: scale(2.2) rotateX(-25deg) translateY(-20px);
-    filter: url(#stamp-worn);
-  }
-  .wrong-stamp-inner .sl1 {
-    font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic;
-    font-size: 22px; color: #e06a5b; letter-spacing: 0.12em; line-height: 1.05;
-    text-shadow: 1px 1px 0 #8b1a10;
-  }
-  .wrong-stamp-inner .ssub {
-    font-size: 7px; letter-spacing: 0.45em;
-    color: rgba(224,106,91,0.9); text-transform: uppercase; margin-top: 3px;
-  }
-  @keyframes wstamp-slam {
-    0%   { opacity: 0;    transform: scale(2.2) rotateX(-25deg) translateY(-20px); }
-    52%  { opacity: 0.92; transform: scale(0.90) rotateX(0deg) translateY(0); }
-    68%  { opacity: 0.92; transform: scale(1.05) rotateX(0deg); }
-    80%  { opacity: 0.92; transform: scale(0.97); }
-    100% { opacity: 0.92; transform: scale(1.00); }
-  }
-  @keyframes wstamp-fadeout {
-    0%   { opacity: 0.92; }
-    100% { opacity: 0; }
-  }
-  .wrong-stamp-inner.slam {
-    animation: wstamp-slam 0.52s cubic-bezier(0.22,1,0.36,1) forwards,
-               wstamp-fadeout 0.4s ease-in 2.02s forwards;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .card, .grid-cell { transition: none !important; }
-    .card:hover, .card:focus-visible, .card:hover:not(.open), .card:focus-visible:not(.open) {
-      transform: none !important;
-    }
-    .grid-cell:active { transform: none !important; }
-    .grid-cell.just-changed { animation: none !important; }
-    .outcome-stamp-inner, .outcome-stamp-inner.slam {
-      animation: none !important;
-      opacity: 0.92 !important;
-      transform: rotate(var(--end-rot, 0deg)) !important;
-    }
-    .wrong-stamp-inner, .wrong-stamp-inner.slam {
-      animation: none !important;
-      opacity: 0.92 !important;
-      transform: none !important;
-    }
-  }
-  .share-btn {
-    padding: 10px 20px;
-    border: 1px solid var(--gold-dim);
-    background: transparent;
-    color: var(--gold);
-    font-family: 'Courier Prime', monospace;
-    font-size: 11px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-  }
+  .wrong-stamp-wrap { display: flex; align-items: center; justify-content: center; margin: 16px 0 0; pointer-events: none; }
+  .wrong-stamp-inner { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; padding: 7px 18px 6px; border: 3px dashed #e06a5b; border-radius: 2px; position: relative; opacity: 0; transform: scale(2.2) rotateX(-25deg) translateY(-20px); filter: url(#stamp-worn); }
+  .wrong-stamp-inner .sl1 { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: 22px; color: #e06a5b; letter-spacing: 0.12em; line-height: 1.05; text-shadow: 1px 1px 0 #8b1a10; }
+  .wrong-stamp-inner .ssub { font-size: 7px; letter-spacing: 0.45em; color: rgba(224,106,91,0.9); text-transform: uppercase; margin-top: 3px; }
+  @keyframes wstamp-slam { 0% { opacity: 0; transform: scale(2.2) rotateX(-25deg) translateY(-20px); } 52% { opacity: 0.92; transform: scale(0.90) rotateX(0deg) translateY(0); } 68% { opacity: 0.92; transform: scale(1.05) rotateX(0deg); } 80% { opacity: 0.92; transform: scale(0.97); } 100% { opacity: 0.92; transform: scale(1.00); } }
+  @keyframes wstamp-fadeout { 0% { opacity: 0.92; } 100% { opacity: 0; } }
+  .wrong-stamp-inner.slam { animation: wstamp-slam 0.52s cubic-bezier(0.22,1,0.36,1) forwards, wstamp-fadeout 0.4s ease-in 2.02s forwards; }
+  .share-btn { min-height: 44px; padding: 10px 20px; border: 1px solid var(--gold-dim); background: transparent; color: var(--gold); font-family: 'Courier Prime', monospace; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, color 0.2s; }
   .share-btn:hover { background: var(--gold); color: var(--bg); }
-  .share-confirm { font-size: 11px; color: var(--gold); letter-spacing: 0.15em; margin-left: 12px; opacity: 0; transition: opacity 0.3s; }
+  .share-confirm { font-size: 12px; color: var(--gold); letter-spacing: 0.15em; margin-left: 12px; opacity: 0; transition: opacity 0.3s; }
   .share-confirm.show { opacity: 1; }
 
-  /* FOOTER */
-  .foot {
-    padding: 20px max(40px, 16px);
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid var(--fg-low); flex-wrap: wrap; gap: 10px;
-    margin-top: 40px;
-  }
-  .foot-text { font-size: 11px; letter-spacing: 0.22em; color: var(--fg-mid); text-transform: uppercase; }
-  .foot-num  { font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; }
+  .foot { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--fg-low); flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .foot-text { font-size: 12px; letter-spacing: 0.18em; color: var(--fg-mid); text-transform: uppercase; }
+  .foot-num { font-size: 12px; letter-spacing: 0.16em; color: var(--gold); text-transform: uppercase; }
 
-  /* Tablet: use one reading column before the two-panel layout becomes cramped. */
-  @media (max-width: 850px) {
-    .case-header { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .case-dossier { width: 100%; max-width: 100%; }
-    .puzzle-layout { grid-template-columns: minmax(0, 1fr); }
-    .puzzle-left { border-right: 0; border-bottom: 1px solid var(--fg-low); }
+  @media (prefers-reduced-motion: reduce) {
+    .record, .grid-cell, .start-btn, .accuse-btn, .accuse-btn::before { transition: none !important; }
+    .record:hover, .start-btn:hover { transform: none !important; }
+    .grid-cell:active { transform: none !important; }
+    .grid-cell.just-changed { animation: none !important; }
+    .outcome-stamp-inner, .outcome-stamp-inner.slam { animation: none !important; opacity: 0.92 !important; transform: rotate(var(--end-rot, 0deg)) !important; }
+    .wrong-stamp-inner, .wrong-stamp-inner.slam { animation: none !important; opacity: 0.92 !important; transform: none !important; }
   }
 
-  /* RESPONSIVE */
+  /* PHONES */
   @media (max-width: 700px) {
-    body { padding-left: 0; padding-right: 0; }
-    /* Layout */
-    .puzzle-layout { grid-template-columns: 1fr; }
-    .puzzle-left { border-right: none; border-bottom: 1px solid var(--fg-low); padding-bottom: 36px; }
-    .case-header, .puzzle-left, .puzzle-right { padding-left: 20px; padding-right: 20px; }
-
-    /* Top bar */
-    .top-bar {
-      padding: 14px 18px;
-      grid-template-columns: minmax(0, 1fr) auto;
-      grid-template-areas: "left right" "center center";
-      gap: 8px 12px;
-      position: relative;
-    }
-    .bar-left { grid-area: left; min-width: 0; flex-wrap: wrap; gap: 6px 12px; }
-    .bar-center { grid-area: center; text-align: left; white-space: normal; }
-    .bar-right { grid-area: right; gap: 0; }
-    .bar-right > span:first-child { display: none; }
-    .bar-stamp { font-size: 10px; letter-spacing: 0.06em; padding: 3px 7px; }
-    .bar-label { font-size: 11px; letter-spacing: 0.12em; }
-
-    /* Case header text */
-    .case-title-rule span { font-size: 12px; letter-spacing: 0.2em; }
-    .case-setting { font-size: 16px; }
-
-    /* Dossier panel — full width, bigger text */
-    .case-dossier { max-width: 100%; }
-    .dossier-label { font-size: 12px; letter-spacing: 0.25em; }
-    .dossier-key   { font-size: 12px; letter-spacing: 0.18em; }
-    .dossier-val   { font-size: 14px; }
-
-    /* Section labels */
-    .section-label { font-size: 13px; letter-spacing: 0.2em; margin-bottom: 16px; }
-
-    /* Evidence cards */
-    .card-name   { font-size: 17px; }
-    .card-role   { font-size: 14px; }
-    .card-detail { font-size: 15px; line-height: 1.7; }
-    .card-icon   { font-size: 26px; }
-
-    /* Clues + statements */
-    .clue           { font-size: 16px; line-height: 1.75; padding: 14px 16px; }
-    .clue-num       { font-size: 16px; }
-    .statement-text { font-size: 16px; line-height: 1.75; }
-    .statement-name { font-size: 13px; }
-
-    /* Elimination grid — horizontal scroll so nothing truncates */
-    .grid-guide { font-size: 14px; padding: 13px; }
-    .grid-panel-title { font-size: 14px; }
-    .elim-grid { min-width: 440px; }
-    .elim-grid th { font-size: 12px; }
-
-    /* Accusation section */
-    .tries-label    { font-size: 13px; }
-    .accuse-label   { font-size: 15px; letter-spacing: 0.18em; }
-    .accuse-select  { font-size: 16px; padding: 15px 18px; }
-    .accuse-btn     { font-size: 15px; padding: 18px; letter-spacing: 0.14em; }
-
-    /* Verdict + share */
-    #investigator-notes { font-size: 16px; } /* Prevent iOS Safari focus zoom */
-    .verdict-headline { font-size: 20px; }
-    .verdict-body     { font-size: 16px; line-height: 1.8; }
-    .share-label      { font-size: 13px; }
-    .stamp-card       { font-size: 14px; }
+    .top-bar { padding: 12px 16px; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; }
+    .bar-center, .bar-place { display: none; }
+    .bar-left { gap: 10px; flex-wrap: wrap; }
   }
- /* Fit Case 001 elimination tables on mobile */
-@media (max-width: 700px) {
-  .puzzle-right,
-  .elim-grids,
-  .grid-panel,
-  .grid-wrap {
-    min-width: 0;
-    max-width: 100%;
+  @media (max-width: 359px) {
+    .scene { height: 214px; }
+    .case-title { font-size: 30px; }
+    .case-number { font-size: 12px; letter-spacing: .08em; }
+    .scene-title { padding: 30px 14px 10px; }
+    .opening-text, .puzzle-left, .puzzle-right { padding-left: 14px; padding-right: 14px; }
+    .evidence-bar { margin-left: -14px; margin-right: -14px; padding-left: 14px; padding-right: 14px; }
+    .record-art { width: 70px; margin-right: 12px; }
+    .record-tag, .record-where { letter-spacing: 0.06em; }
+    .case-file dl { grid-template-columns: 1fr; }
   }
 
-  .grid-wrap {
-    width: 100%;
-    overflow-x: auto;
+  /* TABLET AND DESKTOP: evidence beside the solving tools */
+  @media (min-width: 760px) {
+    .scene { height: 260px; }
+    .scene-title { padding: 40px 28px 16px; }
+    .opening-text { padding: 18px 28px 0; }
+    .records { grid-template-columns: 1fr 1fr; }
+    .people { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .badge { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+    .badge-mono { grid-row: auto; }
+    .badge-name { align-self: auto; }
   }
-
-  .elim-grid {
-    width: 100%;
-    min-width: 0;
-    table-layout: fixed;
+  @media (min-width: 1000px) {
+    .opening { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-areas: 'title scene' 'text scene'; grid-template-rows: auto 1fr; border-bottom: 1px solid var(--fg-low); }
+    .scene-wrap { display: contents; }
+    .scene { grid-area: scene; height: auto; min-height: 360px; border-bottom: 0; }
+    .scene-title { grid-area: title; position: static; background: none; padding: 32px 32px 0; }
+    .opening-text { grid-area: text; padding: 12px 32px 28px; }
+    .puzzle-layout { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 0; }
+    .puzzle-left { border-right: 1px solid var(--fg-low); padding: 30px 32px; }
+    .puzzle-right { padding: 30px 32px; }
+    .records { grid-template-columns: 1fr; }
+    .people { grid-template-columns: 1fr; }
+    .badge { grid-template-columns: 52px minmax(0, 1fr); text-align: left; justify-items: stretch; }
+    .badge-mono { grid-row: 1 / span 2; }
+    .badge-name { align-self: end; }
+    .evidence-bar { margin: 26px 0 0; padding: 0 0 16px; justify-content: flex-end; background: transparent; border-top: 0; pointer-events: none; }
+    .evidence-bar span { display: none; }
+    .evidence-open { pointer-events: auto; box-shadow: 0 8px 22px rgba(0,0,0,.55); }
+    dialog.sheet { margin: auto; width: min(720px, 92vw); max-height: 86vh; border: 1px solid var(--gold-dim); }
   }
-
-  .elim-grid thead th:first-child {
-    width: 28%;
-  }
-
-  .elim-grid th[scope="row"] {
-    width: auto;
-  }
-
-  .elim-grid th,
-  .elim-grid td {
-    padding: 6px 2px;
-    overflow-wrap: anywhere;
-  }
-
-  .elim-grid th {
-    font-size: 12px;
-    letter-spacing: 0;
-  }
-
-  .grid-cell {
-    min-width: 44px;
-    min-height: 44px;
-  }
-}
 </style>
 </head>
 <body>
@@ -912,102 +414,121 @@
   </div>
   <div class="bar-center">The Missing Envelope</div>
   <div class="bar-right">
-    <span style="font-size:9px;letter-spacing:0.28em;color:var(--fg-mid);text-transform:uppercase;">Bengaluru · Law Firm</span>
+    <span class="bar-place">Bengaluru · Law Firm</span>
     <span class="bar-stamp" id="case-stamp">Checking</span>
   </div>
 </div>
 
-<!-- CASE HEADER -->
-<div class="case-header">
-  <div class="case-header-text">
+<main>
+<!-- OPENING: the incident, the task, one action. The picture shows only what the brief states: a sealed envelope on the partners' desk. -->
+<header class="opening">
+  <div class="scene-wrap">
+  <div class="scene" role="img" aria-label="Illustration: a sealed envelope lying on the partners’ desk.">
+    <svg viewBox="0 0 800 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="me-wood" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+          <stop offset="0" stop-color="#3b2717"/><stop offset=".55" stop-color="#2c1c10"/><stop offset="1" stop-color="#1b110a"/>
+        </linearGradient>
+        <radialGradient id="me-glow" cx=".5" cy=".42" r=".62">
+          <stop offset="0" stop-color="#ffffff" stop-opacity=".16"/><stop offset=".6" stop-color="#ffffff" stop-opacity=".03"/><stop offset="1" stop-color="#000" stop-opacity=".45"/>
+        </radialGradient>
+        <linearGradient id="me-paper" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f4f3f0"/><stop offset="1" stop-color="#d9d8d4"/>
+        </linearGradient>
+        <linearGradient id="me-flap" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e8e7e3"/><stop offset="1" stop-color="#c9c8c3"/>
+        </linearGradient>
+        <filter id="me-soft" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+        <filter id="me-grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .07 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      </defs>
+      <rect x="0" y="-120" width="800" height="490" fill="url(#me-wood)"/>
+      <g fill="none" stroke="#4a3220" stroke-width="2" opacity=".55">
+        <path d="M0 -70 C160 -78 300 -58 470 -70 S720 -80 800 -66"/><path d="M0 -24 C150 -16 330 -34 500 -22 S700 -12 800 -26"/><path d="M0 22 C160 14 300 34 470 22 S720 12 800 26"/><path d="M0 58 C140 66 320 48 500 60 S700 72 800 58"/>
+        <path d="M0 104 C200 96 360 114 540 102 S730 92 800 106"/><path d="M0 152 C170 160 330 142 520 156 S720 166 800 150"/>
+        <path d="M0 198 C190 190 350 208 560 196 S740 186 800 200"/><path d="M0 236 C210 230 380 244 600 234 S760 228 800 238"/><path d="M0 286 C200 280 380 296 590 284 S760 278 800 290"/><path d="M0 330 C190 324 400 338 600 328 S760 322 800 334"/>
+      </g>
+      <g fill="none" stroke="#120b06" stroke-width="1" opacity=".5">
+        <path d="M0 40 C200 34 380 50 560 40 S760 32 800 44"/><path d="M0 128 C180 122 400 138 580 128 S770 120 800 132"/><path d="M0 176 C220 170 420 186 610 176 S780 168 800 180"/>
+      </g>
+      <g transform="translate(400 98) rotate(-7) scale(.8)">
+        <rect x="-162" y="-74" width="330" height="166" rx="4" fill="#000" opacity=".55" filter="url(#me-soft)"/>
+        <rect x="-170" y="-92" width="340" height="184" rx="3" fill="url(#me-paper)" stroke="#9c9a94" stroke-width="1.5"/>
+        <rect x="-170" y="-92" width="340" height="184" rx="3" fill="#fff" filter="url(#me-grain)"/>
+        <path d="M-170 92 L-12 -2 Q0 -9 12 -2 L170 92" fill="none" stroke="#b9b7b1" stroke-width="2"/>
+        <path d="M-168 -90 L-8 18 Q0 23 8 18 L168 -90 Z" fill="url(#me-flap)" stroke="#9c9a94" stroke-width="1.5"/>
+        <path d="M-160 -86 L-6 12" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.2"/>
+      </g>
+      <rect x="0" y="-120" width="800" height="490" fill="url(#me-glow)"/>
+    </svg>
+  </div>
+  <div class="scene-title">
     <div class="case-number" id="case-number">Case 002 · Checking case status…</div>
     <h1 class="case-title" id="case-title">The Missing Envelope</h1>
-    <div class="case-title-rule"><span>Bengaluru · Law Firm · 2026</span></div>
+  </div>
+  </div>
+  <div class="opening-text">
     <p class="case-setting" id="case-setting"></p>
+    <p class="case-task">Name <b>who</b> took the contract, <b>how</b> and <b>where</b>. You have <b>two accusations</b>.</p>
+    <div class="opening-actions">
+      <a class="start-btn" id="start-btn" href="#record-1">Examine the evidence <span aria-hidden="true">↓</span></a>
+    </div>
   </div>
-  <div class="case-dossier">
-    <div class="dossier-label">Case File</div>
-    <div class="dossier-row">
-      <span class="dossier-key">File No.</span>
-      <span class="dossier-val">CR-002-2026</span>
-    </div>
-    <div class="dossier-row">
-      <span class="dossier-key">Location</span>
-      <span class="dossier-val">Meridian House<br>Bengaluru</span>
-    </div>
-    <div class="dossier-divider"></div>
-    <div class="dossier-row">
-      <span class="dossier-key">Incident</span>
-      <span class="dossier-val">Theft of legal document</span>
-    </div>
-    <div class="dossier-row">
-      <span class="dossier-key">Window</span>
-      <span class="dossier-val">19:00 &ndash; 21:00 hrs</span>
-    </div>
-    <div class="dossier-row">
-      <span class="dossier-key">Persons of interest</span>
-      <span class="dossier-val">3 suspects</span>
-    </div>
-    <div class="dossier-stamp" id="dossier-stamp" data-state="checking">Checking</div>
-  </div>
-</div>
+</header>
 
 <!-- PUZZLE -->
 <div class="puzzle-layout">
 
-  <!-- LEFT: suspects, methods, locations, clues, statements -->
-  <div class="puzzle-left">
+  <!-- EVIDENCE: the seven records first, then statements, then places and people -->
+  <section class="puzzle-left" id="evidence" aria-labelledby="records-title">
+    <h2 class="section-label" id="records-title">The evidence</h2>
+    <div class="records" id="clue-list"></div>
 
-    <div class="section-label">Evidence Cards</div>
-
-    <div class="card-group">
-      <div class="card-group-title">Suspects</div>
-      <div class="cards" id="suspect-cards"></div>
-    </div>
-
-    <div class="card-group">
-      <div class="card-group-title">Methods</div>
-      <div class="cards" id="method-cards"></div>
-    </div>
-
-    <div class="card-group">
-      <div class="card-group-title">Locations</div>
-      <div class="cards" id="location-cards"></div>
-    </div>
-
-    <div class="section-label">Clues &amp; Evidence</div>
-    <div class="clue-list" id="clue-list"></div>
-
-    <div class="section-label">Witness Statements</div>
+    <h2 class="section-label spaced" id="statements-title">Witness statements</h2>
     <div class="statement-list" id="statement-list"></div>
 
-  </div>
+    <h2 class="section-label spaced" id="places-title">Places and people</h2>
+    <div id="places-people">
+      <div class="floor-guide" id="location-cards" role="group" aria-labelledby="guide-title">
+        <h3 id="guide-title">Meridian House</h3>
+      </div>
+      <p class="guide-note">Floor guide. It shows which floor each place is on, nothing about routes or distances.</p>
+      <div class="people" id="suspect-cards"></div>
+    </div>
+    <details class="case-file">
+      <summary><span class="cf-k">Case file</span><span class="dossier-stamp" id="dossier-stamp" data-state="checking">Checking</span></summary>
+      <dl>
+        <div><dt>Location</dt><dd>Meridian House, Bengaluru</dd></div>
+        <div><dt>Incident</dt><dd>Theft of legal document</dd></div>
+        <div><dt>Window</dt><dd>19:00 &ndash; 21:00 hrs</dd></div>
+        <div><dt>Persons of interest</dt><dd>3 suspects</dd></div>
+      </dl>
+    </details>
 
-  <!-- RIGHT: grid + accusation -->
-  <div class="puzzle-right">
+  </section>
 
-    <div class="section-label">Elimination Grid</div>
-    <aside class="grid-guide" aria-labelledby="grid-guide-title">
+  <!-- SOLVING: what each method means, the grids, notes, then the accusation -->
+  <section class="puzzle-right" id="solve" aria-labelledby="solve-title">
+    <h2 class="section-label" id="solve-title">How could it have been done?</h2>
+    <div class="options" id="method-cards"></div>
+
+    <h2 class="section-label spaced">Elimination grid</h2>
+    <div class="grid-guide">
       <p id="grid-guide-title"><strong>Use the grid to test each possibility.</strong> Each table compares two categories. Mark relationships the evidence rules out, then confirm the links you believe are true.</p>
       <p class="grid-legend" id="grid-legend"><span class="cross">×</span> Ruled out &nbsp; <span class="tick">✓</span> Confirmed &nbsp; · Undecided. Activate a cell to cycle through the three states.</p>
       <details class="grid-help">
         <summary>How do I use this to solve the case?</summary>
         <p>Start with direct evidence. For example, a verified alibi can rule out a suspect at a location. Use the three tables to compare suspect–method, suspect–location and method–location pairs. The grid does not solve the case for you; use it to track your deductions, then base your accusation on the clues.</p>
       </details>
-    </aside>
+    </div>
     <div class="elim-grids" id="elim-grids" aria-describedby="grid-legend"></div>
 
-    <div class="section-label">Your Notes</div>
+    <h2 class="section-label spaced">Your notes</h2>
     <label class="visually-hidden" for="investigator-notes">Investigator notes</label>
-    <textarea
-      id="investigator-notes"
-      rows="7"
-      placeholder="Record contradictions, timelines, and suspicions..."
-      aria-describedby="notes-status"
-    ></textarea>
+    <textarea id="investigator-notes" rows="6" placeholder="Record contradictions, timelines, and suspicions..." aria-describedby="notes-status"></textarea>
     <p class="notes-status" id="notes-status" role="status" aria-live="polite">Notes save automatically in this browser on this device.</p>
 
-    <div class="section-label">Make Your Accusation</div>
+    <h2 class="section-label spaced">Make your accusation</h2>
+    <p class="accuse-intro">You have two accusations. Each one names who, how and where.</p>
     <div class="tries-row">
       <span class="tries-label">Attempts</span>
       <div class="tries-pips" id="tries-pips">
@@ -1049,7 +570,7 @@
         </div>
       </div>
       <div class="share-block" id="share-block">
-        <svg style="position:absolute;width:0;height:0" xmlns="http://www.w3.org/2000/svg">
+        <svg style="position:absolute;width:0;height:0" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <filter id="stamp-worn" x="-5%" y="-5%" width="110%" height="110%">
               <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="3" result="noise"/>
@@ -1074,8 +595,20 @@
       </div>
     </div>
 
-  </div>
+    <div class="evidence-bar">
+      <span>Records, statements and places, over the grid.</span>
+      <button class="evidence-open" id="evidence-open" type="button" aria-haspopup="dialog" aria-controls="evidence-sheet">Evidence</button>
+    </div>
+  </section>
 </div>
+</main>
+
+<!-- Evidence sheet: a modal copy of the evidence so the player keeps their place in the grid -->
+<dialog class="sheet" id="evidence-sheet" aria-labelledby="sheet-title">
+  <div class="sheet-head"><h2 id="sheet-title">Evidence</h2><button class="sheet-close" id="evidence-close" type="button">Close</button></div>
+  <nav class="sheet-jump" aria-label="Jump to"><a href="#sheet-records">Records</a><a href="#sheet-statements">Statements</a><a href="#sheet-places">Places and people</a></nav>
+  <div class="sheet-body" id="sheet-body"></div>
+</dialog>
 
 <div class="foot">
   <span class="foot-text">The Case Room · Pixel &amp; Ink · 2026</span>
@@ -1121,83 +654,252 @@ const CASE = {
   ]
 };
 
-// &#9472;&#9472; RENDER &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+// ── RENDER ────────────────────────────────────────────────────────────
+// Presentation only. Every fact shown is the case text above, word for word; drawings repeat nothing the text does not say.
 document.getElementById('case-setting').textContent = CASE.setting;
 
-function makeCards(containerId, items) {
-  const container = document.getElementById(containerId);
-  items.forEach(item => {
-    const card = document.createElement('button');
-    card.type = 'button';
-    card.className = 'card';
-    card.setAttribute('aria-expanded', 'false');
-    const detailId = `detail-${item.id}`;
-    card.setAttribute('aria-controls', detailId);
+const INK = '#26221c';
+const ART = {
+  // E1 · a wall-mounted security camera (the record names the third-floor camera; no image is described, so none is drawn)
+  camera: `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <rect x="6" y="22" width="12" height="44" rx="2" fill="#7b858c" stroke="${INK}" stroke-width="2.5"/>
+    <circle cx="12" cy="30" r="1.6" fill="${INK}"/><circle cx="12" cy="58" r="1.6" fill="${INK}"/>
+    <path d="M18 44 h12 l8 -6" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+    <g transform="rotate(16 64 34)">
+      <path d="M30 18 h58 l6 -6 h-58 z" fill="#f2efe8" stroke="${INK}" stroke-width="2.2" stroke-linejoin="round"/>
+      <rect x="32" y="18" width="56" height="28" rx="5" fill="#d6d1c6" stroke="${INK}" stroke-width="2.5"/>
+      <rect x="84" y="21" width="12" height="22" rx="3" fill="#3a434b" stroke="${INK}" stroke-width="2.5"/>
+      <circle cx="90" cy="32" r="5.5" fill="#152029" stroke="#8fa6b4" stroke-width="1.6"/>
+      <circle cx="88.5" cy="30.5" r="1.4" fill="#cfe0ea"/>
+      <circle cx="40" cy="25" r="2.6" fill="#c4483c"/>
+    </g>
+    <rect x="24" y="72" width="66" height="16" rx="2" fill="#26221c"/>
+    <rect x="29" y="77" width="6" height="6" rx="3" fill="#c4483c"/>
+    <path d="M42 80 h40" stroke="#8a857a" stroke-width="2" stroke-dasharray="6 3"/>
+  </svg>`,
+  // E2 · the third-floor printer with a printed page in its tray
+  printer: `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <path d="M28 14 h44 v26 h-44 z" fill="#fbfaf7" stroke="${INK}" stroke-width="2.2"/>
+    <path d="M34 22 h30 M34 28 h24 M34 34 h28" stroke="#b9b4a8" stroke-width="2"/>
+    <rect x="12" y="36" width="76" height="34" rx="4" fill="#cdd2d4" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="12" y="36" width="76" height="9" rx="3" fill="#b3babd" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="62" y="50" width="18" height="8" rx="1.5" fill="#26303a"/><circle cx="20" cy="54" r="2.4" fill="#3f9b5f"/>
+    <path d="M22 70 l-4 14 h64 l-4 -14" fill="#9fa7ab" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M26 66 h48 l4 16 h-56 z" fill="#fbfaf7" stroke="${INK}" stroke-width="2"/>
+    <path d="M32 72 h30 M32 77 h22" stroke="#b9b4a8" stroke-width="2"/>
+  </svg>`,
+  // E3 · the ground-floor keycard reader at the mail room door, entry light on
+  keycard: `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <rect x="30" y="8" width="40" height="70" rx="6" fill="#3a434b" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="37" y="16" width="26" height="20" rx="2" fill="#1a2329" stroke="#5c6870" stroke-width="1.5"/>
+    <circle cx="50" cy="26" r="5" fill="#3fbf6a"/><circle cx="50" cy="26" r="9" fill="#3fbf6a" opacity=".22"/>
+    <path d="M40 46 a12 12 0 0 1 20 0 M43 51 a8 8 0 0 1 14 0 M46 56 a4 4 0 0 1 8 0" fill="none" stroke="#9fb0ba" stroke-width="2" stroke-linecap="round"/>
+    <g transform="rotate(-18 66 76)">
+      <rect x="46" y="62" width="40" height="26" rx="3" fill="#f2efe8" stroke="${INK}" stroke-width="2.2"/>
+      <rect x="51" y="67" width="10" height="12" rx="1.5" fill="#cfd5d8" stroke="${INK}" stroke-width="1.5"/>
+      <path d="M65 70 h16 M65 75 h11" stroke="#8a857a" stroke-width="2"/>
+    </g>
+  </svg>`,
+  // E4 · recovered from the mail-room bin, bagged: a torn envelope liner and a strip of adhesive backing (no colour given to the paper)
+  bag: `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <rect x="12" y="8" width="76" height="84" rx="5" fill="#e9eef0" fill-opacity=".85" stroke="#8d989e" stroke-width="2.2"/>
+    <path d="M12 18 h76" stroke="#c4483c" stroke-width="4"/><path d="M12 23 h76" stroke="#8d989e" stroke-width="1.2"/>
+    <path d="M24 36 L66 30 L72 42 L66 48 L74 58 L28 66 Z" fill="#fbfbf9" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M30 44 L62 39" stroke="#a6a196" stroke-width="1.6" stroke-dasharray="4 3"/>
+    <g transform="rotate(-10 56 76)"><rect x="34" y="70" width="48" height="9" rx="1.5" fill="#ffffff" stroke="${INK}" stroke-width="1.8"/><path d="M38 74.5 h40" stroke="#c9c4b6" stroke-width="2.5"/></g>
+    <rect x="58" y="80" width="24" height="10" fill="#f2efe8" stroke="${INK}" stroke-width="1.4"/>
+  </svg>`,
+  // E5 · the morning incident report, with the envelope staff opened: two pages inside (ink only, no paper colour)
+  report: `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <rect x="18" y="10" width="64" height="82" rx="4" fill="#8a6a45" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="38" y="6" width="24" height="10" rx="2" fill="#b9bfc2" stroke="${INK}" stroke-width="2"/>
+    <rect x="24" y="18" width="52" height="68" fill="#fbfaf7" stroke="${INK}" stroke-width="1.6"/>
+    <path d="M30 26 h40 M30 32 h28" stroke="${INK}" stroke-width="2.2"/><path d="M30 40 h40 M30 45 h36" stroke="#b9b4a8" stroke-width="1.8"/>
+    <g transform="translate(50 70)">
+      <path d="M-20 -6 L0 -18 L20 -6 Z" fill="#fbfaf7" stroke="${INK}" stroke-width="1.6"/>
+      <rect x="-13" y="-16" width="24" height="18" fill="#fff" stroke="${INK}" stroke-width="1.4"/>
+      <rect x="-16" y="-12" width="24" height="18" fill="#fff" stroke="${INK}" stroke-width="1.4"/>
+      <path d="M-20 -6 h40 v16 h-40 z" fill="#f4f3f0" stroke="${INK}" stroke-width="1.8"/>
+      <path d="M-20 10 L0 1 L20 10" fill="none" stroke="${INK}" stroke-width="1.4"/>
+    </g>
+  </svg>`,
+  // E6 · the ground-floor turnstile
+  turnstile: `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <rect x="16" y="84" width="68" height="8" rx="2" fill="#5b646a" stroke="${INK}" stroke-width="2"/>
+    <rect x="34" y="30" width="22" height="56" rx="3" fill="#cdd2d4" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="38" y="36" width="14" height="9" rx="1.5" fill="#1a2329"/><circle cx="45" cy="40.5" r="2.4" fill="#3fbf6a"/>
+    <circle cx="56" cy="54" r="5" fill="#8d979c" stroke="${INK}" stroke-width="2"/>
+    <path d="M58 52 L90 44 M58 56 L88 70 M55 50 L60 22" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+    <path d="M58 52 L90 44 M58 56 L88 70 M55 50 L60 22" stroke="#d6dadc" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>`,
+  // E7 · the security system: a login screen
+  system: `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <rect x="8" y="12" width="84" height="58" rx="4" fill="#2d3237" stroke="#0e1012" stroke-width="2.5"/>
+    <rect x="14" y="18" width="72" height="46" rx="1.5" fill="#10171c"/>
+    <rect x="30" y="26" width="40" height="32" rx="2" fill="#1d2a33" stroke="#5f7e8f" stroke-width="1.4"/>
+    <circle cx="50" cy="35" r="4.5" fill="none" stroke="#9fc4d6" stroke-width="1.8"/><path d="M42 46 a8 6 0 0 1 16 0" fill="none" stroke="#9fc4d6" stroke-width="1.8"/>
+    <rect x="36" y="50" width="28" height="4" rx="1" fill="#3f9b5f"/>
+    <path d="M42 70 h16 l4 12 h-24 z" fill="#3f454b" stroke="#0e1012" stroke-width="2"/><rect x="30" y="82" width="40" height="5" rx="2" fill="#3f454b" stroke="#0e1012" stroke-width="2"/>
+  </svg>`
+};
+const METHOD_ART = {
+  lifted: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><rect x="4" y="16" width="26" height="17" rx="1.5" fill="none" stroke="#c8a45a" stroke-width="2" stroke-dasharray="3 2.5"/><g transform="translate(9 3) rotate(-8 13 8)"><rect x="0" y="2" width="26" height="17" rx="1.5" fill="#1a160f" stroke="#f0e6d0" stroke-width="2"/><path d="M0 3 L13 12 L26 3" fill="none" stroke="#f0e6d0" stroke-width="1.6"/></g></svg>`,
+  fake: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><rect x="3" y="7" width="24" height="16" rx="1.5" fill="#1a160f" stroke="#a9997c" stroke-width="2"/><path d="M3 8 L15 16 L27 8" fill="none" stroke="#a9997c" stroke-width="1.5"/><rect x="13" y="17" width="24" height="16" rx="1.5" fill="#1a160f" stroke="#f0e6d0" stroke-width="2"/><path d="M13 18 L25 26 L37 18" fill="none" stroke="#f0e6d0" stroke-width="1.5"/></svg>`,
+  alarm: `<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 6 a10 10 0 0 1 10 10 v8 l4 5 h-28 l4 -5 v-8 a10 10 0 0 1 10 -10 z" fill="#1a160f" stroke="#e06a5b" stroke-width="2.2" stroke-linejoin="round"/><path d="M16 32 a4 4 0 0 0 8 0" fill="none" stroke="#e06a5b" stroke-width="2.2"/><path d="M5 12 l-3 -3 M35 12 l3 -3" stroke="#e06a5b" stroke-width="2" stroke-linecap="round"/></svg>`
+};
+// One entry per record, in the original order. kind/floor are taken from the record's own source line.
+const RECORD_VIEW = [
+  { art: 'camera',    kind: 'Camera',          where: 'Third floor' },
+  { art: 'printer',   kind: 'Printer log',     where: 'Third floor' },
+  { art: 'keycard',   kind: 'Keycard log',     where: 'Ground floor' },
+  { art: 'bag',       kind: 'Mail-room bin',   where: 'Ground floor' },
+  { art: 'report',    kind: 'Incident report', where: 'Morning', style: 'report' },
+  { art: 'turnstile', kind: 'Turnstile log',   where: 'Ground floor' },
+  { art: 'system',    kind: 'Security system', where: 'System record', style: 'dark' }
+];
 
-    const icon = document.createElement('span');
-    icon.className = 'card-icon';
-    icon.setAttribute('aria-hidden', 'true');
-    icon.textContent = item.icon;
-
-    const body = document.createElement('span');
-    body.className = 'card-body';
-    const name = document.createElement('span');
-    name.className = 'card-name';
-    name.textContent = item.name;
-    body.appendChild(name);
-
-    if (item.role) {
-      const role = document.createElement('span');
-      role.className = 'card-role';
-      role.textContent = item.role;
-      body.appendChild(role);
-    }
-
-    const detail = document.createElement('span');
-    detail.className = 'card-detail';
-    detail.id = detailId;
-    detail.textContent = item.detail;
-    body.appendChild(detail);
-    card.append(icon, body);
-
-    card.addEventListener('click', () => {
-      const open = card.classList.toggle('open');
-      card.setAttribute('aria-expanded', String(open));
-    });
-    container.appendChild(card);
-  });
+function el(tag, attrs, ...kids) {
+  const node = document.createElement(tag);
+  Object.entries(attrs || {}).forEach(([k, v]) => { if (v !== null && v !== undefined) node.setAttribute(k, v); });
+  kids.forEach(kid => node.append(kid));
+  return node;
 }
 
-makeCards('suspect-cards',  CASE.suspects);
-makeCards('method-cards',   CASE.methods);
-makeCards('location-cards', CASE.locations);
-
-// Clues
+// Records: the source line in bold (as written), the rest of the record as written.
 const clueList = document.getElementById('clue-list');
-CASE.clues.forEach((c, i) => {
-  const d = document.createElement('div');
-  d.className = 'clue';
-  const number = document.createElement('span');
-  number.className = 'clue-num';
-  number.textContent = `${i + 1}.`;
-  d.append(number, document.createTextNode(c));
-  clueList.appendChild(d);
+CASE.clues.forEach((text, i) => {
+  const view = RECORD_VIEW[i];
+  const cut = text.indexOf(': ');
+  const lead = cut > 0 ? text.slice(0, cut) : '';
+  const rest = cut > 0 ? text.slice(cut + 2) : text;
+  const card = el('article', { class: 'record' + (view.style ? ' ' + view.style : ''), id: `record-${i + 1}`, tabindex: '-1', 'aria-labelledby': `record-${i + 1}-tag`, 'aria-describedby': `record-${i + 1}-text` });
+  const head = el('div', { class: 'record-head' },
+    el('span', { class: 'record-tag', id: `record-${i + 1}-tag` }, el('span', { class: 'tag-no' }, `E${i + 1}`), view.kind),
+    el('span', { class: 'record-where' }, view.where));
+  const art = el('div', { class: 'record-art' }); art.innerHTML = ART[view.art];
+  const body = el('p', { class: 'record-text', id: `record-${i + 1}-text` });
+  if (lead) body.append(el('strong', {}, lead, el('span', { class: 'visually-hidden' }, ':')));
+  body.append(el('span', { class: 'record-rest' }, rest));
+  card.append(head, el('div', { class: 'record-body' }, art, body));
+  clueList.appendChild(card);
 });
 
-// Statements
+// Statements: typed sheets, word for word.
 const stmtList = document.getElementById('statement-list');
 CASE.statements.forEach(s => {
-  const d = document.createElement('div');
-  d.className = 'statement';
-  const name = document.createElement('div');
-  name.className = 'statement-name';
-  name.textContent = s.suspect;
-  const quote = document.createElement('div');
-  quote.className = 'statement-text';
-  quote.textContent = s.text;
-  d.append(name, quote);
-  stmtList.appendChild(d);
+  const person = CASE.suspects.find(p => p.name === s.suspect);
+  stmtList.appendChild(el('div', { class: 'statement' },
+    el('div', { class: 'statement-name' }, s.suspect, el('small', {}, person ? person.role : '')),
+    el('p', { class: 'statement-text' }, s.text)));
 });
+
+// Places: the building's floor guide. Floors come from each place's own description and the record names.
+const FLOORS = { rooftop: { lv: 'Roof', dev: '' }, partners: { lv: 'Third', dev: 'Printer · camera' }, mailroom: { lv: 'Ground', dev: 'Turnstile · keycard' } };
+const guide = document.getElementById('location-cards');
+['rooftop', 'partners', 'mailroom'].forEach(id => {
+  const place = CASE.locations.find(l => l.id === id);
+  const row = el('div', { class: 'floor-row' }, el('span', { class: 'floor-lv' }, FLOORS[id].lv), el('span', { class: 'floor-name' }, place.name));
+  if (FLOORS[id].dev) row.append(el('span', { class: 'floor-dev' }, FLOORS[id].dev));
+  row.append(el('span', { class: 'floor-detail' }, place.detail));
+  guide.appendChild(row);
+});
+
+// People: staff badges with the full profile text.
+const people = document.getElementById('suspect-cards');
+CASE.suspects.forEach(p => {
+  const initials = p.name.split(' ').map(w => w[0]).join('');
+  people.appendChild(el('div', { class: 'badge' },
+    el('span', { class: 'badge-mono', 'aria-hidden': 'true' }, initials),
+    el('span', { class: 'badge-name' }, p.name),
+    el('span', { class: 'badge-role' }, p.role),
+    el('p', { class: 'badge-detail' }, p.detail)));
+});
+
+// Methods: what each option means, beside the grid, always visible.
+const methods = document.getElementById('method-cards');
+CASE.methods.forEach(m => {
+  const card = el('div', { class: 'option' });
+  card.innerHTML = METHOD_ART[m.id] || '';
+  card.append(el('span', { class: 'option-name' }, m.name), el('span', { class: 'option-detail' }, m.detail));
+  methods.appendChild(card);
+});
+
+// The opening picture: a wide crop on phones, the whole envelope beside the text on large screens.
+(() => {
+  const svg = document.querySelector('.scene svg');
+  const wide = window.matchMedia('(min-width: 1000px)');
+  const fit = () => svg.setAttribute('viewBox', wide.matches ? '200 -80 400 360' : '0 -14 800 250');
+  fit();
+  if (wide.addEventListener) wide.addEventListener('change', fit);
+})();
+
+// "Examine the evidence" lands on the first record and gives it focus.
+document.getElementById('start-btn').addEventListener('click', event => {
+  event.preventDefault();
+  const first = document.getElementById('record-1');
+  first.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  first.focus({ preventScroll: true });
+});
+
+// Evidence sheet: a copy of the evidence in a native modal dialog. Escape closes it, focus stays inside while it is open,
+// the page behind is inert (so nothing is read twice), and focus returns to the button that opened it.
+(() => {
+  const sheet = document.getElementById('evidence-sheet');
+  const openBtn = document.getElementById('evidence-open');
+  const closeBtn = document.getElementById('evidence-close');
+  const body = document.getElementById('sheet-body');
+  let filled = false, returnTo = null;
+
+  // Keep Tab and Shift+Tab inside the open dialog (browsers otherwise let focus leave a modal for the browser's own controls).
+  function trapTab(dialog) {
+    dialog.addEventListener('keydown', event => {
+      if (event.key !== 'Tab') return;
+      const items = [...dialog.querySelectorAll('a[href], button:not([disabled]), summary, input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+        .filter(n => n.getClientRects().length && !n.closest('details:not([open]) > :not(summary)'));
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+    });
+  }
+  trapTab(sheet);
+  function copyOf(node) {
+    const c = node.cloneNode(true);
+    c.removeAttribute('id');
+    c.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+    c.querySelectorAll('[aria-labelledby],[aria-describedby]').forEach(n => { n.removeAttribute('aria-labelledby'); n.removeAttribute('aria-describedby'); });
+    c.querySelectorAll('[tabindex]').forEach(n => n.removeAttribute('tabindex'));
+    return c;
+  }
+  function fill() {
+    if (filled) return; filled = true;
+    body.append(el('h3', { class: 'section-label', id: 'sheet-records' }, 'Records'), copyOf(document.getElementById('clue-list')));
+    body.append(el('h3', { class: 'section-label', id: 'sheet-statements' }, 'Witness statements'), copyOf(document.getElementById('statement-list')));
+    body.append(el('h3', { class: 'section-label', id: 'sheet-places' }, 'Places and people'), copyOf(document.getElementById('places-people')));
+    body.querySelectorAll('.record').forEach(r => r.removeAttribute('tabindex'));
+  }
+  function open() {
+    fill(); returnTo = document.activeElement;
+    if (typeof sheet.showModal === 'function') sheet.showModal(); else sheet.setAttribute('open', '');
+    openBtn.setAttribute('aria-expanded', 'true');
+    closeBtn.focus();
+  }
+  function close() { if (sheet.open) sheet.close(); }
+  sheet.addEventListener('close', () => {
+    openBtn.setAttribute('aria-expanded', 'false');
+    const target = returnTo && document.contains(returnTo) ? returnTo : openBtn;
+    target.focus({ preventScroll: true });
+  });
+  openBtn.setAttribute('aria-expanded', 'false');
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  sheet.addEventListener('click', event => { if (event.target === sheet) close(); }); // a tap on the backdrop closes
+  sheet.querySelectorAll('.sheet-jump a').forEach(a => a.addEventListener('click', event => {
+    event.preventDefault();
+    const target = sheet.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ block: 'start' });
+  }));
+})();
 
 // ELIMINATION GRID — three meaningful category pairings, no location-vs-location block.
 const gridState = Object.create(null);
