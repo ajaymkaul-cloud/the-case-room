@@ -1346,15 +1346,38 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
       && SUPABASE_PUBLISHABLE_KEY.trim().length > 0
       && !SUPABASE_PUBLISHABLE_KEY.startsWith('YOUR_');
   }
-  function serverMessage(text) {
+  // Connection problems are shown in plain words with a Retry button (as in The Hidden Drop), never as the browser's raw error.
+  let retryButton = null, retryTimer = null;
+  function serverMessage(text, offerRetry = false) {
     let el = document.getElementById('cr-game-server-warning');
     if (!el) {
-      el = document.createElement('div'); el.id = 'cr-game-server-warning'; el.setAttribute('role', 'status');
-      el.style.cssText = 'box-sizing:border-box;width:min(760px,calc(100% - 24px));margin:10px auto;padding:12px 14px;border:1px solid #8a4a43;border-radius:8px;background:#261715;color:#f4d9d4;font:13px/1.5 system-ui,sans-serif;';
+      el = document.createElement('div'); el.id = 'cr-game-server-warning';
+      el.style.cssText = 'box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;width:min(760px,calc(100% - 24px));margin:10px auto;padding:12px 14px;border:1px solid #8a4a43;border-radius:8px;background:#261715;color:#f4d9d4;font:14px/1.5 system-ui,sans-serif;';
+      const message = document.createElement('p'); message.id = 'cr-game-server-text'; message.setAttribute('role', 'status');
+      message.style.cssText = 'margin:0;flex:1 1 220px;';
+      retryButton = document.createElement('button'); retryButton.type = 'button'; retryButton.id = 'cr-game-retry'; retryButton.textContent = 'Retry';
+      retryButton.style.cssText = 'min-height:44px;padding:0 18px;border:1px solid #f4d9d4;border-radius:6px;background:transparent;color:#f4d9d4;font:600 14px/1 system-ui,sans-serif;cursor:pointer;';
+      retryButton.addEventListener('click', () => {
+        if (retryButton.getAttribute('aria-disabled') === 'true') return;
+        // aria-disabled (not disabled) keeps keyboard focus on the button while it retries.
+        retryButton.setAttribute('aria-disabled', 'true'); retryButton.textContent = 'Retrying\u2026';
+        retryNow();
+        clearTimeout(retryTimer);
+        retryTimer = setTimeout(() => { retryButton.removeAttribute('aria-disabled'); retryButton.textContent = 'Retry'; }, 2500);
+      });
+      el.append(message, retryButton);
       const anchor = document.querySelector('main') || document.body.firstElementChild || document.body;
       anchor.parentNode.insertBefore(el, anchor);
     }
-    el.textContent = text; el.hidden = !text;
+    const hadFocus = el.contains(document.activeElement);
+    el.querySelector('#cr-game-server-text').textContent = text;
+    retryButton.hidden = !offerRetry;
+    el.hidden = !text;
+    if (!text) {
+      clearTimeout(retryTimer); retryButton.removeAttribute('aria-disabled'); retryButton.textContent = 'Retry';
+      // The box goes away once the server answers: move focus to the case title rather than losing it.
+      if (hadFocus) { const title = document.getElementById('case-title'); if (title) { title.setAttribute('tabindex', '-1'); title.focus({ preventScroll: true }); } }
+    }
   }
   async function request(payload) {
     if (!endpointReady()) throw new Error('The secure case server is not configured yet. Configure the Supabase case-game endpoint and publishable key before deploying this page.');
@@ -1443,7 +1466,10 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
     return data;
   }
   const ready = startSession(false).catch(error => {
-    serverMessage(error.message || 'The case server is unavailable. Your accusation has not been submitted.');
+    // Plain words, never the browser's raw error text. Cleared when a status request later succeeds.
+    serverMessage(error && error.status
+      ? 'The case server could not load this session yet. Use Retry, or reload the page.'
+      : 'Can\u2019t reach the case server. Check your connection, then use Retry. Nothing has been submitted.', true);
     return null;
   });
   async function needSession() {
@@ -1499,24 +1525,41 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   }
   // Reliability fix: after an uncertain result, keep asking the server for the case status
   // (backing off up to 30 seconds, and immediately when the connection returns) until it answers.
+  let wakeRetry = null, recovering = 0;
   function waitForRetry(ms) {
     return new Promise(resolve => {
       let timer = null;
-      const done = () => { clearTimeout(timer); window.removeEventListener('online', done); resolve(); };
+      const done = () => { clearTimeout(timer); window.removeEventListener('online', done); if (wakeRetry === done) wakeRetry = null; resolve(); };
       timer = setTimeout(done, ms);
       window.addEventListener('online', done);
+      wakeRetry = done;
     });
   }
   async function recoverStatus(onRetry) {
     let delay = 2000;
-    for (;;) {
-      try { return await refresh(); }
-      catch (error) {
-        if (typeof onRetry === 'function') { try { onRetry(error); } catch (_) {} }
-        await waitForRetry(delay);
-        delay = Math.min(delay * 2, 30000);
+    recovering += 1;
+    try {
+      for (;;) {
+        try { return await refresh(); }
+        catch (error) {
+          if (typeof onRetry === 'function') { try { onRetry(error); } catch (_) {} }
+          await waitForRetry(delay);
+          delay = Math.min(delay * 2, 30000);
+        }
       }
-    }
+    } finally { recovering -= 1; }
+  }
+  // Player-pressed Retry: only asks the server for the case status. It never submits an accusation.
+  // If a background retry is waiting, run it now. Otherwise start a fresh status request, then keep retrying in the background.
+  let manualTry = null;
+  function retryNow() {
+    if (wakeRetry) { wakeRetry(); return; }
+    if (recovering || manualTry) return;
+    const known = latestState && latestState.session_id;
+    manualTry = (known ? refresh() : startSession(false))
+      .catch(() => recoverStatus())
+      .catch(() => null)
+      .finally(() => { manualTry = null; });
   }
   async function resetSession() {
     const state = await startSession(true);
@@ -1577,7 +1620,7 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   else panel.hidden = false;
 
   window.CaseRoomSecureGame = {
-    caseId: CASE_ID, ready, accuse, reveal, refresh, recoverStatus, resetSession, serverNow,
+    caseId: CASE_ID, ready, accuse, reveal, refresh, recoverStatus, retryNow, resetSession, serverNow,
     isAccusing: () => Boolean(accuseInFlight),
     getState: () => latestState,
     getAnalyticsConsent: () => consent()
