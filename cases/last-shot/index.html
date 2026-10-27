@@ -430,7 +430,7 @@
           <div class="exhibit-checkboxes" id="exhibit-checkboxes"></div>
         </div>
         <p class="accuse-note" id="accuse-note" aria-live="polite">Select two exhibits that directly support your accusation.</p>
-        <button class="accuse-btn" id="accuse-btn" type="button" disabled><span>File Accusation</span></button>
+        <button class="accuse-btn" id="accuse-btn" type="button" aria-describedby="accuse-note" disabled><span>File Accusation</span></button>
         <div id="verdict" tabindex="-1" role="status" aria-live="polite" aria-atomic="true">
           <div class="verdict-headline" id="verdict-headline"></div>
           <div class="verdict-body" id="verdict-body"></div>
@@ -839,7 +839,7 @@
             input.checked = false; $('accuse-note').textContent = 'Two exhibits are already selected. Deselect one first.'; return;
           }
           if (input.checked) checkedExhibits.add(ex.id); else checkedExhibits.delete(ex.id);
-          label.classList.toggle('checked', input.checked); updateNote(); saveState();
+          label.classList.toggle('checked', input.checked); updateNote(); saveState(); updateAccuseState();
         });
         container.appendChild(label);
       });
@@ -911,7 +911,7 @@
         }
       } finally {
         accusationInFlight = false;
-        if (!isCaseOver() && statusConfirmed) button.disabled = false;
+        updateAccuseState();
         $('verdict').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
         $('verdict').focus({ preventScroll: true });
       }
@@ -937,7 +937,7 @@
       caseStatus = state.status === 'solved' ? 'solved' : 'investigating';
       if (caseStatus === 'solved') lastFeedback = null;
       renderOutcome();
-      if (caseStatus !== 'solved' && !accusationInFlight) $('accuse-btn').disabled = false;
+      updateAccuseState();
     }
     window.addEventListener('case-room-secure-ready', event => { applySecureState(event.detail); });
 
@@ -1016,7 +1016,14 @@
     $('reveal-btn').addEventListener('click', revealSolution);
     $('restart-btn').addEventListener('click', resetCase);
     $('copy-btn').addEventListener('click', copyStamp);
-    $('sel-suspect').addEventListener('change', () => { $('sel-suspect').classList.remove('error'); saveState(); });
+    $('sel-suspect').addEventListener('change', () => { $('sel-suspect').classList.remove('error'); saveState(); updateAccuseState(); });
+
+    // File Accusation is available only once the server has confirmed an open case, a suspect is chosen
+    // and exactly two exhibits are selected. The server still checks every accusation as before.
+    function updateAccuseState() {
+      const ready = statusConfirmed && !isCaseOver() && !accusationInFlight && Boolean($('sel-suspect').value) && checkedExhibits.size === 2;
+      $('accuse-btn').disabled = !ready;
+    }
 
     // Until the server confirms the saved session, the header shows a neutral "Checking" state (set in the HTML).
     // If the load check fails or takes too long, say the status is not confirmed rather than implying "Open".
