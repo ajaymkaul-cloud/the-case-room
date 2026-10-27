@@ -528,7 +528,7 @@
     <p class="notes-status" id="notes-status" role="status" aria-live="polite">Notes save automatically in this browser on this device.</p>
 
     <h2 class="section-label spaced">Make your accusation</h2>
-    <p class="accuse-intro">You have two accusations. Each one names who, how and where.</p>
+    <p class="accuse-intro" id="accuse-intro">You have two accusations. Each one names who, how and where.</p>
     <div class="tries-row">
       <span class="tries-label">Attempts</span>
       <div class="tries-pips" id="tries-pips">
@@ -555,7 +555,7 @@
           <option value="">— Select location —</option>
         </select>
       </div>
-      <button class="accuse-btn" id="accuse-btn" type="button" disabled>
+      <button class="accuse-btn" id="accuse-btn" type="button" aria-describedby="accuse-intro" disabled>
         <span>Make Your Accusation</span>
       </button>
     </div>
@@ -998,6 +998,7 @@ const whereSel = document.getElementById('acc-where');
 CASE.suspects.forEach(s  => { const o = document.createElement('option'); o.value = s.name; o.textContent = s.name; whoSel.appendChild(o); });
 CASE.methods.forEach(m   => { const o = document.createElement('option'); o.value = m.name; o.textContent = m.name; howSel.appendChild(o); });
 CASE.locations.forEach(l => { const o = document.createElement('option'); o.value = l.name; o.textContent = l.name; whereSel.appendChild(o); });
+[whoSel, howSel, whereSel].forEach(sel => sel.addEventListener('change', () => updateAccuseState()));
 
 // ── INVESTIGATOR NOTES ─────────────────────────────────────────────────
 const notesInput = document.getElementById('investigator-notes');
@@ -1045,6 +1046,13 @@ let caseOver  = false;
 let accusationInFlight = false;
 
 const pips = [document.getElementById('pip-1'), document.getElementById('pip-2')];
+
+// Make Your Accusation is available only once the server has confirmed an open case and a suspect, method and
+// location are all chosen. The server still checks every accusation as before.
+function updateAccuseState() {
+  const ready = statusConfirmed && !caseOver && !accusationInFlight && Boolean(whoSel.value && howSel.value && whereSel.value);
+  document.getElementById('accuse-btn').disabled = !ready;
+}
 
 function lockForm() {
   whoSel.disabled = true;
@@ -1266,7 +1274,7 @@ async function makeAccusation() {
     }
   } finally {
     accusationInFlight = false;
-    if (!caseOver && statusConfirmed) button.disabled = false;
+    updateAccuseState();
     verdict.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
     verdict.focus({ preventScroll: true });
   }
@@ -1299,7 +1307,7 @@ async function applySecureState(state) {
     catch (_) { document.getElementById('verdict-body').textContent = 'Both attempts exhausted. Reconnect to load the closed case file.'; }
   } else {
     updateCaseStatus(triesUsed > 0 ? 'retry' : 'open');
-    if (!accusationInFlight) document.getElementById('accuse-btn').disabled = false;
+    updateAccuseState();
   }
 }
 window.addEventListener('case-room-secure-ready', event => { applySecureState(event.detail).catch(() => {}); });
