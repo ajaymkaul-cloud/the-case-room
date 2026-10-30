@@ -228,6 +228,17 @@
       .chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .stage-card { scroll-margin-top: 170px; }
     }
+    /* Phones: point to the reference material below the trail, and to the Map (hidden at 900px+, where it sits beside the trail) */
+    .trail-refs { margin: -2px 0 14px; font-size: 14px; color: var(--fg-mid); line-height: 1.5; }
+    .trail-refs-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .ref-link { min-height: 44px; padding: 0 14px; border: 1px solid var(--gold-dim); background: none; color: var(--gold); font: inherit; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+    .ref-link:focus-visible, .hint-jump:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .hint-jump { display: inline-flex; align-items: center; min-height: 44px; margin: 6px 0 0 12px; padding: 0 12px; border: 1px solid #c9b894; background: none; color: var(--ink); font: inherit; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
+    .tab-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); margin-left: 6px; vertical-align: 2px; }
+    .tab-dot[hidden] { display: none; }
+    #noticeboard-title, #chat-title { scroll-margin-top: 112px; }
+    #noticeboard-title:focus, #chat-title:focus { outline: none; }
+    @media (min-width: 900px) { .trail-refs, .hint-jump, .tab-dot { display: none !important; } }
     .caption span { display: block; }
     body[data-tab="trail"] .clue-text { display: none; }
     body[data-tab="trail"] #clue-check.is-next { display: none; } /* on the trail the found card holds the one Next clue */
@@ -625,7 +636,7 @@
   <div class="sticky" id="sticky">
     <div class="tabs wrap" role="tablist" aria-label="Case 001 sections">
       <button class="tab" role="tab" id="tab-trail" aria-controls="panel-trail" aria-selected="true">Trail</button>
-      <button class="tab" role="tab" id="tab-map" aria-controls="panel-map" aria-selected="false" tabindex="-1">Map</button>
+      <button class="tab" role="tab" id="tab-map" aria-controls="panel-map" aria-selected="false" tabindex="-1">Map<span class="tab-dot" id="map-dot" aria-hidden="true" hidden></span></button>
       <button class="tab" role="tab" id="tab-finds" aria-controls="panel-finds" aria-selected="false" tabindex="-1">Finds</button>
     </div>
     <div class="clue" id="clue" aria-live="polite">
@@ -672,10 +683,11 @@
     <section class="panel" id="panel-trail" role="tabpanel" aria-labelledby="tab-trail" tabindex="-1">
       <div class="trail-grid"><div class="trail-play">
       <h2 class="section-label">The trail</h2>
+      <div class="trail-refs" id="trail-refs"><p>Noticeboard and chat are below. Every place is on the Map.</p><div class="trail-refs-links"><button type="button" class="ref-link" data-ref="notice">Noticeboard ↓</button><button type="button" class="ref-link" data-ref="chat">Chat ↓</button><button type="button" class="ref-link" data-ref="map">Map</button></div></div>
       <div id="stages"></div>
       </div><div class="trail-ref">
 
-      <h2 class="section-label">Noticeboard</h2>
+      <h2 class="section-label" id="noticeboard-title" tabindex="-1">Noticeboard</h2>
       <div class="patya" role="list" aria-label="Kesari Peth noticeboard, Puneri patya">
         <div role="listitem"><b>Cafe Noor</b><span>6:30 am to 11 pm. Closed Monday.</span><i>Order chai also.</i></div>
         <div role="listitem"><b>Sharp Stitch Tailors</b><span>10:30 am to 8 pm. Closed Tuesday.</span><i>No "by evening."</i></div>
@@ -685,7 +697,7 @@
         <div role="listitem"><b>Kulkarni Medical</b><span>8 am to 10 pm. Open every day.</span><i>Ask us, not the internet.</i></div>
       </div>
 
-      <h2 class="section-label">KP Neighbours</h2>
+      <h2 class="section-label" id="chat-title" tabindex="-1">KP Neighbours</h2>
       <div class="card chat" aria-label="KP Neighbours group chat">
         <div class="msg"><b>Meera (Ketkar Wada)</b>A crow on our wall! Aaji approves.</div>
         <div class="msg"><b>Vachan Kendra</b>Open this Sunday for the book swap.</div>
@@ -764,7 +776,7 @@ const STAGES = {
 const FINAL = { title: 'The Drop', label: 'Final', lines: ["Piece one's colour.", "Piece two's number.", "Piece three's sign.", 'Find the door.'], bar: "Piece one's colour, two's number, three's sign.",
   hints: ['Each wrong door misses by one thing.', 'Check the numbers closely. One is reversed.'] };
 const DOORS = ['A', 'B', 'C', 'D', 'E', 'F'];
-const LS = { picks: 'cr003_picks_v1', hints: 'cr003_hints_v1', tab: 'cr003_tab_v1', mapTip: 'cr003_maptip_done_v1', seen: 'cr003_seen_v1', progress: 'cr003_progress_v1' };
+const LS = { picks: 'cr003_picks_v1', hints: 'cr003_hints_v1', tab: 'cr003_tab_v1', mapTip: 'cr003_maptip_done_v1', mapSeen: 'cr003_mapseen_v1', seen: 'cr003_seen_v1', progress: 'cr003_progress_v1' };
 function load(key) { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (_) { return null; } }
 function save(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {} }
 
@@ -884,6 +896,7 @@ function selectTab(name, focus) {
     tab.setAttribute('aria-selected', String(on)); tab.tabIndex = on ? 0 : -1; panel.hidden = !on;
   });
   save(LS.tab, name); document.body.dataset.tab = name;
+  if (name === 'map') { save(LS.mapSeen, true); $('map-dot').hidden = true; }
   if (focus) $(`tab-${name}`).focus();
 }
 TABS.forEach((t, i) => {
@@ -928,6 +941,11 @@ howto.addEventListener('keydown', e => {
 });
 
 $('go-street').addEventListener('click', () => { selectTab('map'); $('street-view').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); });
+function jumpTo(id) { const h = $(id); if (!h) return; selectTab('trail'); h.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); h.focus({ preventScroll: true }); }
+document.querySelectorAll('#trail-refs .ref-link').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.ref === 'map') { selectTab('map'); $('street-view').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); }
+  else jumpTo(b.dataset.ref === 'notice' ? 'noticeboard-title' : 'chat-title');
+}));
 
 /* ---------- Close-up sheet (one at a time; Back, outside tap or Escape closes) ---------- */
 const sheet = $('closeup'); let sheetFor = null;
@@ -1096,7 +1114,12 @@ function hintsFor(stage, list) {
     b.addEventListener('click', () => { hints[stage] = Math.max(hints[stage] || 0, i + 1); save(LS.hints, hints); renderAll(); });
     box.append(b);
   });
-  list.forEach((text, i) => { if (shown > i) box.append(el('p', { class: 'hint-text' }, `Hint ${i + 1}: ${text}`)); });
+  list.forEach((text, i) => {
+    if (shown <= i) return;
+    box.append(el('p', { class: 'hint-text' }, `Hint ${i + 1}: ${text}`));
+    const ref = /noticeboard/i.test(text) ? ['noticeboard-title', 'Show noticeboard ↓'] : /\bchat\b/i.test(text) ? ['chat-title', 'Show chat ↓'] : null;
+    if (ref) { const j = el('button', { type: 'button', class: 'hint-jump' }, ref[1]); j.addEventListener('click', () => jumpTo(ref[0])); box.append(j); }
+  });
   return box;
 }
 function doorScene() {
@@ -1367,6 +1390,7 @@ $('copy-btn').addEventListener('click', async () => {
 
 /* Initial paint: neutral until the server confirms. */
 setStatus('checking');
+$('map-dot').hidden = Boolean(load(LS.mapSeen));
 const savedTab = load(LS.tab); selectTab(TABS.includes(savedTab) ? savedTab : 'trail');
 renderAll();
 document.addEventListener('DOMContentLoaded', () => {
