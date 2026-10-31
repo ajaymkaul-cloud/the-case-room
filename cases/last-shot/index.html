@@ -304,6 +304,71 @@
     .sheet summary.exhibit-header::-webkit-details-marker { display: none; }
     .sheet details.exhibit[open] .exhibit-arrow { transform: rotate(225deg) translate(-3px, -3px); }
   </style>
+<style id="evidence-kit">
+/* Evidence kit (local mockup only): the evidence becomes physical; controls and reading text stay flat. CSS only. */
+:root { --paper: #f5f1e6; --paper-2: #ebe4d2; --stamp-red: #a8382c; --pad: #f3e9bf; --pad-2: #ece0ad; --pad-rule: rgba(64,104,160,.26); --pad-margin: rgba(196,64,52,.55); --clip: #a7adb3; --hl: rgba(255,210,60,.72); }
+
+/* Exhibits: paper sheets, clipped, slightly askew; flat and square when opened for reading */
+.exhibit-list { gap: 20px; padding: 10px 6px 6px; }
+.exhibit { position: relative; border: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(110,90,50,.06) 0 1.4px, transparent 2.2px) 0 0 / 17px 23px,
+    radial-gradient(circle at 70% 60%, rgba(80,60,30,.05) 0 1px, transparent 1.8px) 0 0 / 29px 13px,
+    linear-gradient(176deg, var(--paper) 0%, var(--paper-2) 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 0 #d6cfbc, 0 2px 0 #c9c1ac, 0 16px 28px rgba(0,0,0,.55);
+  transform: rotate(-.6deg); }
+.exhibit:nth-child(even) { transform: rotate(.5deg); }
+.exhibit:nth-child(3n) { transform: rotate(-.25deg); }
+.exhibit:hover { transform: rotate(0deg) translateY(-2px); border: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 0 #d6cfbc, 0 2px 0 #c9c1ac, 0 22px 34px rgba(0,0,0,.6); }
+.exhibit.open { transform: none; box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 0 0 2px var(--gold), 0 18px 30px rgba(0,0,0,.55); }
+/* paperclip over the photo */
+.exhibit::before, .exhibit::after { content: ''; position: absolute; z-index: 3; pointer-events: none; border: 2.5px solid var(--clip); border-radius: 9px; }
+.exhibit::before { left: 34px; top: -11px; width: 13px; height: 40px; border-bottom-color: transparent; box-shadow: 1px 2px 2px rgba(0,0,0,.25); }
+.exhibit::after { left: 38px; top: -5px; width: 5px; height: 30px; border-top-color: transparent; border-radius: 5px; }
+.exhibit-thumb { background: #1f2023; border: 4px solid #fbfaf6; box-shadow: 0 3px 8px rgba(0,0,0,.28); transform: rotate(-3deg); margin: 4px 0 4px 2px; width: 58px; height: 58px; }
+.exhibit-thumb::before { display: none; }
+.exhibit-thumb svg { margin-top: 0; }
+.exhibit-tag { justify-self: start; color: var(--stamp-red); border: 1.5px solid var(--stamp-red); padding: 1px 7px 0; border-radius: 3px; transform: rotate(-2deg); font-weight: 700; letter-spacing: .18em; opacity: .9; margin-bottom: 3px; }
+.exhibit-body { border-top: 1px dashed #c9c1ac; background: rgba(255,255,255,.35); }
+.exhibit-figure.polaroid { transform: rotate(3deg); box-shadow: 0 8px 16px rgba(0,0,0,.25); }
+
+/* Notebook: a yellow legal pad with a ruled margin; tags become highlighter marks */
+.notebook { position: relative; color: var(--ink); padding: 18px 16px 14px 48px; border-top: 20px solid #5a2a20;
+  background:
+    linear-gradient(90deg, transparent 36px, var(--pad-margin) 36px 38px, transparent 38px),
+    repeating-linear-gradient(180deg, transparent 0 29px, var(--pad-rule) 29px 30px),
+    linear-gradient(180deg, var(--pad), var(--pad-2));
+  box-shadow: 0 16px 28px rgba(0,0,0,.55), inset 0 6px 8px -6px rgba(0,0,0,.35); transform: rotate(.35deg); }
+.notebook::before { content: ''; position: absolute; left: 0; right: 0; top: -20px; height: 20px; background: repeating-linear-gradient(90deg, transparent 0 22px, rgba(0,0,0,.18) 22px 24px); }
+.notebook-hint { color: #4a4433; border-left-color: var(--pad-margin); }
+.notebook-empty { color: #6a624a; }
+.nb-row { background: transparent; border: 0; border-bottom: 1px dashed rgba(70,60,30,.35); margin-bottom: 4px; }
+.nb-row.linked { background: transparent; }
+.nb-exhibit-tag { color: var(--stamp-red); border-right: 0; font-weight: 700; padding-left: 0; }
+.nb-exhibit-name { color: var(--ink); }
+.nb-relation-btn, .nb-suspect-btn { color: #3b382d; border-color: rgba(60,52,30,.38); background: rgba(255,255,255,.28); }
+.nb-relation-btn:hover, .nb-suspect-btn:hover { color: var(--ink); border-color: rgba(40,35,20,.7); }
+.nb-relation-btn.active, .nb-suspect-btn.active { color: var(--ink); border-color: var(--ink); font-weight: 700;
+  background: linear-gradient(176deg, transparent 12%, var(--hl) 14% 86%, transparent 88%); }
+.nb-remove { color: #6a624a; border-left: 0; }
+@media (max-width: 600px) {
+  .notebook { padding-left: 26px; padding-right: 10px; background:
+    linear-gradient(90deg, transparent 16px, var(--pad-margin) 16px 18px, transparent 18px),
+    repeating-linear-gradient(180deg, transparent 0 29px, var(--pad-rule) 29px 30px),
+    linear-gradient(180deg, var(--pad), var(--pad-2)); }
+  .nb-exhibit-tag { padding-right: 6px; }
+  .nb-center { padding-left: 6px; padding-right: 6px; }
+}
+
+/* Accusation: controls stay flat; only the verdict headline lands as a rubber stamp */
+#verdict { position: relative; }
+#verdict .verdict-headline { display: inline-block; font-family: 'Courier Prime', monospace; font-style: normal; font-weight: 700; letter-spacing: .06em; font-size: 21px;
+  padding: 7px 16px 5px; border: 3px double currentColor; border-radius: 4px; transform: rotate(-3deg); margin: 4px 0 18px 4px;
+  -webkit-mask-image: radial-gradient(circle at 30% 40%, #000 0 58%, rgba(0,0,0,.72) 59% 61%, #000 62%), repeating-linear-gradient(17deg, #000 0 5px, rgba(0,0,0,.78) 5px 6px);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+#verdict.wrong .verdict-headline { color: #e0705f; }
+#verdict.correct .verdict-headline { color: var(--gold); }
+</style>
 </head>
 <body>
   <header class="top-bar">

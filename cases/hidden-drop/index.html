@@ -562,6 +562,29 @@
       *, *::before, *::after { animation-delay: 0ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
     }
   </style>
+<style id="evidence-kit">
+/* Evidence kit (The Hidden Drop): the noticeboard and crow photos become physical (Finds is already paper); trail controls, chips, chat and map stay as they are. CSS only. */
+:root { --kit-stamp: #a8382c;
+  --kit-grain: radial-gradient(circle at 20% 30%, rgba(110,90,50,.06) 0 1.4px, transparent 2.2px) 0 0 / 17px 23px, radial-gradient(circle at 70% 60%, rgba(80,60,30,.05) 0 1px, transparent 1.8px) 0 0 / 29px 13px; }
+
+/* Noticeboard: cork board, brass pins, notices slightly askew */
+.patya { gap: 14px; padding: 18px 14px 14px; border-radius: 3px;
+  background: radial-gradient(circle at 30% 40%, rgba(60,35,15,.35) 0 1px, transparent 1.6px) 0 0 / 7px 9px, radial-gradient(circle at 70% 20%, rgba(255,230,190,.18) 0 1px, transparent 1.6px) 0 0 / 11px 7px, linear-gradient(170deg, #9a6c42, #7d5532);
+  box-shadow: inset 0 0 0 6px #4a3220, inset 0 0 0 8px #2f1f13, inset 0 6px 14px rgba(0,0,0,.45), 0 10px 22px rgba(0,0,0,.45); }
+.patya > div { position: relative; background: var(--kit-grain), linear-gradient(176deg, #fffbe9, #f2ead2); box-shadow: 0 1px 0 #e3d9bd, 2px 6px 10px rgba(0,0,0,.4); transform: rotate(-.8deg); padding-top: 14px; }
+.patya > div:nth-child(even) { transform: rotate(.9deg); }
+.patya > div:nth-child(3n) { transform: rotate(-.3deg); }
+.patya > div::before { content: ''; position: absolute; left: 50%; top: -5px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff3c4 0 15%, #d9a63b 40%, #8a6118 100%); box-shadow: 1px 3px 3px rgba(0,0,0,.45); }
+
+/* Trail cards: a faint paper grain only (they hold the controls) */
+.stage-card { background: var(--kit-grain), var(--paper); }
+
+/* Photos of the crow: printed photographs with a white border */
+.stage-card .photo { border: 8px solid #fbfaf6; box-shadow: 0 6px 14px rgba(0,0,0,.3); transform: rotate(-1deg); }
+
+@media (prefers-reduced-motion: reduce) { .patya > div, .stage-card .photo { transform: none !important; } }
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">

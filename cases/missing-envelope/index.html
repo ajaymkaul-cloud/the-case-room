@@ -403,6 +403,47 @@
     dialog.sheet { margin: auto; width: min(720px, 92vw); max-height: 86vh; border: 1px solid var(--gold-dim); }
   }
 </style>
+<style id="evidence-kit">
+/* Evidence kit (The Missing Envelope): evidence becomes physical; the elimination grid, form controls and reading text stay flat. CSS only. */
+:root { --kit-stamp: #a8382c; --kit-clip: #a7adb3; --kit-pad: #f3e9bf; --kit-pad-2: #ece0ad; --kit-pad-rule: rgba(64,104,160,.26); --kit-pad-margin: rgba(196,64,52,.55);
+  --kit-grain: radial-gradient(circle at 20% 30%, rgba(110,90,50,.06) 0 1.4px, transparent 2.2px) 0 0 / 17px 23px, radial-gradient(circle at 70% 60%, rgba(80,60,30,.05) 0 1px, transparent 1.8px) 0 0 / 29px 13px; }
+
+/* Evidence records: paper sheets, clipped, slightly askew; square again on hover or focus */
+.records { gap: 20px; padding: 10px 4px 4px; }
+.record { background: var(--kit-grain), linear-gradient(176deg, #f5f1e6, #e9e2d0); border: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 1px 0 #d6cfbc, 0 2px 0 #c9c1ac, 0 14px 26px rgba(0,0,0,.55); transform: rotate(-.5deg); }
+.record:nth-child(even) { transform: rotate(.45deg); }
+.record:nth-child(3n) { transform: rotate(-.2deg); }
+.record:hover, .record:focus-visible { transform: none; }
+.record.dark { background: linear-gradient(176deg, #22262b, #1a1d21); }
+.record::before, .record::after { content: ''; position: absolute; z-index: 3; pointer-events: none; border: 2.5px solid var(--kit-clip); border-radius: 9px; }
+.record::before { left: 30px; top: 36px; width: 13px; height: 40px; border-bottom-color: transparent; box-shadow: 1px 2px 2px rgba(0,0,0,.25); }
+.record::after { left: 34px; top: 42px; width: 5px; height: 30px; border-top-color: transparent; border-radius: 5px; }
+.record-tag .tag-no { background: transparent; color: var(--kit-stamp); border: 1.5px solid var(--kit-stamp); border-radius: 3px; transform: rotate(-2deg); font-weight: 700; }
+.record.dark .record-tag .tag-no, .record.report .record-tag .tag-no { background: transparent; color: #f0a596; border-color: #f0a596; }
+.record-art { border: 4px solid #fbfaf6; box-shadow: 0 3px 8px rgba(0,0,0,.25); transform: rotate(-2deg); }
+.record.dark .record-art { border-color: #e8e4dc; }
+
+/* Witness statements: torn tape, faint grain */
+.statement { background: var(--kit-grain), linear-gradient(176deg, #ece8df, #e0dbcf); }
+.statement:nth-child(even) { transform: rotate(.35deg); }
+.statement::before { width: 70px; height: 20px; top: -9px; background: linear-gradient(180deg, rgba(240,228,190,.78), rgba(222,206,160,.7)); box-shadow: 0 1px 2px rgba(0,0,0,.25);
+  clip-path: polygon(0 10%, 5% 0, 9% 14%, 4% 30%, 8% 50%, 3% 68%, 7% 86%, 0 100%, 100% 100%, 95% 84%, 100% 66%, 94% 48%, 99% 30%, 95% 12%, 100% 0); }
+
+/* Notes: a yellow legal pad; the lines follow the text */
+#investigator-notes { color: #1f2023; border-color: rgba(90,70,30,.45); line-height: 28px; padding-left: 46px;
+  background: linear-gradient(90deg, transparent 34px, var(--kit-pad-margin) 34px 36px, transparent 36px), repeating-linear-gradient(180deg, transparent 0 27px, var(--kit-pad-rule) 27px 28px), linear-gradient(180deg, var(--kit-pad), var(--kit-pad-2));
+  background-attachment: local; box-shadow: 0 12px 24px rgba(0,0,0,.45), inset 0 18px 0 -2px #5a2a20; padding-top: 28px; }
+#investigator-notes::placeholder { color: #6a624a; opacity: 1; }
+@media (max-width: 600px) { #investigator-notes { padding-left: 28px; background: linear-gradient(90deg, transparent 16px, var(--kit-pad-margin) 16px 18px, transparent 18px), repeating-linear-gradient(180deg, transparent 0 27px, var(--kit-pad-rule) 27px 28px), linear-gradient(180deg, var(--kit-pad), var(--kit-pad-2)); background-attachment: local; } }
+
+/* Verdict: the headline lands as a rubber stamp */
+#verdict .verdict-headline { display: inline-block; font-family: 'Courier Prime', monospace; font-style: normal; font-weight: 700; letter-spacing: .06em; font-size: 21px;
+  padding: 7px 16px 5px; border: 3px double currentColor; border-radius: 4px; transform: rotate(-3deg); margin: 4px 0 18px 4px;
+  -webkit-mask-image: radial-gradient(circle at 30% 40%, #000 0 58%, rgba(0,0,0,.72) 59% 61%, #000 62%), repeating-linear-gradient(17deg, #000 0 5px, rgba(0,0,0,.78) 5px 6px);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+@media (prefers-reduced-motion: reduce) { .record, .statement { transform: none !important; } }
+</style>
 </head>
 <body>
 
