@@ -585,6 +585,31 @@
 
 @media (prefers-reduced-motion: reduce) { .patya > div, .stage-card .photo { transform: none !important; } }
 </style>
+<style id="readability-fix">
+/* Tester feedback (Nov 2026): bigger clue text on phones, a clear "correct" moment, chat/noticeboard links inside each clue. */
+.patya > div, .patya b { font-size: 15px; }
+.patya i { font-size: 14px; color: #5a4022; }
+.msg b { font-size: 13px; letter-spacing: .02em; }
+.chip small { font-size: 13px; letter-spacing: .02em; }
+.section-label { font-size: 12px; letter-spacing: .16em; }
+.stage-tag { font-size: 12px; letter-spacing: .1em; }
+.ask { font-size: 14px; letter-spacing: .1em; }
+.hint-note { font-size: 14px; }
+.count-line { font-size: 14px; letter-spacing: .08em; }
+.mini-count { font-size: 12px; }
+.ref-link { font-size: 13px; letter-spacing: .08em; }
+.stage-card .found-stamp { color: var(--terra); border-color: var(--terra); font-size: 13px; padding: 4px 10px 4px 7px; }
+.stage-card .found-stamp svg { fill: var(--terra); }
+.correct-line { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; font-size: 22px; line-height: 1.2; color: var(--terra); }
+.found-stamp.stamp-in { animation: stamp-in .5s cubic-bezier(.2,.9,.3,1.2) both; animation-delay: var(--ago, 0ms); }
+@keyframes stamp-in { 0% { transform: rotate(-4deg) scale(2.4); opacity: 0; } 60% { transform: rotate(-4deg) scale(.92); opacity: 1; } 100% { transform: rotate(-4deg) scale(1); opacity: 1; } }
+.correct-line.rise-in { animation: rise .45s ease-out both; animation-delay: var(--ago, 0ms); }
+.mini-slot.fill-in { animation: mini-pulse .9s ease-out both; animation-delay: var(--ago, 0ms); }
+@keyframes mini-pulse { 0% { box-shadow: 0 0 0 0 rgba(200,164,90,.9); } 100% { box-shadow: 0 0 0 9px rgba(200,164,90,0); } }
+.card-refs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 2px; }
+.stage-card .card-refs .ref-link { color: var(--terra); border-color: #c9b894; min-height: 40px; }
+@media (min-width: 900px) { .card-refs { display: none !important; } }
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -964,6 +989,16 @@ howto.addEventListener('keydown', e => {
 });
 
 $('go-street').addEventListener('click', () => { selectTab('map'); $('street-view').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); });
+function cardRefs() {
+  const row = el('div', { class: 'card-refs' });
+  [['notice', 'Noticeboard ↓'], ['chat', 'Chat ↓'], ['map', 'Map']].forEach(([r, t]) => row.append(el('button', { type: 'button', class: 'ref-link', 'data-ref': r }, t)));
+  return row;
+}
+function refJump(ref) {
+  if (ref === 'map') { selectTab('map'); $('street-view').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); }
+  else jumpTo(ref === 'notice' ? 'noticeboard-title' : 'chat-title');
+}
+$('stages').addEventListener('click', e => { const b = e.target.closest('.card-refs .ref-link'); if (b) refJump(b.dataset.ref); });
 function jumpTo(id) { const h = $(id); if (!h) return; selectTab('trail'); h.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); h.focus({ preventScroll: true }); }
 document.querySelectorAll('#trail-refs .ref-link').forEach(b => b.addEventListener('click', () => {
   if (b.dataset.ref === 'map') { selectTab('map'); $('street-view').scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' }); }
@@ -1238,6 +1273,7 @@ function renderStages() {
     let tag;
     if (done && stage < 4) {
       tag = el('span', { class: 'found-stamp' }); tag.innerHTML = CROW_SVG; tag.append(document.createTextNode('Found'));
+      if (anim.frag && anim.frag.stage === stage) live(tag, 'stamp-in', anim.frag.t, 600);
     } else tag = el('span', { class: 'stage-tag' }, stage === 4 ? 'Final' : meta.label);
     head.append(el('h3', { class: 'stage-title', id: `stage-title-${stage}` }, meta.title), tag);
     card.append(head);
@@ -1247,6 +1283,7 @@ function renderStages() {
       card.append(el('p', { class: 'locked' }, game.statusKind === 'unconfirmed' ? 'Progress not loaded yet.' : 'Checking…'));
     } else if (done && stage < 4) {
       const body = el('div', { class: 'found-body' });
+      if (wait && stage === nFound) { const ok = el('p', { class: 'correct-line', role: 'status' }, `Correct. Piece ${pieceWord(stage)} found.`); if (anim.frag && anim.frag.stage === stage) live(ok, 'rise-in', anim.frag.t, 500); body.append(ok); }
       const line = el('p', { class: 'found-line' });
       line.append(document.createTextNode(`Piece ${WORD[stage]}: `), el('b', {}, placeName(game.found[stage - 1])));
       body.append(line);
@@ -1273,7 +1310,7 @@ function renderStages() {
       body.append(go); card.append(body);
     } else {
       const body = el('div', { class: 'stage-body' });
-      body.append(postNode(meta));
+      body.append(postNode(meta), cardRefs());
       if (stage < 4) {
         body.append(el('p', { class: 'ask' }, `Where is ${meta.label.toLowerCase()}?`), chipsFor(stage, canPick));
         const btn = el('button', { type: 'button', class: 'act' + (picks[stage] && canAct ? ' primary' : ''), id: `check-${stage}` }, 'Check'); btn.disabled = !canAct;
