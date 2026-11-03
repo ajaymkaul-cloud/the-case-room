@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thecaseroom.pixelandink.in/sitemap.xml
