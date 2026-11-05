@@ -328,6 +328,11 @@
     opacity: 0; animation: up 0.7s ease 0.8s forwards; position: relative; z-index: 1;
   }
   .tag-close { color: var(--gold); }
+  .hero-what {
+    font-family: 'Courier Prime', monospace; font-size: 16px; line-height: 1.6; color: var(--fg);
+    max-width: 440px; margin: 18px auto 0; padding: 0 8px;
+    opacity: 0; animation: up 0.7s ease 0.9s forwards; position: relative; z-index: 1;
+  }
   .hero-actions {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 24px; margin-top: 22px;
     opacity: 0; animation: up 0.7s ease 0.95s forwards; position: relative; z-index: 1;
@@ -751,8 +756,9 @@
     <div class="rule"><span class="rule-diamond"></span></div>
     <p class="hero-lead">Every mystery leaves a trace.</p>
     <p class="tagline">Everyone has a version. One detail doesn’t fit.<br><span class="tag-close">The truth is already here. Find it.</span></p>
+    <p class="hero-what">Short detective mysteries you play in your browser. Read the clues, work out who did it. Around 10 minutes each, free.</p>
     <div class="hero-actions">
-      <a class="hero-cta" href="cases/hidden-drop/">Start with The Hidden Drop</a>
+      <a class="hero-cta" href="cases/missing-envelope/">Start with The Missing Envelope</a>
       <a class="hero-link" href="#cases">Explore all cases</a>
     </div>
   </div>
@@ -763,7 +769,7 @@
       <div class="how-step">
         <div class="how-num">01</div>
         <div class="how-title">Choose a case</div>
-        <p class="how-text">Start with The Hidden Drop, or pick any story.</p>
+        <p class="how-text">Start with The Missing Envelope, or pick any story.</p>
       </div>
       <div class="how-step">
         <div class="how-num">02</div>
@@ -785,7 +791,7 @@
       <article class="case-card" aria-labelledby="t-hidden-drop">
         <div class="cc-cover"><img src="covers/hidden-drop.jpg" alt="" width="960" height="540" loading="lazy" decoding="async"></div>
         <div class="cc-body">
-          <div class="cc-top"><span class="case-num">Case No. 001</span><span class="case-status start">Start here</span></div>
+          <div class="cc-top"><span class="case-num">Case No. 001</span><span class="case-status open">Open</span></div>
           <h3 class="case-title-text" id="t-hidden-drop">The Hidden Drop</h3>
           <div class="case-exp">Explore &amp; discover</div>
           <div class="case-setting-text">Pune · Street hunt · Free</div>
@@ -797,7 +803,7 @@
       <article class="case-card" aria-labelledby="t-missing-envelope">
         <div class="cc-cover"><img src="covers/missing-envelope.jpg" alt="" width="960" height="540" loading="lazy" decoding="async"></div>
         <div class="cc-body">
-          <div class="cc-top"><span class="case-num">Case No. 002</span><span class="case-status open">Open</span></div>
+          <div class="cc-top"><span class="case-num">Case No. 002</span><span class="case-status start">Start here</span></div>
           <h3 class="case-title-text" id="t-missing-envelope">The Missing Envelope</h3>
           <div class="case-exp">Eliminate &amp; deduce</div>
           <div class="case-setting-text">Bengaluru · Law firm · Free</div>
