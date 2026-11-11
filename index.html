@@ -660,7 +660,7 @@
 
 <style id="stage3-cards">
   /* Stage 3 cards: cover from each case's own opening picture; one action per card (the existing Investigate Case link), the whole card clickable through it. */
-  .cases-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .cases-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); } /* 320 (or the full width on narrow screens): room for each card's labels and button; fewer, wider cards rather than clipped ones (e.g. 150% zoom) */
   .case-card { position: relative; display: flex; flex-direction: column; background: #0f0d0a; border: 1px solid #2a2418; padding: 0; transition: border-color .18s ease, transform .18s ease; }
   .case-card::before, .case-card::after { content: none !important; }
   .case-card:hover, .case-card:focus-within { border-color: var(--gold); transform: translateY(-2px); }
@@ -700,6 +700,28 @@
     .cs-body { padding: 18px 24px; }
   }
   @media (prefers-reduced-motion: reduce) { .case-card { transition: none; } .case-card:hover, .case-card:focus-within { transform: none; } }
+
+  /* Laptops only (11 Nov 2026 draft): same centred hero with a little less space, the case list before
+     How it works, shorter covers and less card padding. Same copy, text sizes and entry case. Phones unchanged. */
+  @media (min-width: 901px) {
+    #landing { display: flex; flex-direction: column; }
+    #landing > .how-band { order: 1; border-bottom: 0; border-top: 1px solid var(--fg-low); }
+    #landing > .foot { order: 2; }
+    .hero-band { padding-top: 30px; padding-bottom: 28px; }
+    h1 { font-size: clamp(76px, 6.6vw, 88px); margin-bottom: 16px; }
+    .rule { margin-bottom: 18px; }
+    .tagline { line-height: 1.7; }
+    .hero-what { margin-top: 14px; max-width: 640px; }
+    .hero-actions { margin-top: 18px; }
+    .cases-band { padding-top: 22px; }
+    .cases-band > .cases-label { margin-bottom: 16px; }
+    .case-card .cc-cover { aspect-ratio: 2.2 / 1; }
+    .case-card .cc-body { gap: 6px; padding: 14px 16px 16px; }
+    .case-card .case-brief-text { margin: 0 0 4px; }
+    .case-card .cc-cover img[src$="hidden-drop.jpg"] { object-position: 50% 45%; }
+    .case-card .cc-cover img[src$="missing-envelope.jpg"] { object-position: 50% 35%; }
+    .case-card .cc-cover img[src$="last-shot.jpg"] { object-position: 50% 15%; }
+  }
 </style>
 </head>
 <body>
