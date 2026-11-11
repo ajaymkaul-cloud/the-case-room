@@ -371,7 +371,7 @@
 <body>
   <header class="top-bar">
     <div class="bar-left">
-      <a class="bar-logo" href="../../index.html">The Case<em>Room</em></a>
+      <a class="bar-logo" href="../../index.html#cases">The Case<em>Room</em></a>
       <span class="bar-label">Case No. 003</span>
     </div>
     <div class="bar-center">The Last Shot</div>
@@ -1401,12 +1401,16 @@
   function showFreshNotice() {
     let el = document.getElementById('cr-fresh-notice');
     if (!el) {
+      // Floats over the top of the page so nothing on the page moves when it appears or goes.
       el = document.createElement('div'); el.id = 'cr-fresh-notice'; el.setAttribute('role', 'status');
-      el.style.cssText = 'box-sizing:border-box;width:min(760px,calc(100% - 24px));margin:10px auto;padding:12px 14px;border:1px solid #6a5228;border-radius:8px;background:#14100a;color:#f0e6d0;font:15px/1.5 "Courier Prime","Courier New",monospace;';
-      const anchor = document.querySelector('main') || document.body.firstElementChild || document.body;
-      anchor.parentNode.insertBefore(el, anchor);
+      el.style.cssText = 'position:fixed;z-index:1000;top:max(10px,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);box-sizing:border-box;width:min(560px,calc(100% - 24px));display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border:1px solid #6a5228;border-radius:8px;background:#14100a;color:#f0e6d0;font:15px/1.4 "Courier Prime","Courier New",monospace;box-shadow:0 8px 24px rgba(0,0,0,.5);';
+      const msg = document.createElement('span'); msg.style.flex = '1';
+      const close = document.createElement('button'); close.type = 'button'; close.setAttribute('aria-label', 'Close'); close.textContent = '\u00d7';
+      close.style.cssText = 'flex:none;min-width:44px;min-height:44px;border:0;background:transparent;color:#c8a45a;font:22px/1 "Courier Prime","Courier New",monospace;cursor:pointer;';
+      close.addEventListener('click', hideFreshNotice);
+      el.append(msg, close); document.body.appendChild(el);
     }
-    el.textContent = 'Your earlier progress has expired. Starting a new case.'; el.hidden = false;
+    el.firstChild.textContent = 'Your earlier progress has expired. Starting a new case.'; el.hidden = false;
     clearTimeout(showFreshNotice.timer); showFreshNotice.timer = setTimeout(hideFreshNotice, 12000);
   }
   function hideFreshNotice() { const el = document.getElementById('cr-fresh-notice'); if (el) el.hidden = true; }

@@ -648,7 +648,7 @@
 <template id="tpl-door-F"><svg viewBox="0 0 80 120" aria-hidden="true" focusable="false"><path d="M10 118V50a30 30 0 0 1 60 0v68z" fill="var(--maroon)" stroke="#222"/><path d="M10 118V50a30 30 0 0 1 60 0v68z" fill="url(#planksH)"/><rect x="28" y="52" width="24" height="12" fill="#fff" stroke="#222"/><text x="40" y="62" font-size="10" text-anchor="middle" font-weight="700">27</text><rect x="31" y="72" width="18" height="18" fill="#fffbe9" stroke="#222"/><g transform="translate(40 81)" stroke="#222" fill="none" stroke-width="1.2"><circle r="6"/><path d="M0 -6V6M-6 0H6" stroke-width=".8"/></g></svg><span class="door-name">Door F</span><span class="visually-hidden">round top with horizontal boards, maroon, number 27, wheel tile.</span><dl><dt>Colour</dt><dd>maroon</dd><dt>No.</dt><dd>27</dd><dt>Tile</dt><dd>wheel</dd></dl></template>
 
   <header class="top-bar">
-    <div><a class="bar-logo" href="../../index.html">The Case<em>Room</em></a><div class="bar-label">Case No. 001</div></div>
+    <div><a class="bar-logo" href="../../index.html#cases">The Case<em>Room</em></a><div class="bar-label">Case No. 001</div></div>
     <span class="bar-stamp" id="case-stamp">Checking</span>
   </header>
 
@@ -1741,7 +1741,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Measurement (10 Nov 2026): one "first gameplay tap" per session. Best effort, never blocks play.
-  const PLAY_TARGETS = '#closeup-choose, #clue-check, .door-btn';
+  const PLAY_TARGETS = '#closeup-choose, #clue-check, .chip, #check-1, #check-2, #check-3, .door-btn';
   let playMarkedFor = null;
   function markPlay(event) {
     const target = event.target && event.target.closest ? event.target.closest(PLAY_TARGETS) : null;
@@ -1758,12 +1758,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function showFreshNotice() {
     let el = document.getElementById('cr-fresh-notice');
     if (!el) {
+      // Floats over the top of the page so nothing on the page moves when it appears or goes.
       el = document.createElement('div'); el.id = 'cr-fresh-notice'; el.setAttribute('role', 'status');
-      el.style.cssText = 'box-sizing:border-box;width:min(760px,calc(100% - 24px));margin:10px auto;padding:12px 14px;border:1px solid #6a5228;border-radius:8px;background:#14100a;color:#f0e6d0;font:15px/1.5 "Courier Prime","Courier New",monospace;';
-      const anchor = document.querySelector('main') || document.body.firstElementChild || document.body;
-      anchor.parentNode.insertBefore(el, anchor);
+      el.style.cssText = 'position:fixed;z-index:1000;top:max(10px,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);box-sizing:border-box;width:min(560px,calc(100% - 24px));display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border:1px solid #6a5228;border-radius:8px;background:#14100a;color:#f0e6d0;font:15px/1.4 "Courier Prime","Courier New",monospace;box-shadow:0 8px 24px rgba(0,0,0,.5);';
+      const msg = document.createElement('span'); msg.style.flex = '1';
+      const close = document.createElement('button'); close.type = 'button'; close.setAttribute('aria-label', 'Close'); close.textContent = '\u00d7';
+      close.style.cssText = 'flex:none;min-width:44px;min-height:44px;border:0;background:transparent;color:#c8a45a;font:22px/1 "Courier Prime","Courier New",monospace;cursor:pointer;';
+      close.addEventListener('click', hideFreshNotice);
+      el.append(msg, close); document.body.appendChild(el);
     }
-    el.textContent = 'Your earlier progress has expired. Starting a new case.'; el.hidden = false;
+    el.firstChild.textContent = 'Your earlier progress has expired. Starting a new case.'; el.hidden = false;
     clearTimeout(showFreshNotice.timer); showFreshNotice.timer = setTimeout(hideFreshNotice, 12000);
   }
   function hideFreshNotice() { const el = document.getElementById('cr-fresh-notice'); if (el) el.hidden = true; }
