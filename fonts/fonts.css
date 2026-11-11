@@ -1,0 +1,8 @@
+/* The Case Room fonts, served from this site (no request to Google).
+   Playfair Display: the original font files, unchanged apart from WOFF compression (OFL, Reserved Font Name kept).
+   Courier Prime: subset to the characters the site uses (OFL, no Reserved Font Name). Licences: OFL-*.txt in this folder. */
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 400 900; font-display: swap; src: url('/fonts/playfair-display.woff') format('woff'); }
+@font-face { font-family: 'Playfair Display'; font-style: italic; font-weight: 400 900; font-display: swap; src: url('/fonts/playfair-display-italic.woff') format('woff'); }
+@font-face { font-family: 'Courier Prime'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/courier-prime.woff') format('woff'); }
+@font-face { font-family: 'Courier Prime'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/courier-prime-bold.woff') format('woff'); }
+@font-face { font-family: 'Courier Prime'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/courier-prime-italic.woff') format('woff'); }

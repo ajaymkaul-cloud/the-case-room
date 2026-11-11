@@ -20,7 +20,7 @@
   <meta name="twitter:title" content="The Case Room">
   <meta name="twitter:description" content="Free interactive mystery cases. Examine the evidence, follow the clues, and uncover the truth.">
   <meta name="twitter:image" content="https://thecaseroom.pixelandink.in/og-home-v2.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="/fonts/fonts.css">
 
 <style>
   :root {
@@ -851,6 +851,7 @@
   <div class="foot">
     <span class="foot-text">© 2026 Pixel &amp; Ink. All rights reserved.</span>
     <span class="foot-num">The Case Room · Case Files 001–003</span>
+    <a class="foot-privacy" href="privacy/" style="color:inherit;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px;padding:0 4px">Privacy</a>
   </div>
 </div>
 
@@ -1049,6 +1050,37 @@ if (location.hash === '#cases') {
 document.addEventListener('keydown', e => {
   if (started && !introFinished && e.key === 'Escape') finishIntro(true);
 });
+</script>
+<script>
+/* Page-load count (The Case Room). Daily totals only. No cookies, no browser storage, no referrer URL sent. */
+(function () {
+  'use strict';
+  var TAGS = ['wa', 'ig', 'fb', 'li', 'reddit', 'search', 'direct', 'other'];
+  var RULES = [
+    [/(^|\.)(whatsapp\.com|whatsapp\.net|wa\.me)$/, 'wa'],
+    [/(^|\.)instagram\.com$/, 'ig'],
+    [/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/, 'fb'],
+    [/(^|\.)(linkedin\.com|lnkd\.in)$/, 'li'],
+    [/(^|\.)(reddit\.com|redd\.it)$/, 'reddit'],
+    [/(^|\.)(google\.[a-z.]+|bing\.com|duckduckgo\.com|search\.yahoo\.com|yandex\.[a-z.]+|ecosia\.org|search\.brave\.com)$|googlequicksearchbox/, 'search']
+  ];
+  function source() {
+    try { var tag = new URLSearchParams(location.search).get('src'); if (tag && TAGS.indexOf(tag) !== -1) return tag; } catch (e) {}
+    var host = '';
+    try { host = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (e) { return 'other'; }
+    if (!host) return 'direct';
+    if (host === location.hostname) return 'site';
+    for (var i = 0; i < RULES.length; i++) if (RULES[i][0].test(host)) return RULES[i][1];
+    return 'other';
+  }
+  try {
+    fetch('https://hqibmotqlomwjlmpnchb.supabase.co/functions/v1/case-game', {
+      method: 'POST', mode: 'cors', cache: 'no-store', keepalive: true, credentials: 'omit',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_zep3M9z7xF-n476w_8kvMQ_AqEzH1xj' },
+      body: JSON.stringify({ action: 'load', page: 'home', src: source() })
+    }).catch(function () {});
+  } catch (e) {}
+})();
 </script>
 </body>
 </html>

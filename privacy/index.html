@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy · The Case Room</title>
+<meta name="description" content="What The Case Room counts, what the game keeps so it can work, and what optional analytics records.">
+<link rel="canonical" href="https://thecaseroom.pixelandink.in/privacy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Case Room">
+<meta property="og:url" content="https://thecaseroom.pixelandink.in/privacy/">
+<meta property="og:title" content="Privacy · The Case Room">
+<meta property="og:description" content="What The Case Room counts, what the game keeps so it can work, and what optional analytics records.">
+<meta property="og:image" content="https://thecaseroom.pixelandink.in/og-home-v2.png">
+<meta name="theme-color" content="#080604">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root { --bg: #080604; --fg: #f0e6d0; --fg-mid: #b8a888; --gold: #c8a45a; --gold-dim: #6a5228; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.65 'Courier Prime', 'Courier New', monospace; }
+  .wrap { width: min(720px, 100%); margin: 0 auto; padding: 28px 16px 40px; }
+  .back { display: inline-flex; align-items: center; min-height: 44px; color: var(--gold); text-decoration: underline; text-underline-offset: 3px; font-size: 15px; }
+  .eyebrow { margin: 18px 0 4px; color: var(--gold); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
+  h1 { margin: 0 0 8px; font: italic 700 clamp(32px, 8vw, 44px)/1.1 'Playfair Display', Georgia, serif; }
+  .lead { margin: 0 0 24px; color: var(--fg-mid); font-size: 15px; }
+  section { border-top: 1px solid var(--gold-dim); padding: 18px 0 6px; }
+  h2 { margin: 0 0 8px; font: italic 700 22px/1.25 'Playfair Display', Georgia, serif; color: var(--fg); }
+  p { margin: 0 0 12px; }
+  a { color: var(--gold); }
+  .foot { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--gold-dim); color: var(--fg-mid); font-size: 13px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="../">← The Case Room</a>
+  <p class="eyebrow">Privacy</p>
+  <h1>What we keep</h1>
+  <p class="lead">The short version: we count page loads, the game keeps what it needs to work, and anything more is your choice.</p>
+
+  <section aria-labelledby="h-counts">
+    <h2 id="h-counts">Page counts</h2>
+    <p>When a page loads, we add one to a daily total for that page and a broad source, such as WhatsApp, Instagram or search. These counts are page loads, not people. Reloads and repeat visits count again. They are not linked to your game, and we do not use cookies or browser storage for these counts.</p>
+  </section>
+
+  <section aria-labelledby="h-game">
+    <h2 id="h-game">Your game</h2>
+    <p>To play, your browser keeps a random session key and your progress, such as notes and clues you have found. Our server keeps a matching record so the game can work. It contains your progress, status, answer-check counts and gameplay timestamps. It does not store your name. It records whether each clue check was right or wrong and, for The Hidden Drop, the places you found. It never stores a wrong answer.</p>
+    <p>Your progress can be restored for 24 hours. After that, the case starts fresh.</p>
+  </section>
+
+  <section aria-labelledby="h-analytics">
+    <h2 id="h-analytics">Optional analytics</h2>
+    <p>If you tap Allow analytics, we also record when you start a case, whether each answer was right or wrong, and how long you took. This is linked to a separate random ID. If you say no, the game works exactly the same. You can change your choice any time from Privacy &amp; analytics at the bottom of each case.</p>
+  </section>
+
+  <section aria-labelledby="h-hosting">
+    <h2 id="h-hosting">Hosting</h2>
+    <p>We do not store IP addresses in these records. Our hosting providers, GitHub and Supabase, process request details, including IP addresses, under their own privacy policies. Fonts are served from this site.</p>
+  </section>
+
+  <section aria-labelledby="h-contact">
+    <h2 id="h-contact">Questions</h2>
+    <p>Write to <a href="mailto:info@pixelandink.in">info@pixelandink.in</a>.</p>
+  </section>
+
+  <p class="foot">The Case Room · A Pixel &amp; Ink Product</p>
+</main>
+<script>
+/* Page-load count (The Case Room). Daily totals only. No cookies, no browser storage, no referrer URL sent. */
+(function () {
+  'use strict';
+  var TAGS = ['wa', 'ig', 'fb', 'li', 'reddit', 'search', 'direct', 'other'];
+  var RULES = [
+    [/(^|\.)(whatsapp\.com|whatsapp\.net|wa\.me)$/, 'wa'],
+    [/(^|\.)instagram\.com$/, 'ig'],
+    [/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/, 'fb'],
+    [/(^|\.)(linkedin\.com|lnkd\.in)$/, 'li'],
+    [/(^|\.)(reddit\.com|redd\.it)$/, 'reddit'],
+    [/(^|\.)(google\.[a-z.]+|bing\.com|duckduckgo\.com|search\.yahoo\.com|yandex\.[a-z.]+|ecosia\.org|search\.brave\.com)$|googlequicksearchbox/, 'search']
+  ];
+  function source() {
+    try { var tag = new URLSearchParams(location.search).get('src'); if (tag && TAGS.indexOf(tag) !== -1) return tag; } catch (e) {}
+    var host = '';
+    try { host = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (e) { return 'other'; }
+    if (!host) return 'direct';
+    if (host === location.hostname) return 'site';
+    for (var i = 0; i < RULES.length; i++) if (RULES[i][0].test(host)) return RULES[i][1];
+    return 'other';
+  }
+  try {
+    fetch('https://hqibmotqlomwjlmpnchb.supabase.co/functions/v1/case-game', {
+      method: 'POST', mode: 'cors', cache: 'no-store', keepalive: true, credentials: 'omit',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_zep3M9z7xF-n476w_8kvMQ_AqEzH1xj' },
+      body: JSON.stringify({ action: 'load', page: 'privacy', src: source() })
+    }).catch(function () {});
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

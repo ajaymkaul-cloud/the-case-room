@@ -20,9 +20,7 @@
   <meta name="twitter:title" content="Case 003: The Last Shot · The Case Room">
   <meta name="twitter:description" content="Lead actor Veer Kapoor is found unconscious in his trailer minutes before the final shot. His morning energy drink contained a sedative.">
   <meta name="twitter:image" content="https://thecaseroom.pixelandink.in/og-last-shot-v2.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="/fonts/fonts.css">
   <style>
     :root {
       --bg: #0b0c0e;
@@ -524,7 +522,7 @@
     <div class="sheet-body" id="sheet-body"></div>
   </dialog>
 
-  <footer class="foot"><span class="foot-text">The Case Room · A Pixel &amp; Ink Product</span><span class="foot-num">Case 003 · thecaseroom.pixelandink.in</span></footer>
+  <footer class="foot"><span class="foot-text">The Case Room · A Pixel &amp; Ink Product</span><span class="foot-num">Case 003 · thecaseroom.pixelandink.in</span><a class="foot-privacy" href="../../privacy/" style="color:inherit;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px;padding:0 4px">Privacy</a></footer>
 
   <script>
     'use strict';
@@ -1256,6 +1254,7 @@
       user_agent_class: window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop'
     };
   }
+  let freshAfterExpiry = false;
   async function startSession(fresh = false) {
     if (fresh) safeRemove('localStorage', GAME_SESSION_KEY);
     let sessionId = fresh ? null : safeGet('localStorage', GAME_SESSION_KEY);
@@ -1268,6 +1267,7 @@
       data = await request(payload);
     } catch (error) {
       if (sessionId && (error.status === 410 || error.status === 404)) {
+        freshAfterExpiry = true;
         safeRemove('localStorage', GAME_SESSION_KEY);
         return startSession(true);
       }
@@ -1277,6 +1277,7 @@
     safeSet('localStorage', GAME_SESSION_KEY, data.session_id);
     latestState = data;
     serverMessage('');
+    if (freshAfterExpiry) { freshAfterExpiry = false; showFreshNotice(); }
     window.dispatchEvent(new CustomEvent('case-room-secure-ready', { detail: data }));
     return data;
   }
@@ -1331,7 +1332,7 @@
       }));
     } catch (error) {
       // An expired or unknown token cannot be refreshed; start a new guest session, as a page reload would.
-      if (error.status === 410 || error.status === 404) return startSession(true);
+      if (error.status === 410 || error.status === 404) { freshAfterExpiry = true; return startSession(true); }
       throw error;
     }
     latestState = result;
@@ -1382,6 +1383,34 @@
     return state;
   }
 
+  // Measurement (10 Nov 2026): one "first gameplay tap" per session. Best effort, never blocks play.
+  const PLAY_TARGETS = '#sel-suspect, #exhibit-checkboxes input, .nb-relation-btn, .nb-suspect-btn, #accuse-btn';
+  let playMarkedFor = null;
+  function markPlay(event) {
+    const target = event.target && event.target.closest ? event.target.closest(PLAY_TARGETS) : null;
+    if (!target) return;
+    hideFreshNotice();
+    const sid = latestState && latestState.session_id;
+    if (!sid || playMarkedFor === sid) return;
+    playMarkedFor = sid;
+    request({ action: 'play', case_id: CASE_ID, mechanic: MECHANIC, session_id: sid, ...trackingFields() }).catch(() => {});
+  }
+  document.addEventListener('click', markPlay, true);
+  document.addEventListener('change', markPlay, true);
+  // Plain notice when an old session has expired or is gone and the case starts fresh.
+  function showFreshNotice() {
+    let el = document.getElementById('cr-fresh-notice');
+    if (!el) {
+      el = document.createElement('div'); el.id = 'cr-fresh-notice'; el.setAttribute('role', 'status');
+      el.style.cssText = 'box-sizing:border-box;width:min(760px,calc(100% - 24px));margin:10px auto;padding:12px 14px;border:1px solid #6a5228;border-radius:8px;background:#14100a;color:#f0e6d0;font:15px/1.5 "Courier Prime","Courier New",monospace;';
+      const anchor = document.querySelector('main') || document.body.firstElementChild || document.body;
+      anchor.parentNode.insertBefore(el, anchor);
+    }
+    el.textContent = 'Your earlier progress has expired. Starting a new case.'; el.hidden = false;
+    clearTimeout(showFreshNotice.timer); showFreshNotice.timer = setTimeout(hideFreshNotice, 12000);
+  }
+  function hideFreshNotice() { const el = document.getElementById('cr-fresh-notice'); if (el) el.hidden = true; }
+
   const css = document.createElement('style');
   css.textContent = `
     #cr-analytics-consent[hidden], #cr-game-server-warning[hidden] { display:none !important; }
@@ -1421,7 +1450,7 @@
     panel.hidden = true; settings.setAttribute('aria-expanded', 'false');
     const status = document.getElementById('cr-analytics-status');
     if (status) status.textContent = value === 'accepted'
-      ? 'Analytics enabled for this browser session. Choose “Play without analytics” to stop future events.'
+      ? 'Analytics on. To stop, open Privacy & analytics and choose “No thanks”.'
       : 'Analytics disabled. Gameplay is unchanged.';
   }
   panel.querySelector('.cr-accept').addEventListener('click', () => setConsent('accepted'));
@@ -1441,6 +1470,37 @@
     getState: () => latestState,
     getAnalyticsConsent: () => consent()
   };
+})();
+</script>
+<script>
+/* Page-load count (The Case Room). Daily totals only. No cookies, no browser storage, no referrer URL sent. */
+(function () {
+  'use strict';
+  var TAGS = ['wa', 'ig', 'fb', 'li', 'reddit', 'search', 'direct', 'other'];
+  var RULES = [
+    [/(^|\.)(whatsapp\.com|whatsapp\.net|wa\.me)$/, 'wa'],
+    [/(^|\.)instagram\.com$/, 'ig'],
+    [/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/, 'fb'],
+    [/(^|\.)(linkedin\.com|lnkd\.in)$/, 'li'],
+    [/(^|\.)(reddit\.com|redd\.it)$/, 'reddit'],
+    [/(^|\.)(google\.[a-z.]+|bing\.com|duckduckgo\.com|search\.yahoo\.com|yandex\.[a-z.]+|ecosia\.org|search\.brave\.com)$|googlequicksearchbox/, 'search']
+  ];
+  function source() {
+    try { var tag = new URLSearchParams(location.search).get('src'); if (tag && TAGS.indexOf(tag) !== -1) return tag; } catch (e) {}
+    var host = '';
+    try { host = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (e) { return 'other'; }
+    if (!host) return 'direct';
+    if (host === location.hostname) return 'site';
+    for (var i = 0; i < RULES.length; i++) if (RULES[i][0].test(host)) return RULES[i][1];
+    return 'other';
+  }
+  try {
+    fetch('https://hqibmotqlomwjlmpnchb.supabase.co/functions/v1/case-game', {
+      method: 'POST', mode: 'cors', cache: 'no-store', keepalive: true, credentials: 'omit',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_zep3M9z7xF-n476w_8kvMQ_AqEzH1xj' },
+      body: JSON.stringify({ action: 'load', page: 'last-shot', src: source() })
+    }).catch(function () {});
+  } catch (e) {}
 })();
 </script>
 </body>
