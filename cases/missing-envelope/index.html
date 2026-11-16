@@ -89,6 +89,7 @@
   .scene-title { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 20px 12px; background: linear-gradient(180deg, transparent, rgba(10,8,6,.72) 45%, rgba(10,8,6,.92)); }
   .scene svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .opening-text { padding: 14px 20px 0; }
+  @media (max-width: 899px) { .scene { height: 150px !important; } .case-setting { margin-top: 4px; } }
   .case-number { font-size: 12px; letter-spacing: 0.24em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
   .case-title {
     font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic;
@@ -511,7 +512,7 @@
     <p class="case-setting" id="case-setting"></p>
     <p class="case-task">Name <b>who</b> took the contract, <b>how</b> and <b>where</b>. You have <b>two accusations</b>.</p>
     <div class="opening-actions">
-      <a class="start-btn" id="start-btn" href="#record-1">Examine the evidence <span aria-hidden="true">↓</span></a>
+      <a class="start-btn" id="start-btn" href="#record-1"><span id="start-label">Start the case</span> <span aria-hidden="true">↓</span></a>
     </div>
   </div>
 </header>
@@ -591,7 +592,7 @@
         </select>
       </div>
       <div class="accuse-row">
-        <label class="accuse-label" for="acc-where">Where did the substitution happen?</label>
+        <label class="accuse-label" for="acc-where">Where?</label>
         <select class="accuse-select" id="acc-where">
           <option value="">— Select location —</option>
         </select>
@@ -663,16 +664,16 @@ const CASE = {
   "title": "The Missing Envelope",
   "date": "2026-10-14",
   "series": "Pixel & Ink · Investigation Series",
-  "setting": "Meridian House, Bengaluru. A sealed envelope containing a signed acquisition contract was left on the partners’ desk. The next morning, an envelope was still there—but it contained a decoy summary and the signed contract was gone. Three people were in the building between 7 and 9 pm.",
+  "setting": "Meridian House, Bengaluru. A sealed envelope containing a signed acquisition contract was left on the partners’ desk. By morning, the signed contract was missing. Three people were in the building between 7 and 9 pm.",
   "suspects": [
     { "id": "reena",  "name": "Reena Sood",  "role": "Corporate Lawyer",  "detail": "Has access to every floor. The third-floor camera shows her entering the partners’ office at 7:48 pm.", "icon": "⚖️" },
     { "id": "marcus", "name": "Marcus Vaz",  "role": "Building Manager",  "detail": "Holds master keys. His security-system login remained active until 8:30 pm, though a system login does not establish his physical location.", "icon": "🔑" },
     { "id": "priya",  "name": "Priya Nair",  "role": "Legal Intern",      "detail": "Was expected to stay until 9 pm but badged out at 7:55 pm.", "icon": "📋" }
   ],
   "methods": [
-    { "id": "lifted", "name": "Lifted from the desk",    "detail": "The original envelope was taken without leaving a replacement. The empty space would be obvious when staff returned.", "icon": "✋" },
-    { "id": "fake",   "name": "Swapped envelope with replica",     "detail": "A prepared replica envelope containing a decoy summary was left in place while the original contract envelope was removed.", "icon": "📄" },
-    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes. It offered an opportunity, but it does not explain why an envelope containing a decoy remained on the desk.", "icon": "🚨" }
+    { "id": "lifted", "name": "Lifted from the desk",    "detail": "The original envelope was taken from the desk.", "icon": "✋" },
+    { "id": "fake",   "name": "Swapped envelope with replica",     "detail": "A prepared replica envelope was left in place while the original was removed.", "icon": "📄" },
+    { "id": "alarm",  "name": "Taken during fire alarm", "detail": "The 8:05 pm alarm cleared the floor for 12 minutes.", "icon": "🚨" }
   ],
   "locations": [
     { "id": "partners", "name": "The partners' office", "detail": "Third floor. The original contract envelope was last confirmed on the desk at 7:30 pm.", "icon": "🏛️" },
@@ -874,7 +875,14 @@ CASE.methods.forEach(m => {
   if (wide.addEventListener) wide.addEventListener('change', fit);
 })();
 
-// "Examine the evidence" lands on the first record and gives it focus.
+// Start-here block: returning players (tries used, or notes on this device) see "Continue the case".
+function markReturning(hasProgress) {
+  let notes = false;
+  try { const n = JSON.parse(localStorage.getItem(NOTES_KEY) || 'null'); notes = !!(n && n.text && n.text.trim()); } catch (_) {}
+  if (!(hasProgress || notes)) return;
+  document.getElementById('start-label').textContent = 'Continue the case';
+}
+// "Start the case" lands on the first record and gives it focus.
 document.getElementById('start-btn').addEventListener('click', event => {
   event.preventDefault();
   const first = document.getElementById('record-1');
@@ -1325,6 +1333,7 @@ async function applySecureState(state) {
   if (!state) return;
   statusConfirmed = true;
   triesUsed = Number(state.attempts) || 0;
+  markReturning(triesUsed > 0 || state.status === 'solved' || state.status === 'failed');
   if (state.started_at && Number.isFinite(Date.parse(state.started_at))) CASE_STARTED_AT = Date.parse(state.started_at);
   const terminal = state.status === 'solved' || state.status === 'failed';
   if (terminal && CASE_COMPLETED_AT === null) {
@@ -1620,7 +1629,7 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   }
 
   // Measurement (10 Nov 2026): one "first gameplay tap" per session. Best effort, never blocks play.
-  const PLAY_TARGETS = '.grid-cell, #acc-who, #acc-where, #acc-how, #accuse-btn';
+  const PLAY_TARGETS = '.grid-cell, #acc-who, #acc-where, #acc-how, #accuse-btn, #start-btn, #evidence-open, .record';
   let playMarkedFor = null;
   function markPlay(event) {
     const target = event.target && event.target.closest ? event.target.closest(PLAY_TARGETS) : null;
