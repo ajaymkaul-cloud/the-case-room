@@ -608,6 +608,9 @@
 .stage-card .card-refs .ref-link { color: var(--terra); border-color: #c9b894; min-height: 40px; }
 @media (min-width: 900px) { .card-refs { display: none !important; } }
 </style>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1614,6 +1617,8 @@ document.addEventListener('DOMContentLoaded', () => {
     checkSession(data);
     // A slow reply from an older start attempt must not replace the session a newer attempt already set up.
     if (mine !== startSeq && latestState) return latestState;
+    // A new case (first visit, or an old session that expired) starts with no hints open (Bible, 12 Nov).
+    if (data.session_id !== sessionId) { try { hints = {}; localStorage.removeItem(LS.hints); if (typeof renderAll === 'function') renderAll(); } catch (_) {} }
     safeSet('localStorage', GAME_SESSION_KEY, data.session_id);
     latestState = data;
     serverMessage('');
