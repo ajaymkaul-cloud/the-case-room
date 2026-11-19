@@ -512,7 +512,7 @@
     <p class="case-setting" id="case-setting"></p>
     <p class="case-task">Name <b>who</b> took the contract, <b>how</b> and <b>where</b>. You have <b>two accusations</b>.</p>
     <div class="opening-actions">
-      <a class="start-btn" id="start-btn" href="#record-1"><span id="start-label">Start the case</span> <span aria-hidden="true">↓</span></a>
+      <a class="start-btn" id="start-btn" href="#record-1"><span id="start-label">Read the first record</span> <span aria-hidden="true">↓</span></a>
     </div>
   </div>
 </header>
@@ -1751,5 +1751,134 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   } catch (e) {}
 })();
 </script>
+<!-- PHONE LAYOUT (Nov 2026): on phones the case opens like The Hidden Drop: tabs, one record at a time, progress. Laptops unchanged. -->
+<style id="phone-steps">
+.ps-only { display: none; }
+@media (max-width: 899px) {
+  .ps-on .ps-only { display: block; }
+  .ps-on .ps-tabs.ps-only { display: grid; } .ps-on .ps-nav.ps-only { display: grid; } .ps-on .ps-strip.ps-only { display: flex; } .ps-on .ps-howto-btn.ps-only { display: inline-flex; align-items: center; }
+  .ps-on .evidence-bar { display: none !important; }
+  .ps-tabs { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: repeat(3, 1fr); background: #0a0806; border-top: 1px solid #2c2216; border-bottom: 1px solid #2c2216; margin-top: 18px; }
+  .ps-tabs button { min-height: 52px; background: none; border: 0; border-bottom: 3px solid transparent; color: #b8a888; font: 700 13px/1 'Courier Prime', 'Courier New', monospace; letter-spacing: .18em; text-transform: uppercase; cursor: pointer; }
+  .ps-tabs button[aria-selected="true"] { color: #c8a45a; border-bottom-color: #c8a45a; }
+  .ps-strip { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #2c2216; font: 13px/1.3 'Courier Prime', 'Courier New', monospace; letter-spacing: .14em; text-transform: uppercase; color: #c8a45a; }
+  .ps-dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+  .ps-dots i { width: 9px; height: 9px; border: 1px solid #6a5228; display: block; }
+  .ps-dots i.seen { background: #6a5228; } .ps-dots i.now { background: #c8a45a; border-color: #c8a45a; }
+  .ps-intro { margin: 14px 20px 0; font-size: 15px; line-height: 1.55; color: #d9cfb8; }
+  .ps-on .puzzle-layout [data-ps-panel][hidden] { display: none !important; }
+  .ps-on #evidence .section-label, .ps-on #evidence .section-label.spaced { display: none; }
+  .ps-on [data-ps-card][hidden] { display: none !important; }
+  .ps-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 8px; }
+  .ps-nav button { min-height: 48px; border: 1px solid #6a5228; background: none; color: #f0e6d0; font: 700 13px/1 'Courier Prime', 'Courier New', monospace; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; }
+  .ps-nav button.primary { background: #c8a45a; color: #0b0805; border-color: #c8a45a; }
+  .ps-nav button:disabled { opacity: .35; cursor: default; }
+  .ps-on .record-text { font-family: Georgia, 'Times New Roman', serif; font-size: 17px; line-height: 1.6; }
+  .ps-on .record-text strong { font-family: 'Courier Prime', 'Courier New', monospace; }
+  .ps-on .record-art { float: none; width: 76px; margin: 0 0 10px; }
+  .ps-on .statement-text { font-family: Georgia, 'Times New Roman', serif; font-size: 17px; }
+  .ps-howto-btn { margin-left: 12px; min-height: 44px; padding: 0 16px; border: 1px solid #6a5228; border-radius: 22px; background: none; color: #c8a45a; font: 13px/1 'Courier Prime', 'Courier New', monospace; letter-spacing: .1em; cursor: pointer; }
+  .ps-howto { margin: 12px 0 0; padding: 12px 14px; border: 1px solid #3a2e1c; font-size: 14px; line-height: 1.6; color: #d9cfb8; }
+  .ps-howto ol { margin: 0; padding-left: 20px; }
+}
+</style>
+<script>
+(() => {
+  'use strict';
+  const mq = window.matchMedia('(max-width: 899px)');
+  const layout = document.querySelector('.puzzle-layout');
+  const evidence = document.getElementById('evidence'), solve = document.getElementById('solve');
+  if (!layout || !evidence || !solve) return;
+
+  // Split the solving column into Grid (methods, grid, notes) and Accuse (from "Make your accusation" on).
+  const accuseHead = [...solve.querySelectorAll('h2')].find(h => /accusation/i.test(h.textContent));
+  const gridPanel = document.createElement('div'), accusePanel = document.createElement('div');
+  gridPanel.style.display = accusePanel.style.display = 'contents';
+  gridPanel.dataset.psPanel = 'grid'; accusePanel.dataset.psPanel = 'accuse';
+  let into = gridPanel;
+  [...solve.childNodes].forEach(n => { if (n === accuseHead) into = accusePanel; into.appendChild(n); });
+  solve.append(gridPanel, accusePanel);
+  evidence.dataset.psPanel = 'evidence';
+
+  // Tabs and progress strip (phones only).
+  const tabs = document.createElement('div');
+  tabs.className = 'ps-tabs ps-only'; tabs.setAttribute('role', 'tablist');
+  const names = [['evidence', 'Evidence'], ['grid', 'Grid'], ['accuse', 'Accuse']];
+  tabs.innerHTML = names.map(([k, t]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="false">${t}</button>`).join('');
+  const strip = document.createElement('div'); strip.className = 'ps-strip ps-only';
+  strip.innerHTML = '<span id="ps-label"></span><span class="ps-dots" id="ps-dots" aria-hidden="true"></span>';
+  const intro = document.createElement('p'); intro.className = 'ps-intro ps-only';
+  intro.textContent = 'Read each record and rule out what it disproves. When you are ready, make your accusation.';
+  layout.before(tabs, strip, intro);
+
+  // How to play (phones only), next to Start the case.
+  const actions = document.querySelector('.opening-actions');
+  if (actions) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'ps-howto-btn ps-only'; b.style.display = '';
+    b.textContent = 'How to play'; b.setAttribute('aria-expanded', 'false');
+    const box = document.createElement('div'); box.className = 'ps-howto'; box.hidden = true;
+    box.innerHTML = '<ol><li>Read the records, statements and places, one at a time.</li><li>On the Grid, cross out what the evidence rules out.</li><li>Make your accusation: who, how and where. You have two.</li></ol>';
+    b.addEventListener('click', () => { box.hidden = !box.hidden; b.setAttribute('aria-expanded', String(!box.hidden)); });
+    actions.append(b); actions.after(box);
+    mq.addEventListener('change', () => { if (!mq.matches) box.hidden = true; });
+  }
+
+  // Evidence cards: each record, each statement, then places and people.
+  let cards = [], cur = 0;
+  const nav = document.createElement('div'); nav.className = 'ps-nav ps-only';
+  nav.innerHTML = '<button type="button" id="ps-prev">Previous</button><button type="button" class="primary" id="ps-next">Next</button>';
+  function collect() {
+    cards = [...evidence.querySelectorAll('.record'), ...evidence.querySelectorAll('.statement')];
+    const pp = document.getElementById('places-people'); if (pp) cards.push(pp);
+    cards.forEach(c => c.dataset.psCard = '1');
+  }
+  const seen = new Set();
+  function label(i) {
+    const c = cards[i]; const recs = evidence.querySelectorAll('.record').length, sts = evidence.querySelectorAll('.statement').length;
+    if (c.classList.contains('record')) return `Record ${i + 1} of ${recs}`;
+    if (c.classList.contains('statement')) return `Statement ${i - recs + 1} of ${sts}`;
+    return 'Places and people';
+  }
+  function showCard(i, focus) {
+    cur = Math.max(0, Math.min(cards.length - 1, i)); seen.add(cur);
+    cards.forEach((c, k) => { c.hidden = mq.matches && k !== cur; });
+    cards[cur].after(nav);
+    document.getElementById('ps-label').textContent = label(cur);
+    document.getElementById('ps-dots').innerHTML = cards.map((_, k) => `<i class="${k === cur ? 'now' : seen.has(k) ? 'seen' : ''}"></i>`).join('');
+    document.getElementById('ps-prev').disabled = cur === 0;
+    const next = document.getElementById('ps-next');
+    next.textContent = cur === cards.length - 1 ? 'Go to the grid' : 'Next';
+    if (focus) toTop();
+  }
+  function toTop() { const y = strip.getBoundingClientRect().top + window.scrollY - tabs.offsetHeight; window.scrollTo({ top: y, behavior: 'smooth' }); }
+  function showTab(k) {
+    tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === k)));
+    layout.querySelectorAll('[data-ps-panel]').forEach(p => {
+      const on = !mq.matches || p.dataset.psPanel === k;
+      if (p.dataset.psPanel === 'grid' || p.dataset.psPanel === 'accuse') p.style.display = on ? 'contents' : 'none'; else p.hidden = !on;
+    });
+    strip.style.visibility = k === 'evidence' ? 'visible' : 'hidden';
+    intro.style.display = mq.matches && k === 'evidence' ? '' : 'none';
+  }
+  nav.addEventListener('click', e => {
+    if (e.target.id === 'ps-prev') showCard(cur - 1, true);
+    if (e.target.id === 'ps-next') { if (cur === cards.length - 1) { showTab('grid'); toTop(); } else showCard(cur + 1, true); }
+  });
+  tabs.addEventListener('click', e => { const k = e.target.dataset && e.target.dataset.tab; if (k) { showTab(k); toTop(); } });
+  const start = document.getElementById('start-btn');
+  if (start) start.addEventListener('click', e => { if (!mq.matches) return; e.preventDefault(); e.stopImmediatePropagation(); showTab('evidence'); showCard(0); toTop(); }, true);
+
+  function apply() {
+    document.documentElement.classList.toggle('ps-on', mq.matches);
+    if (!cards.length) collect();
+    showTab(mq.matches ? (tabs.querySelector('[aria-selected="true"]') || {}).dataset?.tab || 'evidence' : 'evidence');
+    if (cards.length) showCard(cur);
+    if (!mq.matches) { cards.forEach(c => c.hidden = false); nav.remove(); }
+  }
+  mq.addEventListener('change', apply);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
+})();
+</script>
+
 </body>
 </html>
