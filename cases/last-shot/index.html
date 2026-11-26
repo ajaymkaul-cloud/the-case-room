@@ -370,8 +370,49 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style id="cr-intro-css">
+#cr-intro{display:none}
+@media (max-width:899px){
+ html.ci-lock,html.ci-lock body{overflow:hidden}
+ #cr-intro{display:flex;position:fixed;inset:0;z-index:9999;background:#080604 radial-gradient(ellipse 90% 55% at 50% 30%,rgba(200,164,90,.13),rgba(8,6,4,0) 70%);color:#f0e6d0;flex-direction:column;align-items:center;justify-content:center;padding:20px 22px;box-sizing:border-box;overflow:auto;font-family:'Courier Prime','Courier New',monospace}
+ #cr-intro.gone{display:none}
+ .ci-top{font-size:12px;letter-spacing:.24em;color:#c8a45a;text-transform:uppercase}
+ .ci-scene{width:190px;height:183px;margin-top:14px;flex:none}
+ .ci-bubble{position:relative;background:#f3e9d4;color:#2b241c;border-radius:16px;padding:13px 16px;font-size:15px;line-height:1.45;font-weight:700;max-width:330px;margin-top:10px;box-shadow:0 10px 24px rgba(0,0,0,.5)}
+ .ci-bubble:after{content:"";position:absolute;left:58%;top:-12px;border:12px solid transparent;border-top:0;border-bottom-color:#f3e9d4}
+ .ci-title{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:900;font-size:34px;margin:16px 0 4px;line-height:1.05;text-align:center}
+ .ci-sub{font-size:13px;color:#a8987a;letter-spacing:.06em;text-align:center}
+ .ci-steps{display:flex;gap:10px;margin:16px 0;width:100%;max-width:340px;justify-content:space-between}
+ .ci-step{flex:1;text-align:center;font-size:12.5px;line-height:1.3;color:#d8c9a8}
+ .ci-step svg{display:block;margin:0 auto 6px}
+ .ci-start{width:100%;max-width:340px;min-height:56px;background:#c8a45a;color:#080604;border:0;border-radius:12px;padding:16px;font:700 19px 'Courier Prime','Courier New',monospace;letter-spacing:.04em;box-shadow:6px 6px 0 #6a5228;cursor:pointer}
+ .ci-start:focus-visible{outline:3px solid #f0e6d0;outline-offset:3px}
+ .ci-note{margin-top:12px;font-size:12px;color:#a8987a}
+}
+</style>
 </head>
 <body>
+<div id="cr-intro" role="dialog" aria-modal="true" aria-labelledby="ci-title">
+ <div class="ci-top">The Case Room · Case 003</div>
+ <div class="ci-scene" aria-hidden="true"><svg viewBox="0 0 260 250" width="190" height="183"><rect x="0" y="176" width="260" height="20" rx="3" fill="#6b4f2e"/><rect x="14" y="196" width="232" height="54" fill="#3a2a1c"/><g transform="translate(96,176)"><rect x="-9" y="-128" width="18" height="15" rx="3" fill="#8a8478"/><rect x="-14" y="-116" width="28" height="28" rx="6" fill="#e8e0cc"/><rect x="-28" y="-92" width="56" height="92" rx="12" fill="#e8e0cc"/><rect x="-28" y="-60" width="56" height="34" fill="#6f6a60"/><text x="0" y="-36" font-family="Courier Prime,monospace" font-weight="700" font-size="20" text-anchor="middle" fill="#f3e9d4">?</text></g><g transform="translate(150,64) scale(0.23)"><g fill="#c8a45a"><path d="M336.406,166.563c-10.891,1.75-72.609,12.094-76.5,12.094c-3.906,0-3.906,0-3.906,0s0,0-3.906,0s-65.609-10.344-76.5-12.094c-18.719-3.031-34.344,2.266-39.813,4.531c-22.969,9.531-15.25,31.813-10.156,40.063c7.047,11.344,33.781,41.125,60.125,44.609c34.344,4.516,64-21.172,70.25-21.172c6.234,0,35.906,25.688,70.25,21.172c26.344-3.484,53.094-33.266,60.125-44.609c5.094-8.25,12.813-30.531-10.156-40.063C370.734,168.828,355.125,163.531,336.406,166.563z M184.656,220.984c-11.094-10.734-9.25-21.516,3.688-22.391c12.969-0.906,34.813,4.5,35.172,11.656C224.438,228.156,195.75,231.75,184.656,220.984z M327.344,220.984c-11.109,10.766-39.797,7.172-38.859-10.734c0.359-7.156,22.203-12.563,35.141-11.656C336.594,199.469,338.438,210.25,327.344,220.984z"></path><path d="M402.75,115.906c0-5.031-5.219-15.094-14.578-17.125C374.656,19.156,296.563,0,256,0S137.344,19.156,123.813,98.781c-9.375,2.031-14.563,12.094-14.563,17.125c0,5.047,0,33.25,0,33.25h293.5C402.75,149.156,402.75,120.953,402.75,115.906z"></path><path d="M356.719,382.234c0-20.203-6.281-42.297-26.234-42.297H181.5c-19.938,0-26.234,22.094-26.234,42.297c0,4.797-93.359,28.828-93.359,82.656c0,12.516,30.422,47.109,193.031,47.109h2.109c162.625,0,193.047-34.594,193.047-47.109C450.094,411.063,356.719,387.031,356.719,382.234z"></path></g></g></svg></div>
+ <div class="ci-bubble">"Someone on the crew swapped the star's drink before his final shot. Four suspects. Bet you can't name who."</div>
+ <h2 class="ci-title" id="ci-title">The Last Shot</h2>
+ <div class="ci-sub">Mumbai · Film set · Free</div>
+ <div class="ci-steps"><div class="ci-step"><svg viewBox="0 0 48 48" width="40" height="40"><path d="M12 4 L30 4 L38 12 L38 44 L12 44 Z" fill="none" stroke="#c8a45a" stroke-width="3" stroke-linejoin="round"/><path d="M18 20 L32 20 M18 27 L32 27 M18 34 L27 34" stroke="#c8a45a" stroke-width="3"/></svg>Open the exhibits</div><div class="ci-step"><svg viewBox="0 0 48 48" width="40" height="40"><circle cx="12" cy="14" r="6" fill="none" stroke="#c8a45a" stroke-width="3"/><circle cx="36" cy="34" r="6" fill="none" stroke="#c8a45a" stroke-width="3"/><path d="M16 18 L32 30" stroke="#e06a5b" stroke-width="3"/></svg>Link them to suspects</div><div class="ci-step"><svg viewBox="0 0 48 48" width="40" height="40"><circle cx="24" cy="18" r="11" fill="none" stroke="#c8a45a" stroke-width="3"/><path d="M24 29 L24 44" stroke="#c8a45a" stroke-width="3"/><circle cx="24" cy="18" r="4" fill="#e06a5b"/></svg>Name who did it</div></div>
+ <button class="ci-start" type="button">Start the case</button>
+ <div class="ci-note">No timer. No sign-up.</div>
+</div>
+<script>
+(function(){var k='cr_intro_seen_last-shot',el=document.getElementById('cr-intro'),seen=false;
+try{seen=localStorage.getItem(k)==='1'}catch(e){}
+if(seen||!window.matchMedia('(max-width:899px)').matches){el.classList.add('gone');return}
+document.documentElement.classList.add('ci-lock');
+var b=el.querySelector('.ci-start');try{b.focus({preventScroll:true})}catch(e){}
+b.addEventListener('click',function(){try{localStorage.setItem(k,'1')}catch(e){}
+el.classList.add('gone');document.documentElement.classList.remove('ci-lock');
+var s=document.getElementById('start-btn');if(s)s.click();});})();
+</script>
+
   <header class="top-bar">
     <div class="bar-left">
       <a class="bar-logo" href="../../index.html#cases">The Case<em>Room</em></a>
