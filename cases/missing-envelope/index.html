@@ -467,6 +467,17 @@
  .ci-start:focus-visible{outline:3px solid #f0e6d0;outline-offset:3px}
  .ci-note{margin-top:12px;font-size:12px;color:#a8987a}
 }
+ @media (max-width:899px) and (max-height:700px){
+  #cr-intro{justify-content:flex-start;padding:14px 18px}
+  .ci-scene,.ci-scene svg{width:128px!important;height:123px!important;margin-top:8px}
+  .ci-bubble{font-size:14px;padding:10px 13px;margin-top:6px;line-height:1.4}
+  .ci-title{font-size:27px;margin:10px 0 2px}
+  .ci-sub{font-size:12px}
+  .ci-steps{margin:10px 0}
+  .ci-step{font-size:11.5px}.ci-step svg{width:30px;height:30px;margin-bottom:3px}
+  .ci-start{min-height:48px;padding:11px;font-size:17px}
+  .ci-note{margin-top:8px}
+ }
 </style>
 </head>
 <body>
@@ -556,7 +567,7 @@ var s=document.getElementById('start-btn');if(s)s.click();});})();
     <p class="case-setting" id="case-setting"></p>
     <p class="case-task">Name <b>who</b> took the contract, <b>how</b> and <b>where</b>. You have <b>two accusations</b>.</p>
     <div class="opening-actions">
-      <a class="start-btn" id="start-btn" href="#record-1"><span id="start-label">Read the first record</span> <span aria-hidden="true">↓</span></a>
+      <a class="start-btn" id="start-btn" href="#record-1"><span id="start-label">Start the case</span> <span aria-hidden="true">↓</span></a>
     </div>
   </div>
 </header>
@@ -1852,7 +1863,7 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   const strip = document.createElement('div'); strip.className = 'ps-strip ps-only';
   strip.innerHTML = '<span id="ps-label"></span><span class="ps-dots" id="ps-dots" aria-hidden="true"></span>';
   const intro = document.createElement('p'); intro.className = 'ps-intro ps-only';
-  intro.textContent = 'Read each record and rule out what it disproves. When you are ready, make your accusation.';
+  intro.textContent = 'Meet the three suspects and the building, then read the records. Rule out what each one disproves. When you are ready, make your accusation.';
   layout.before(tabs, strip, intro);
 
   // How to play (phones only), next to Start the case.
@@ -1872,16 +1883,17 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   const nav = document.createElement('div'); nav.className = 'ps-nav ps-only';
   nav.innerHTML = '<button type="button" id="ps-prev">Previous</button><button type="button" class="primary" id="ps-next">Next</button>';
   function collect() {
-    cards = [...evidence.querySelectorAll('.record'), ...evidence.querySelectorAll('.statement')];
+    cards = [...evidence.querySelectorAll('.statement')];
     const pp = document.getElementById('places-people'); if (pp) cards.push(pp);
+    cards.push(...evidence.querySelectorAll('.record'));
     cards.forEach(c => c.dataset.psCard = '1');
   }
   const seen = new Set();
   function label(i) {
-    const c = cards[i]; const recs = evidence.querySelectorAll('.record').length, sts = evidence.querySelectorAll('.statement').length;
-    if (c.classList.contains('record')) return `Record ${i + 1} of ${recs}`;
-    if (c.classList.contains('statement')) return `Statement ${i - recs + 1} of ${sts}`;
-    return 'Places and people';
+    const c = cards[i]; const step = `Step ${i + 1} of ${cards.length}`;
+    if (c.classList.contains('record')) { return `${step} · Record`; }
+    if (c.classList.contains('statement')) return `${step} · Suspect`;
+    return `${step} · The building`;
   }
   function showCard(i, focus) {
     cur = Math.max(0, Math.min(cards.length - 1, i)); seen.add(cur);
