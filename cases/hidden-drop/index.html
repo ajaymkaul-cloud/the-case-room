@@ -642,7 +642,17 @@
   .ci-note{margin-top:8px}
  }
 </style>
-</head>
+<style id="cr-return-css">
+.cr-return{margin-top:16px;padding:14px 16px;border:1px solid #6a5228;background:rgba(200,164,90,.07)}
+.cr-return[hidden]{display:none}
+html.cr-done .ps-strip,html.cr-done .ps-intro{display:none!important}
+.cr-return-msg{margin:0 0 12px;font-family:'Courier Prime','Courier New',monospace;font-size:15px;font-weight:700;letter-spacing:.06em;color:#c8a45a}
+.cr-return-actions{display:flex;flex-wrap:wrap;gap:10px}
+.cr-return-actions button{min-height:48px;padding:0 18px;font:700 14px 'Courier Prime','Courier New',monospace;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border:1px solid #c8a45a}
+.cr-review{background:#c8a45a;color:#080604}
+.cr-fresh{background:transparent;color:#c8a45a}
+.cr-return-actions button:focus-visible{outline:2px solid #f0e6d0;outline-offset:3px}
+</style></head>
 <body>
 <div id="cr-intro" role="dialog" aria-modal="true" aria-labelledby="ci-title">
  <div class="ci-top">The Case Room · Case 001</div>
@@ -716,7 +726,7 @@ var s=document.getElementById('start-link');if(s)s.click();});})();
         <button class="howto-btn" id="howto-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="howto">How to play</button>
       </div>
       <p class="opening"><span>Kaavla, a street artist, hid something in Kesari Peth.</span><span>Three painted pieces. One door.</span></p>
-      <a class="start-link" href="#stage-1" id="start-link">Start here <span aria-hidden="true">&#8595;</span></a>
+      <a class="start-link" href="#stage-1" id="start-link">Start here <span aria-hidden="true">&#8595;</span></a><div class="cr-return" id="cr-return" hidden><p class="cr-return-msg" id="cr-return-msg"></p><div class="cr-return-actions"><button type="button" class="cr-review" id="cr-review">Review the case</button><button type="button" class="cr-fresh" id="cr-fresh">Start a fresh case</button></div></div>
       </div>
       <aside class="case-dossier" aria-label="Case file">
         <button class="dossier-toggle" id="dossier-toggle" type="button" aria-expanded="false" aria-controls="dossier-body"><span class="dossier-label">Case File</span><span class="dossier-peek">CR-001-2026</span><span class="dossier-chev" aria-hidden="true"></span></button>
@@ -985,6 +995,7 @@ function applyServerState(state) {
   savePicks();
   setStatus(game.status === 'solved' ? 'solved' : 'open');
   renderAll();
+  if (window.crSetReturning) window.crSetReturning(game.status);
   if (game.status === 'solved' && !game.solution) loadSolution();
 }
 window.addEventListener('case-room-secure-ready', event => applyServerState(event.detail));
@@ -1180,7 +1191,7 @@ async function submitDoor() {
   try {
     const result = await secure.accuse({ choice: door });
     game.attempts = Number(result.attempts) || game.attempts;
-    if (result.status === 'solved') { anim.door = performance.now(); game.status = 'solved'; setStatus('solved'); feedback[4] = null; renderAll(); await loadSolution(); }
+    if (result.status === 'solved') { anim.door = performance.now(); game.status = 'solved'; setStatus('solved'); feedback[4] = null; renderAll(); if (window.crSetReturning) window.crSetReturning('solved'); await loadSolution(); }
     else feedback[4] = ['wrong', 'Not this door.'];
   } catch (error) {
     if (error && error.status === 409 && error.data && Array.isArray(error.data.stages_found)) {
@@ -1919,6 +1930,33 @@ document.addEventListener('DOMContentLoaded', () => {
       body: JSON.stringify({ action: 'load', page: 'hidden-drop', src: source() })
     }).catch(function () {});
   } catch (e) {}
+})();
+</script>
+<script>
+// Returning players: a solved case offers Review or Start fresh instead of "Start here".
+(function(){
+  window.crSetReturning=function(status){
+    var box=document.getElementById('cr-return'),start=document.getElementById('start-link');
+    if(!box||!start)return;
+    var done=status==='solved';
+    box.hidden=!done; start.style.display=done?'none':'';
+    if(done)document.getElementById('cr-return-msg').textContent='You solved this case.';
+  };
+  document.addEventListener('click',function(e){
+    if(e.target.closest&&e.target.closest('#cr-review')){
+      var tab=document.getElementById('tab-finds'); if(tab)tab.click();
+      var v=document.getElementById('finds-solved');
+      if(v)setTimeout(function(){v.scrollIntoView({behavior:'smooth',block:'start'})},80);
+    }
+    if(e.target.closest&&e.target.closest('#cr-fresh')){
+      if(!window.confirm('Start a fresh case? Your progress on this device will be cleared.'))return;
+      (async function(){
+        try{await window.CaseRoomSecureGame.resetSession();}catch(_){}
+        try{Object.values(LS).forEach(function(k){if(k!==LS.mapTip)localStorage.removeItem(k)});}catch(_){}
+        location.reload();
+      })();
+    }
+  });
 })();
 </script>
 </body>

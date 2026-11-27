@@ -407,6 +407,17 @@
   .ci-note{margin-top:8px}
  }
 </style>
+<style id="cr-return-css">
+.cr-return{margin-top:16px;padding:14px 16px;border:1px solid #6a5228;background:rgba(200,164,90,.07)}
+.cr-return[hidden]{display:none}
+html.cr-done .ps-strip,html.cr-done .ps-intro{display:none!important}
+.cr-return-msg{margin:0 0 12px;font-family:'Courier Prime','Courier New',monospace;font-size:15px;font-weight:700;letter-spacing:.06em;color:#c8a45a}
+.cr-return-actions{display:flex;flex-wrap:wrap;gap:10px}
+.cr-return-actions button{min-height:48px;padding:0 18px;font:700 14px 'Courier Prime','Courier New',monospace;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border:1px solid #c8a45a}
+.cr-review{background:#c8a45a;color:#080604}
+.cr-fresh{background:transparent;color:#c8a45a}
+.cr-return-actions button:focus-visible{outline:2px solid #f0e6d0;outline-offset:3px}
+</style>
 </head>
 <body>
 <div id="cr-intro" role="dialog" aria-modal="true" aria-labelledby="ci-title">
@@ -492,7 +503,7 @@ var s=document.getElementById('start-btn');if(s)s.click();});})();
       <p class="case-setting">5:47 AM, Film City, Mumbai. Lead actor Veer Kapoor is found unconscious in his trailer minutes before the final shot. His morning energy drink, sent through the production’s catering service, contained a sedative. Someone on the crew switched it before it reached him.</p>
       <p class="case-task">Name <b>who substituted the drink</b>, then choose <b>two exhibits</b> that support your accusation.</p>
       <div class="opening-actions">
-        <button class="start-btn" id="start-btn" type="button">Start the case <span aria-hidden="true">↓</span></button>
+        <button class="start-btn" id="start-btn" type="button">Start the case <span aria-hidden="true">↓</span></button><div class="cr-return" id="cr-return" hidden><p class="cr-return-msg" id="cr-return-msg"></p><div class="cr-return-actions"><button type="button" class="cr-review" id="cr-review">Review the case</button><button type="button" class="cr-fresh" id="cr-fresh">Start a fresh case</button></div></div>
       </div>
     </div>
   </section>
@@ -1070,6 +1081,7 @@ var s=document.getElementById('start-btn');if(s)s.click();});})();
       if (caseStatus === 'solved') lastFeedback = null;
       renderOutcome();
       updateAccuseState();
+      if (window.crSetReturning) window.crSetReturning(caseStatus === 'solved' ? 'solved' : 'playing');
     }
     window.addEventListener('case-room-secure-ready', event => { applySecureState(event.detail); });
 
@@ -1111,6 +1123,7 @@ var s=document.getElementById('start-btn');if(s)s.click();});})();
     }
 
     function renderOutcome() {
+      if (window.crSetReturning) window.crSetReturning(caseStatus === 'solved' ? 'solved' : 'playing');
       const verdict = $('verdict');
       if (caseStatus !== 'solved') {
         if (statusConfirmed) updateStatus('Open');
@@ -1687,5 +1700,29 @@ var s=document.getElementById('start-btn');if(s)s.click();});})();
 })();
 </script>
 
+<script>
+// Returning players: a finished case offers Review or Start fresh instead of "Start"/"Continue".
+(function(){
+  var MSG={solved:'You solved this case.',failed:'Case closed: both tries used.'};
+  window.crSetReturning=function(status){
+    var box=document.getElementById('cr-return'),start=document.getElementById('start-btn');
+    if(!box||!start)return;
+    var done=status==='solved'||status==='failed';
+    box.hidden=!done; start.hidden=done; start.style.display=done?'none':'';
+    document.documentElement.classList.toggle('cr-done',done);
+    if(done)document.getElementById('cr-return-msg').textContent=MSG[status];
+  };
+  document.addEventListener('click',function(e){
+    if(e.target.closest&&e.target.closest('#cr-review')){
+      var tab=document.querySelector('.ps-tabs [data-tab="accuse"]');
+      if(tab&&getComputedStyle(tab).display!=='none'&&window.matchMedia('(max-width:899px)').matches)tab.click();
+      var v=document.getElementById('verdict');
+      if(v){setTimeout(function(){v.scrollIntoView({behavior:'smooth',block:'start'});try{v.focus({preventScroll:true})}catch(_){}} ,60)}
+    }
+    if(e.target.closest&&e.target.closest('#cr-fresh'))window.crStartFresh&&window.crStartFresh();
+  });
+})();
+window.crStartFresh=function(){var r=document.getElementById('restart-btn');if(r)r.click();};
+</script>
 </body>
 </html>
