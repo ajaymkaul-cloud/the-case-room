@@ -621,12 +621,8 @@ var s=document.getElementById('start-btn');if(s)s.click();});})();
 
     <h2 class="section-label spaced">Elimination grid</h2>
     <div class="grid-guide">
-      <p id="grid-guide-title"><strong>Use the grid to test each possibility.</strong> Each table compares two categories. Mark relationships the evidence rules out, then confirm the links you believe are true.</p>
-      <p class="grid-legend" id="grid-legend"><span class="cross">×</span> Ruled out &nbsp; <span class="tick">✓</span> Confirmed &nbsp; · Undecided. Activate a cell to cycle through the three states.</p>
-      <details class="grid-help">
-        <summary>How do I use this to solve the case?</summary>
-        <p>Start with direct evidence. For example, a verified alibi can rule out a suspect at a location. Use the three tables to compare suspect–method, suspect–location and method–location pairs. The grid does not solve the case for you; use it to track your deductions, then base your accusation on the clues.</p>
-      </details>
+      <p id="grid-guide-title"><strong>How to use the grid:</strong> each table compares two things, such as suspect and place. Tap a square to cycle it: <span class="cross">×</span> ruled out, <span class="tick">✓</span> confirmed, · undecided.</p>
+      <p class="grid-legend" id="grid-legend">Start with what a record proves. For example, a verified alibi rules a suspect out of a place. The grid only tracks your thinking; your accusation is what counts.</p>
     </div>
     <div class="elim-grids" id="elim-grids" aria-describedby="grid-legend"></div>
 
@@ -658,7 +654,7 @@ var s=document.getElementById('start-btn');if(s)s.click();});})();
         </select>
       </div>
       <div class="accuse-row">
-        <label class="accuse-label" for="acc-where">Where?</label>
+        <label class="accuse-label" for="acc-where">Where did the theft happen?</label>
         <select class="accuse-select" id="acc-where">
           <option value="">— Select location —</option>
         </select>
@@ -1361,7 +1357,7 @@ async function makeAccusation() {
       catch (_) { body.textContent = 'Both attempts exhausted. Reconnect to load the closed case file.'; }
     } else {
       verdict.className = 'wrong'; headline.textContent = 'Not quite.';
-      body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining — review the evidence and your notes.';
+      body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining. Check each part against the records: who, how and where must all fit.';
       updateCaseStatus('retry'); showWrongStamp();
     }
   } catch (error) {
@@ -1380,7 +1376,7 @@ async function makeAccusation() {
       if (state && Number(state.attempts) > attemptsBefore) {
         // The accusation reached the server but the reply was lost. A still-open case means it was not correct.
         headline.textContent = 'Not quite.';
-        body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining — review the evidence and your notes.';
+        body.textContent = 'The evidence doesn’t support that conclusion. One attempt remaining. Check each part against the records: who, how and where must all fit.';
       } else {
         headline.textContent = 'Accusation not confirmed.';
         body.textContent = (error && (error.status === 400 || error.status === 429) && error.message)
@@ -1714,14 +1710,17 @@ document.getElementById('copy-result-btn').addEventListener('click', copyStamp);
   function showFreshNotice() {
     let el = document.getElementById('cr-fresh-notice');
     if (!el) {
-      // Floats over the top of the page so nothing on the page moves when it appears or goes.
+      // A small line in the page (not a floating banner) so the opening stays readable.
       el = document.createElement('div'); el.id = 'cr-fresh-notice'; el.setAttribute('role', 'status');
-      el.style.cssText = 'position:fixed;z-index:1000;top:max(10px,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);box-sizing:border-box;width:min(560px,calc(100% - 24px));display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border:1px solid #6a5228;border-radius:8px;background:#14100a;color:#f0e6d0;font:15px/1.4 "Courier Prime","Courier New",monospace;box-shadow:0 8px 24px rgba(0,0,0,.5);';
+      el.style.cssText = 'box-sizing:border-box;width:100%;max-width:560px;display:flex;align-items:center;gap:10px;margin:12px 0 0;padding:6px 6px 6px 12px;border:1px solid #6a5228;border-radius:6px;background:#14100a;color:#f0e6d0;font:14px/1.4 "Courier Prime","Courier New",monospace;';
       const msg = document.createElement('span'); msg.style.flex = '1';
       const close = document.createElement('button'); close.type = 'button'; close.setAttribute('aria-label', 'Close'); close.textContent = '\u00d7';
       close.style.cssText = 'flex:none;min-width:44px;min-height:44px;border:0;background:transparent;color:#c8a45a;font:22px/1 "Courier Prime","Courier New",monospace;cursor:pointer;';
       close.addEventListener('click', hideFreshNotice);
-      el.append(msg, close); document.body.appendChild(el);
+      el.append(msg, close);
+      // In the page, just above the start button, so it never covers the opening.
+      const anchor = document.getElementById('start-btn');
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(el, anchor); else document.body.prepend(el);
     }
     el.firstChild.textContent = 'Your earlier progress has expired. Starting a new case.'; el.hidden = false;
     clearTimeout(showFreshNotice.timer); showFreshNotice.timer = setTimeout(hideFreshNotice, 12000);
